@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "test": "vitest --coverage"
   },
   "dependencies": {
     "next": "15.0.0",
@@ -32,16 +33,21 @@
     "@storybook/nextjs": "^8.3.6",
     "@storybook/react": "8.3.6",
     "@storybook/test": "8.3.6",
+    "@testing-library/react": "latest",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@typescript-eslint/eslint-plugin": "^8.11.0",
     "@typescript-eslint/parser": "^8.11.0",
+    "@vitejs/plugin-react": "^4.3.3",
+    "@vitest/coverage-v8": "2.1.4",
     "eslint": "^8",
     "eslint-config-next": "15.0.0",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-storybook": "^0.10.1",
+    "jsdom": "^25.0.1",
     "storybook": "8.3.6",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^2.1.4"
   }
 }
