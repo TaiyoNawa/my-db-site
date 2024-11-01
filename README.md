@@ -34,3 +34,40 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+---
+
+`develop`ブランチで作業し、最終的に`main`ブランチにマージする
+
+1. `develop`ブランチで作業：
+
+   - 通常の開発作業は`develop`ブランチで行います。
+   - コードの変更をコミットし、リモートリポジトリにプッシュします。
+
+   ```bash
+   # 変更をステージング
+   git add .
+
+   # 変更をコミット
+   git commit -m "Your commit message"
+
+   # developブランチにプッシュ
+   git push origin develop
+   ```
+
+2. `main`ブランチへのマージ：
+
+   - 開発が完了したら、`main`ブランチに変更をマージします。
+
+   ```bash
+   # mainブランチに切り替え
+   git checkout main
+
+   # developブランチの変更をmainブランチにマージ
+   git merge develop
+
+   # mainブランチにプッシュ
+   git push origin main
+   ```
+
+これにより、`main`ブランチと`develop`ブランチを分けて運用し、最終的に`main`ブランチにマージするフローが確立されます。
