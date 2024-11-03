@@ -12,11 +12,16 @@
     "test": "vitest --coverage"
   },
   "dependencies": {
-    "next": "15.0.0",
-    "react": "19.0.0-rc-65a56d0e-20241020",
-    "react-dom": "19.0.0-rc-65a56d0e-20241020"
+    "@chakra-ui/react": "^2.8.2",
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
+    "framer-motion": "^11.2.12",
+    "next": "14.2.4",
+    "react": "^18",
+    "react-dom": "^18"
   },
   "devDependencies": {
+    "@chakra-ui/storybook-addon": "^5.2.5",
     "@chromatic-com/storybook": "1.9.0",
     "@storybook/addon-a11y": "^8.3.6",
     "@storybook/addon-actions": "^8.3.6",
@@ -28,6 +33,7 @@
     "@storybook/addon-links": "8.3.6",
     "@storybook/addon-onboarding": "8.3.6",
     "@storybook/addon-storysource": "^8.3.6",
+    "@storybook/addon-themes": "^8.4.1",
     "@storybook/addon-viewport": "^8.3.6",
     "@storybook/blocks": "8.3.6",
     "@storybook/nextjs": "^8.3.6",
