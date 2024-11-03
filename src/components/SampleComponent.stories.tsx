@@ -4,14 +4,14 @@ import React from "react";
 import { SampleText } from "./SampleComponent";
 
 const Default = {
-  title: "sampleのText",
+  title: "components/SampleComponent",
   component: SampleText,
   args: {},
   tags: ["autodocs"],
   parameters: {
     docs: {
       description: {
-        description: "これはサンプルテキストのコンポーネントです。",
+        description: "これはサンプルのコンポーネントです。",
       },
     },
   },
