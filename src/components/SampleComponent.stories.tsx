@@ -11,7 +11,7 @@ const Default = {
   parameters: {
     docs: {
       description: {
-        description: "これはサンプルのコンポーネントです。",
+        component: "これはサンプルのコンポーネントです。",
       },
     },
   },
