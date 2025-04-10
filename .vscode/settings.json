@@ -1,0 +1,14 @@
+{
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "always"
+  }, //←これが保存時にESLintで自動整形してくれるやつ！
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "eslint.useESLintClass": true,
+  "eslint.validate": [
+    "javascript",
+    "typescript",
+    "javascriptreact",
+    "typescriptreact"
+  ]
+}
