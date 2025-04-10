@@ -1,13 +1,15 @@
-import type { Preview } from "@storybook/react";
-import { INITIAL_VIEWPORTS } from "@storybook/addon-viewport";
+import type { Preview } from '@storybook/react';
+import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport';
+import { theme } from '../src/styles/theme';
+import { notoSansJP } from '../src/assets/data';
+import { ChakraProvider } from '@chakra-ui/react';
+import React from 'react';
 
-import { ChakraProvider } from "@chakra-ui/react";
-import React from "react";
 const preview: Preview = {
   decorators: [
     (Story) => (
-      <ChakraProvider>
-        <Story />
+      <ChakraProvider theme={theme}>
+        <Story className={notoSansJP.className} />
       </ChakraProvider>
     ),
   ],
