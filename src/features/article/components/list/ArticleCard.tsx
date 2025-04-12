@@ -1,4 +1,4 @@
-import { Box, Flex, Link, Image, Text } from '@chakra-ui/react';
+import { Box, Link, Image, Text } from '@chakra-ui/react';
 import { FC } from 'react';
 
 import { useLimitedLengthText } from '@/hooks/limitedLengthText';
@@ -19,64 +19,66 @@ export const ArticleCard: FC<ArticleCardProps> = ({
   url,
   ...rest
 }) => {
-  const titleSummary = useLimitedLengthText(title, 100);
-  const descriptionSummary = useLimitedLengthText(description, 100);
+  const titleSummary = useLimitedLengthText(title, 60);
+  const descriptionSummary = useLimitedLengthText(description, 50);
+
   return (
-    <Box
-      maxW="472px"
-      maxH="472px"
-      {...rest}
-      bgColor="white"
-      borderRadius="25px"
-      overflow="hidden" //画像がボックス外に出ないように
-      transition="box-shadow 0.3s ease"
-      _hover={{
-        boxShadow: 'lg',
-        textDecoration: 'none',
-      }}
-    >
-      <Flex
-        justifyContent="center"
+    <Link href={url} _hover={{ textDecoration: 'none' }}>
+      <Box
+        maxW="472px"
+        w={{ base: 'auto', sm: '366px', md: '333px', lg: '472px' }} // ← ✅ 幅をレスポンシブに設定
+        display="flex"
         flexDirection="column"
-        as={Link}
-        href={url}
-        _hover={{
-          textDecoration: 'none',
-        }}
+        height="100%" // 親の高さにフィット
+        borderRadius="25px"
+        overflow="hidden"
+        bgColor="white"
+        transition="box-shadow 0.3s ease"
+        _hover={{ boxShadow: 'lg' }}
+        {...rest}
       >
+        {/* 画像box */}
         <Box
+          h={{ base: 'auto', sm: '205px', md: '187px', lg: '267px' }}
+          w={{ base: 'auto', sm: '366px', md: '333px', lg: '472px' }}
           overflow="hidden"
           transition="transform 0.3s ease"
-          _hover={{
-            transform: 'scale(1.03)',
-          }}
+          _hover={{ transform: 'scale(1.03)' }}
         >
           <Image
             src={eyeCatch}
             alt={titleSummary}
-            loading="eager"
-            objectFit="cover" // 画像が親ボックスにぴったり収まるように
+            objectFit="cover"
             aspectRatio={16 / 9}
-            borderRadius="0"
+            width="100%"
           />
         </Box>
-        <Flex
+
+        {/* Text box */}
+        <Box
+          p={{ base: '24px', md: '32px' }}
+          display="flex"
           flexDirection="column"
-          gap="8px"
-          justifyContent="flex-start"
-          p="32px"
+          justifyContent="space-between"
         >
           <Box>
-            <Text fontSize="12px" mb="12px" _hover={{ textDecoration: 'none' }}>
+            <Text fontSize={{ base: '12px', lg: '14px' }} mb="12px">
               {category}
             </Text>
-            <Text fontSize="24px" fontWeight="bold" lineHeight="short" mb="8px">
+            <Text
+              fontSize={{ base: '21px' }}
+              fontWeight="bold"
+              lineHeight="short"
+              mb="8px"
+            >
               {titleSummary}
             </Text>
           </Box>
-          <Box fontSize="12px">{descriptionSummary}</Box>
-        </Flex>
-      </Flex>
-    </Box>
+          <Text fontSize={{ base: '12px', lg: '14px' }}>
+            {descriptionSummary}
+          </Text>
+        </Box>
+      </Box>
+    </Link>
   );
 };
