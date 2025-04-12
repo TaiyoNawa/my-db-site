@@ -1,4 +1,4 @@
-import { Box, Text } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 import { FC, ReactNode } from 'react';
 
 import { notoSansJP } from '../assets/data';
@@ -17,14 +17,13 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       minH="100vh"
       className={notoSansJP.className}
     >
-      <Text>これはStorybookのサンプルです</Text>
       <Header />
       <Box
         as="main"
         flex="1"
         display="flex"
         flexDirection="column"
-        backgroundColor="gray.800"
+        backgroundColor="gray.100"
       >
         <Box maxW={{ base: '100%' }}>{children}</Box>
       </Box>
