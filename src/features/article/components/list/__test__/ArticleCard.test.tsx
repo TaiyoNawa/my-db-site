@@ -48,7 +48,7 @@ describe('ArticleCard.tsxのテスト', () => {
     render(<ArticleCard {...testProps2} />);
     const title = screen.getByText(testProps2.title.slice(0, 60) + '...');
     expect(title).toBeInTheDocument();
-    expect(title.textContent?.length).toBeLessThanOrEqual(103);
+    expect(title.textContent?.length).toBeLessThanOrEqual(63);
   });
   it('descriptionが50文字以内で表示される', () => {
     render(<ArticleCard {...testProps2} />);
@@ -56,6 +56,6 @@ describe('ArticleCard.tsxのテスト', () => {
       testProps2.description.slice(0, 50) + '...'
     );
     expect(description).toBeInTheDocument();
-    expect(description.textContent?.length).toBeLessThanOrEqual(103);
+    expect(description.textContent?.length).toBeLessThanOrEqual(53);
   });
 });
