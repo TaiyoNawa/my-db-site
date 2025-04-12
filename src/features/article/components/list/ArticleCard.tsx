@@ -26,15 +26,16 @@ export const ArticleCard: FC<ArticleCardProps> = ({
     <Link href={url} _hover={{ textDecoration: 'none' }}>
       <Box
         maxW="472px"
-        w={{ base: 'auto', sm: '366px', md: '333px', lg: '472px' }} // ← ✅ 幅をレスポンシブに設定
+        w={{ base: 'auto', sm: '366px', md: '333px', lg: '472px' }}
         display="flex"
         flexDirection="column"
-        height="100%" // 親の高さにフィット
+        height="100%"
         borderRadius="25px"
         overflow="hidden"
         bgColor="white"
         transition="box-shadow 0.3s ease"
         _hover={{ boxShadow: 'lg' }}
+        role="group" // ✅ 追加
         {...rest}
       >
         {/* 画像box */}
@@ -43,7 +44,7 @@ export const ArticleCard: FC<ArticleCardProps> = ({
           w={{ base: 'auto', sm: '366px', md: '333px', lg: '472px' }}
           overflow="hidden"
           transition="transform 0.3s ease"
-          _hover={{ transform: 'scale(1.03)' }}
+          _groupHover={{ transform: 'scale(1.03)' }} // ✅ 変更
         >
           <Image
             src={eyeCatch}
