@@ -6,7 +6,7 @@ import { ArticlePagination } from './ArticlePagination';
 import { articleSample } from '../../hooks/ArticleSample';
 
 export default {
-  title: 'newsletter/ArticlePagination',
+  title: 'article/ArticlePagination',
   component: ArticlePagination,
   args: {
     articles: articleSample,

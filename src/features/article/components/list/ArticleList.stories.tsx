@@ -5,7 +5,7 @@ import { ArticleList } from './ArticleList';
 import { articleSample } from '../../hooks/ArticleSample';
 
 export default {
-  title: 'newsletter/ArticleList',
+  title: 'article/ArticleList',
   component: ArticleList,
   args: {
     articles: articleSample,
