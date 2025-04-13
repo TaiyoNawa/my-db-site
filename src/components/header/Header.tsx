@@ -1,184 +1,307 @@
-//参考サイト：https://choc-ui.com/docs/navigation/navbars
 import {
-  chakra,
+  HamburgerIcon,
+  CloseIcon,
+  ChevronDownIcon,
+  ChevronRightIcon,
+} from '@chakra-ui/icons';
+import {
   Box,
   Flex,
-  useColorModeValue,
-  VisuallyHidden,
-  HStack,
-  Button,
-  useDisclosure,
-  VStack,
+  Text,
   IconButton,
-  CloseButton,
-  InputGroup,
-  InputLeftElement,
-  Input,
-  Avatar,
+  Button,
+  Stack,
+  Collapse,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  useColorModeValue,
+  useBreakpointValue,
+  useDisclosure,
 } from '@chakra-ui/react';
-import React from 'react';
-import {
-  AiOutlineMenu,
-  AiFillHome,
-  AiOutlineInbox,
-  AiOutlineSearch,
-  AiFillBell,
-} from 'react-icons/ai';
-import { BsFillCameraVideoFill } from 'react-icons/bs';
+import { FC } from 'react';
 
-export const Header = () => {
-  const bg = useColorModeValue('white', 'gray.800');
-  const mobileNav = useDisclosure();
+export const Header: FC = () => {
+  const { isOpen, onToggle } = useDisclosure();
+
   return (
-    <React.Fragment>
-      <chakra.header
-        bg={bg}
-        w="full"
-        px={{
-          base: 2,
-          sm: 4,
-        }}
-        py={4}
-        shadow="md"
+    <Box>
+      <Flex
+        bg={useColorModeValue('white', 'gray.800')}
+        color={useColorModeValue('gray.600', 'white')}
+        minH={'60px'}
+        py={{ base: 2 }}
+        px={{ base: 4 }}
+        borderBottom={1}
+        borderStyle={'solid'}
+        borderColor={useColorModeValue('gray.200', 'gray.900')}
+        align={'center'}
       >
-        <Flex alignItems="center" justifyContent="space-between" mx="auto">
-          <HStack display="flex" spacing={3} alignItems="center">
-            <Box
-              display={{
-                base: 'inline-flex',
-                md: 'none',
-              }}
-            >
-              <IconButton
-                display={{
-                  base: 'flex',
-                  md: 'none',
-                }}
-                aria-label="Open menu"
-                fontSize="20px"
-                color="gray.800"
-                _dark={{
-                  color: 'inherit',
-                }}
-                variant="ghost"
-                icon={<AiOutlineMenu />}
-                onClick={mobileNav.onOpen}
-              />
-              <VStack
-                pos="absolute"
-                top={0}
-                left={0}
-                right={0}
-                display={mobileNav.isOpen ? 'flex' : 'none'}
-                flexDirection="column"
-                p={2}
-                pb={4}
-                m={2}
-                bg={bg}
-                spacing={3}
-                rounded="sm"
-                shadow="sm"
-              >
-                <CloseButton
-                  aria-label="Close menu"
-                  justifySelf="self-start"
-                  onClick={mobileNav.onClose}
-                />
-                <Button w="full" variant="ghost" leftIcon={<AiFillHome />}>
-                  Dashboard
-                </Button>
-                <Button
-                  w="full"
-                  variant="ghost"
-                  //   colorScheme="brand"多分ホバー時の色
-                  leftIcon={<AiOutlineInbox />}
-                >
-                  Inbox
-                </Button>
-                <Button
-                  w="full"
-                  variant="ghost"
-                  leftIcon={<BsFillCameraVideoFill />}
-                >
-                  Videos
-                </Button>
-              </VStack>
-            </Box>
-            <chakra.a
-              href="/"
-              title="Choc Home Page"
-              display="flex"
-              alignItems="center"
-            >
-              {/* <Logo /> ここにロゴが入る！Logoのコンポーネントを作る*/}
-              <VisuallyHidden>Choc</VisuallyHidden>
-            </chakra.a>
-
-            <HStack
-              spacing={3}
-              display={{
-                base: 'none',
-                md: 'inline-flex',
-              }}
-            >
-              <Button variant="ghost" leftIcon={<AiFillHome />} size="sm">
-                Dashboard
-              </Button>
-              <Button
-                variant="ghost"
-                // colorScheme="brand"多分ホバー時の色
-                leftIcon={<AiOutlineInbox />}
-                size="sm"
-              >
-                Inbox
-              </Button>
-              <Button
-                variant="ghost"
-                leftIcon={<BsFillCameraVideoFill />}
-                size="sm"
-              >
-                Videos
-              </Button>
-            </HStack>
-          </HStack>
-          <HStack
-            spacing={3}
-            display={mobileNav.isOpen ? 'none' : 'flex'}
-            alignItems="center"
-          >
-            <InputGroup>
-              <InputLeftElement pointerEvents="none">
-                <AiOutlineSearch />
-              </InputLeftElement>
-              <Input type="tel" placeholder="Search..." />
-            </InputGroup>
-
-            <chakra.a
-              p={3}
-              color="gray.800"
-              _dark={{
-                color: 'inherit',
-              }}
-              rounded="sm"
-              _hover={{
-                color: 'gray.800',
-                _dark: {
-                  color: 'gray.600',
-                },
-              }}
-            >
-              <AiFillBell />
-              <VisuallyHidden>Notifications</VisuallyHidden>
-            </chakra.a>
-
-            <Avatar
-              size="sm"
-              name="Dan Abrahmov"
-              src="https://bit.ly/dan-abramov"
-            />
-          </HStack>
+        <Flex
+          flex={{ base: 1, md: 'auto' }}
+          ml={{ base: -2 }}
+          display={{ base: 'flex', md: 'none' }}
+        >
+          <IconButton
+            onClick={onToggle}
+            icon={
+              isOpen ? <CloseIcon w={3} h={3} /> : <HamburgerIcon w={5} h={5} />
+            }
+            variant={'ghost'}
+            aria-label={'Toggle Navigation'}
+          />
         </Flex>
-      </chakra.header>
-    </React.Fragment>
+        <Flex flex={{ base: 1 }} justify={{ base: 'center', md: 'start' }}>
+          <Text
+            textAlign={useBreakpointValue({ base: 'center', md: 'left' })}
+            fontFamily={'heading'}
+            color={useColorModeValue('gray.800', 'white')}
+          >
+            Logo
+          </Text>
+
+          <Flex display={{ base: 'none', md: 'flex' }} ml={10}>
+            <DesktopNav />
+          </Flex>
+        </Flex>
+
+        <Stack
+          flex={{ base: 1, md: 0 }}
+          justify={'flex-end'}
+          direction={'row'}
+          spacing={6}
+        >
+          <Button
+            as={'a'}
+            fontSize={'sm'}
+            fontWeight={400}
+            variant={'link'}
+            href={'#'}
+          >
+            Sign In
+          </Button>
+          <Button
+            as={'a'}
+            display={{ base: 'none', md: 'inline-flex' }}
+            fontSize={'sm'}
+            fontWeight={600}
+            color={'white'}
+            bg={'pink.400'}
+            href={'#'}
+            _hover={{
+              bg: 'pink.300',
+            }}
+          >
+            Sign Up
+          </Button>
+        </Stack>
+      </Flex>
+
+      <Collapse in={isOpen} animateOpacity>
+        <MobileNav />
+      </Collapse>
+    </Box>
   );
 };
+
+const DesktopNav = () => {
+  const linkColor = useColorModeValue('gray.600', 'gray.200');
+  const linkHoverColor = useColorModeValue('gray.800', 'white');
+  const popoverContentBgColor = useColorModeValue('white', 'gray.800');
+
+  return (
+    <Stack direction={'row'} spacing={4}>
+      {NAV_ITEMS.map((navItem) => (
+        <Box key={navItem.label}>
+          <Popover trigger={'hover'} placement={'bottom-start'}>
+            <PopoverTrigger>
+              <Box
+                as="a"
+                p={2}
+                href={navItem.href ?? '#'}
+                fontSize={'sm'}
+                fontWeight={500}
+                color={linkColor}
+                _hover={{
+                  textDecoration: 'none',
+                  color: linkHoverColor,
+                }}
+              >
+                {navItem.label}
+              </Box>
+            </PopoverTrigger>
+
+            {navItem.children && (
+              <PopoverContent
+                border={0}
+                boxShadow={'xl'}
+                bg={popoverContentBgColor}
+                p={4}
+                rounded={'xl'}
+                minW={'sm'}
+              >
+                <Stack>
+                  {navItem.children.map((child) => (
+                    <DesktopSubNav key={child.label} {...child} />
+                  ))}
+                </Stack>
+              </PopoverContent>
+            )}
+          </Popover>
+        </Box>
+      ))}
+    </Stack>
+  );
+};
+
+const DesktopSubNav = ({ label, href, subLabel }: NavItem) => {
+  return (
+    <Box
+      as="a"
+      href={href}
+      role={'group'}
+      display={'block'}
+      p={2}
+      rounded={'md'}
+      _hover={{ bg: useColorModeValue('pink.50', 'gray.900') }}
+    >
+      <Stack direction={'row'} align={'center'}>
+        <Box>
+          <Text
+            transition={'all .3s ease'}
+            _groupHover={{ color: 'pink.400' }}
+            fontWeight={500}
+          >
+            {label}
+          </Text>
+          <Text fontSize={'sm'}>{subLabel}</Text>
+        </Box>
+        <Flex
+          transition={'all .3s ease'}
+          transform={'translateX(-10px)'}
+          opacity={0}
+          _groupHover={{ opacity: '100%', transform: 'translateX(0)' }}
+          justify={'flex-end'}
+          align={'center'}
+          flex={1}
+        >
+          <ChevronRightIcon color="pink.400" w={5} h={5} />
+        </Flex>
+      </Stack>
+    </Box>
+  );
+};
+
+const MobileNav = () => {
+  return (
+    <Stack
+      bg={useColorModeValue('white', 'gray.800')}
+      p={4}
+      display={{ md: 'none' }}
+    >
+      {NAV_ITEMS.map((navItem) => (
+        <MobileNavItem key={navItem.label} {...navItem} />
+      ))}
+    </Stack>
+  );
+};
+
+const MobileNavItem = ({ label, children, href }: NavItem) => {
+  const { isOpen, onToggle } = useDisclosure();
+
+  return (
+    <Stack spacing={4} onClick={children && onToggle}>
+      <Box
+        py={2}
+        as="a"
+        href={href ?? '#'}
+        justifyContent="space-between"
+        alignItems="center"
+        _hover={{
+          textDecoration: 'none',
+        }}
+      >
+        <Text
+          fontWeight={600}
+          color={useColorModeValue('gray.600', 'gray.200')}
+        >
+          {label}
+        </Text>
+        {children && (
+          <ChevronDownIcon
+            color="pink.400"
+            transition={'all .25s ease-in-out'}
+            transform={isOpen ? 'rotate(180deg)' : ''}
+            w={6}
+            h={6}
+          />
+        )}
+      </Box>
+
+      <Collapse in={isOpen} animateOpacity style={{ marginTop: '0!important' }}>
+        <Stack
+          mt={2}
+          pl={4}
+          borderLeft={1}
+          borderStyle={'solid'}
+          borderColor={useColorModeValue('gray.200', 'gray.700')}
+          align={'start'}
+        >
+          {children &&
+            children.map((child) => (
+              <Box as="a" key={child.label} py={2} href={child.href}>
+                {child.label}
+              </Box>
+            ))}
+        </Stack>
+      </Collapse>
+    </Stack>
+  );
+};
+
+interface NavItem {
+  label: string;
+  subLabel?: string;
+  children?: Array<NavItem>;
+  href?: string;
+}
+
+const NAV_ITEMS: Array<NavItem> = [
+  {
+    label: '記事',
+    children: [
+      {
+        label: 'ランキング',
+        href: '#',
+      },
+      {
+        label: 'New & Noteworthy',
+        subLabel: 'Up-and-coming Designers',
+        href: '#',
+      },
+    ],
+  },
+  {
+    label: 'Find Work',
+    children: [
+      {
+        label: 'Job Board',
+        subLabel: 'Find your dream design job',
+        href: '#',
+      },
+      {
+        label: 'Freelance Projects',
+        subLabel: 'An exclusive list for contract work',
+        href: '#',
+      },
+    ],
+  },
+  {
+    label: 'Learn Design',
+    href: '#',
+  },
+  {
+    label: 'Hire Designers',
+    href: '#',
+  },
+];

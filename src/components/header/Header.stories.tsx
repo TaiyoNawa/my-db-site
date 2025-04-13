@@ -1,17 +1,17 @@
-import { StoryFn } from "@storybook/react";
-import React from "react";
+import { StoryFn } from '@storybook/react';
+import React from 'react';
 
-import { Header } from "./Header";
+import { Header } from './Header';
 
 const Default = {
-  title: "components/Header",
+  title: 'components/Header',
   component: Header,
   args: {},
-  tags: ["autodocs"],
+  tags: ['autodocs'],
   parameters: {
     docs: {
       description: {
-        component: "ヘッダーのコンポーネントです。",
+        component: 'ヘッダーのコンポーネントです。',
       },
     },
   },
