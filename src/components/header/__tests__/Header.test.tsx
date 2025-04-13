@@ -47,8 +47,6 @@ describe('Header', () => {
     renderWithChakra(<Header />);
     // "記事"のテキストが含まれるリンクを role="link" で検索
     const content = screen.getAllByText('記事');
-    expect(content[0]).toBeInTheDocument();
-    expect(content[1]).toBeInTheDocument(); //記事という表示PC版とSM版で2つある
-    expect(content[2]).toBeUndefined(); //3つはない
+    expect(content).toHaveLength(2); //"記事"という表示はPC版とSP版で2つあり、3つはない
   });
 });
