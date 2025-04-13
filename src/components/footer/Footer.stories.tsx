@@ -1,17 +1,17 @@
-import { StoryFn } from "@storybook/react";
-import React from "react";
+import { StoryFn } from '@storybook/react';
+import React from 'react';
 
-import { Footer } from "./Footer";
+import { Footer } from './Footer';
 
 const Default = {
-  title: "components/Footer",
+  title: 'components/Footer',
   component: Footer,
   args: {},
-  tags: ["autodocs"],
+  tags: ['autodocs'],
   parameters: {
     docs: {
       description: {
-        component: "ヘッダーのコンポーネントです。",
+        component: 'フッターのコンポーネントです。',
       },
     },
   },

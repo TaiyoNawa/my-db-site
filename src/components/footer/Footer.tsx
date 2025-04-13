@@ -1,35 +1,118 @@
-import { Box, Flex, BoxProps, Link } from "@chakra-ui/react";
-import { FC } from "react";
+import {
+  Box,
+  Container,
+  SimpleGrid,
+  Stack,
+  Text,
+  Flex,
+  Tag,
+  useColorModeValue,
+} from '@chakra-ui/react';
+import { FC } from 'react';
 
-import { COMPANY_URL, TERMS_OF_SERVICE_URL } from "@/assets/data";
+type FooterSectionProps = {
+  title: string;
+  links: (string | { label: string; tag?: string })[];
+};
 
-// import { Copyright } from "./Copyright";
-// import { BaseLink } from "../BaseLink";
+const FooterSection: FC<FooterSectionProps> = ({ title, links }) => {
+  const tagBg = useColorModeValue('green.300', 'green.800');
+  const tagColor = 'white';
 
-type FooterProps = BoxProps;
-
-export const Footer: FC<FooterProps> = ({ ...restProps }) => {
   return (
-    <Box as="footer" py="8" bgColor="gray.800" w="full" px="4%" {...restProps}>
-      <Flex
-        direction={{ base: "column", md: "row" }}
-        justify={{ base: "center", md: "flex-start" }}
-        align="center"
-        gap={5}
-        wrap="wrap"
-      >
-        <Link href={COMPANY_URL} mx={2} isExternal>
-          運営会社
-        </Link>
-        <Link href={TERMS_OF_SERVICE_URL} isExternal mx={2}>
-          利用規約
-        </Link>
-        {/* <Copyright
-          ml={{ base: "none", md: "auto" }}
-          my={{ base: 3, md: 0 }}
-          color="gray.500"
-        /> */}
-      </Flex>
+    <Stack align="flex-start">
+      <Text fontWeight="500" fontSize="lg" mb={2}>
+        {title}
+      </Text>
+      {links.map((item, idx) => {
+        if (typeof item === 'string') {
+          return (
+            <Box as="a" href="#" key={idx}>
+              {item}
+            </Box>
+          );
+        } else {
+          return (
+            <Stack direction="row" align="center" spacing={2} key={idx}>
+              <Box as="a" href="#">
+                {item.label}
+              </Box>
+              {item.tag && (
+                <Tag size="sm" bg={tagBg} color={tagColor}>
+                  {item.tag}
+                </Tag>
+              )}
+            </Stack>
+          );
+        }
+      })}
+    </Stack>
+  );
+};
+
+export const Footer: FC = () => {
+  return (
+    <Box
+      bg={useColorModeValue('gray.50', 'gray.900')}
+      color={useColorModeValue('gray.700', 'gray.200')}
+    >
+      <Container as={Stack} maxW="6xl" py={10}>
+        <SimpleGrid columns={{ base: 1, sm: 2, md: 4 }} spacing={8}>
+          <FooterSection
+            title="Product"
+            links={[
+              'Overview',
+              { label: 'Features', tag: 'New' },
+              'Tutorials',
+              'Pricing',
+              'Releases',
+            ]}
+          />
+          <FooterSection
+            title="Company"
+            links={['About Us', 'Press', 'Careers', 'Contact Us', 'Partners']}
+          />
+          <FooterSection
+            title="Legal"
+            links={[
+              'Cookies Policy',
+              'Privacy Policy',
+              'Terms of Service',
+              'Law Enforcement',
+              'Status',
+            ]}
+          />
+          <FooterSection
+            title="Follow Us"
+            links={['Facebook', 'Twitter', 'Dribbble', 'Instagram', 'LinkedIn']}
+          />
+        </SimpleGrid>
+      </Container>
+
+      <Box py={10}>
+        <Flex
+          align="center"
+          _before={{
+            content: '""',
+            borderBottom: '1px solid',
+            borderColor: useColorModeValue('gray.200', 'gray.700'),
+            flexGrow: 1,
+            mr: 8,
+          }}
+          _after={{
+            content: '""',
+            borderBottom: '1px solid',
+            borderColor: useColorModeValue('gray.200', 'gray.700'),
+            flexGrow: 1,
+            ml: 8,
+          }}
+        >
+          {/* 空でもOK、線を表示 */}
+        </Flex>
+        <Text pt={6} fontSize="sm" textAlign="center">
+          © {new Date().getFullYear()} TaiyoNawa. All rights reserved.
+        </Text>
+      </Box>
     </Box>
   );
 };
