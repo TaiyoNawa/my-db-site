@@ -16,7 +16,7 @@ export const LinkCopyButton: FC = () => {
       variant="outline"
       fontSize="xs"
       aspectRatio={hasCopied ? '1.5' : '1/1'}
-      _hover={hasCopied ? 'white' : { backgroundColor: 'gray.100' }}
+      _hover={{ backgroundColor: hasCopied ? 'white' : 'gray.100' }}
     >
       {hasCopied ? 'Copied!' : <LinkIcon fontSize="sm" />}
     </Button>
