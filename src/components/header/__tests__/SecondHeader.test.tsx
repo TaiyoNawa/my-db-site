@@ -12,6 +12,6 @@ describe('SecondHeader.tsxのテスト', () => {
   it('テキスト表示されていること', () => {
     render(<SecondHeader {...testProps} />);
     const heading = screen.getByRole('heading');
-    expect(heading).not.toBeInTheDocument();
+    expect(heading).toBeInTheDocument();
   });
 });
