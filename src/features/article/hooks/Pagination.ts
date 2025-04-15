@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { ArticleCardProps } from '../components/list/ArticleCard';
 
-export const ITEMS_PER_PAGE = 20;
+export const ITEMS_PER_PAGE = 10;
 
 export const usePagination = (
   articles: ArticleCardProps[],
