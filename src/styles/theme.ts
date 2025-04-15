@@ -8,6 +8,11 @@ export const theme = extendTheme({
     body: "'Noto Sans JP', '游ゴシック', YuGothic, 'ヒラギノ角ゴ Pro', 'Hiragino Kaku Gothic Pro', 'メイリオ', 'Meiryo', sans-serif;",
     mono: "'Noto Sans JP', '游ゴシック', YuGothic, 'ヒラギノ角ゴ Pro', 'Hiragino Kaku Gothic Pro', 'メイリオ', 'Meiryo', sans-serif;",
   },
+  breakpoints: {
+    //sm: '419px', // 本来は480px、appleは419だがこちらの仕様に合わせてコメントアウトしている
+    md: '735px', // デフォは768px
+    lg: '1069px', // デフォは992px
+  },
   colors: {
     // generate https://uicolors.app/create
     black: '#101010',
@@ -46,6 +51,9 @@ export const theme = extendTheme({
       '700': '#0d6e2a',
       '800': '#0d5a25',
       '900': '#003311',
+    },
+    gray: {
+      '80': '#f4f4f4',
     },
   },
   zIndices: {

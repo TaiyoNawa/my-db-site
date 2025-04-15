@@ -8,7 +8,7 @@ import { SectionWrapper } from '../SectionWrapper';
 describe('SectionWrapper コンポーネント', () => {
   it('子要素（children）が正しくレンダリングされる', () => {
     render(
-      <SectionWrapper backgroundColor="gray.100">
+      <SectionWrapper backgroundColor="gray.80">
         <Box data-testid="child-content">テストコンテンツ</Box>
       </SectionWrapper>
     );

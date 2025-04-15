@@ -8,7 +8,7 @@ const Default = {
   title: 'SectionWrapper',
   component: SectionWrapper,
   args: {
-    backgroundColor: 'gray.100',
+    backgroundColor: 'gray.80',
   },
   tags: ['autodocs'],
   parameters: {
