@@ -1,4 +1,3 @@
-// pages/index.tsx
 import { Box } from '@chakra-ui/react';
 import { useState } from 'react';
 
