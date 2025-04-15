@@ -8,7 +8,7 @@ export const useStickyHeader = () => {
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      setIsHeaderHidden(currentScrollY >= HEADER_HEIGHT); //Hederの高さ以上スクロールしたら
+      setIsHeaderHidden(currentScrollY >= HEADER_HEIGHT); //Headerの高さ以上スクロールしたら
     };
 
     window.addEventListener('scroll', handleScroll);
