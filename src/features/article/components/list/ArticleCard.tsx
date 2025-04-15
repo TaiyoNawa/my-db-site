@@ -19,8 +19,8 @@ export const ArticleCard: FC<ArticleCardProps> = ({
   url,
   ...rest
 }) => {
-  const titleSummary = useLimitedLengthText(title, 60);
-  const descriptionSummary = useLimitedLengthText(description, 50);
+  const titleSummary = useLimitedLengthText(title, 40);
+  const descriptionSummary = useLimitedLengthText(description, 40);
 
   return (
     <Link href={url} _hover={{ textDecoration: 'none' }}>
