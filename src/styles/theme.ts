@@ -9,7 +9,7 @@ export const theme = extendTheme({
     mono: "'Noto Sans JP', '游ゴシック', YuGothic, 'ヒラギノ角ゴ Pro', 'Hiragino Kaku Gothic Pro', 'メイリオ', 'Meiryo', sans-serif;",
   },
   breakpoints: {
-    //sm: '419px', // 本来は480px、appleは419だがこちらの仕様に合わせてコメントアウトしている
+    sm: '419px', // 本来は480px
     md: '735px', // デフォは768px
     lg: '1069px', // デフォは992px
   },
