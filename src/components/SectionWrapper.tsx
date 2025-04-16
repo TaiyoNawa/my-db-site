@@ -1,7 +1,7 @@
 import { Box, BoxProps } from '@chakra-ui/react';
 import { FC, ReactNode } from 'react';
 
-import { SECTION_WRAPPER_PADDING } from '@/assets/data';
+import { SECTION_WRAPPER_PADDING } from '@/assets/data/SectionWrapperAssets';
 
 type SectionWrapperProps = Pick<BoxProps, 'backgroundColor'> & {
   children: ReactNode;
