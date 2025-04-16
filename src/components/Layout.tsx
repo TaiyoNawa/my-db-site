@@ -1,9 +1,9 @@
 import { Box } from '@chakra-ui/react';
 import { FC, ReactNode } from 'react';
 
-import { notoSansJP } from '../assets/data';
 import { Footer } from './footer/Footer';
 import { Header } from './header/Header';
+import { notoSansJP } from '../assets/data';
 
 type LayoutProps = {
   children: ReactNode;

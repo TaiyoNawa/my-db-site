@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { HEADER_HEIGHT } from '@/components/header/assets/data';
+import { HEADER_HEIGHT } from '@/assets/data/HeaderAssets';
 
 export const useStickyHeader = () => {
   const [isHeaderHidden, setIsHeaderHidden] = useState(false);
