@@ -23,7 +23,7 @@ import { FC } from 'react';
 import { AiOutlineQq } from 'react-icons/ai';
 
 import { HeaderWrapper } from './HeaderWrapper';
-import { HEADER_HEIGHT } from './assets/data';
+import { HEADER_HEIGHT } from '../../assets/data/HeaderAssets';
 
 export const Header: FC = () => {
   const { isOpen, onToggle } = useDisclosure();
@@ -272,6 +272,7 @@ interface NavItem {
 const NAV_ITEMS: Array<NavItem> = [
   {
     label: '記事',
+    href: './article',
     children: [
       {
         label: 'ランキング',
