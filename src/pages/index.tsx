@@ -1,8 +1,19 @@
+import { Box } from '@chakra-ui/react';
+
+import { useStickyHeader } from '@/hooks/useStickyHeader';
+
+import { SectionWrapper } from '@/components/SectionWrapper';
+import { SecondHeader } from '@/components/header/SecondHeader';
+
 export default function Home() {
+  const { isHeaderHidden } = useStickyHeader();
   return (
-    <div className="style">
-      人類社会のすべての構成員の固有の尊厳と平等で譲ることのできない権利とを承認することは
-      <h1>hello</h1>
-    </div>
+    <>
+      <SecondHeader isHeaderHidden={isHeaderHidden} title="Home" />
+      <SectionWrapper>
+        <Box className="style">This is Home</Box>
+        <Box h="400px"></Box>
+      </SectionWrapper>
+    </>
   );
 }
