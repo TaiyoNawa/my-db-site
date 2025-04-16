@@ -24,8 +24,9 @@ beforeAll(() => {
 
 describe('Header', () => {
   it('ロゴが表示されていること', () => {
-    renderWithChakra(<Header />);
-    expect(screen.getByText('Logo')).toBeInTheDocument();
+    const { container } = renderWithChakra(<Header />);
+
+    expect(container.querySelector('svg')).toBeInTheDocument();
   });
 
   it('デスクトップで Sign In / Sign Up ボタンが表示される', () => {
