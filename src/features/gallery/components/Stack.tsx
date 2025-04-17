@@ -21,7 +21,10 @@ function CardRotate({ children, onSendToBack, sensitivity }: CardRotateProps) {
   const rotateX: MotionValue<number> = useTransform(y, [-100, 100], [60, -60]);
   const rotateY: MotionValue<number> = useTransform(x, [-100, 100], [-60, 60]);
 
-  function handleDragEnd(_: never, info: { offset: { x: number; y: number } }) {
+  function handleDragEnd(
+    _: PointerEvent,
+    info: { offset: { x: number; y: number } }
+  ) {
     if (
       Math.abs(info.offset.x) > sensitivity ||
       Math.abs(info.offset.y) > sensitivity

@@ -30,7 +30,7 @@ export default {
     sensitivity: 100,
     sendToBackOnClick: true,
     cardDimensions: { width: 200, height: 200 },
-    cardsData: { images },
+    cardsData: images,
   },
   argTypes: {
     randomRotation: {
