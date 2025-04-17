@@ -1,6 +1,5 @@
 import { describe, it, expect } from 'vitest';
 
-import { articleSample } from '@/features/article/hooks/ArticleSample';
 import { render, screen } from '@/test/test-utils';
 
 import Stack from '../Stack';
