@@ -6,7 +6,7 @@ import { SectionWrapper } from '@/components/SectionWrapper';
 import { SecondHeader } from '@/components/header/SecondHeader';
 
 import { LinkCopyButton } from '@/features/article/components/detail/LinkCopyButton';
-import Stack from '@/features/gallery/components/Stack';
+
 export default function Posts() {
   const { isHeaderHidden } = useStickyHeader();
 
@@ -16,8 +16,7 @@ export default function Posts() {
 
       <SectionWrapper>
         <LinkCopyButton mb="10" />
-        <Stack sendToBackOnClick={true} />
-        <Box></Box>
+        <Box>ギャラリページページ</Box>
       </SectionWrapper>
     </>
   );
