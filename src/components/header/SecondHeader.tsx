@@ -30,7 +30,7 @@ export const SecondHeader: FC<SecondHeaderProps> = ({
         display="flex"
         alignItems="center" //垂直方向に中央揃え
         zIndex={isHeaderHidden ? 1000 : 0} //素晴らしい！
-        transition="all 0.3s "
+        transition="all 0.1s "
       >
         <Heading
           as="h1"

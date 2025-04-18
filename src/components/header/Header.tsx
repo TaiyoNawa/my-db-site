@@ -272,7 +272,7 @@ interface NavItem {
 const NAV_ITEMS: Array<NavItem> = [
   {
     label: '記事',
-    href: './article',
+    href: '/article',
     children: [
       {
         label: 'ランキング',
@@ -286,17 +286,18 @@ const NAV_ITEMS: Array<NavItem> = [
     ],
   },
   {
-    label: 'Find Work',
+    label: 'ギャラリー',
+    href: '/gallery',
     children: [
       {
-        label: 'Job Board',
-        subLabel: 'Find your dream design job',
-        href: '#',
+        label: 'マンガ',
+        subLabel: 'Find your favorite story',
+        href: '/gallery/manga',
       },
       {
-        label: 'Freelance Projects',
-        subLabel: 'An exclusive list for contract work',
-        href: '#',
+        label: 'ミュージック',
+        subLabel: 'An exclusive list to listen',
+        href: '/gallery/music',
       },
     ],
   },

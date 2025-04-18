@@ -44,7 +44,7 @@ export const ArticlePagination: FC<ArticlePaginationProps> = ({
           padding: ['5px 8px', '8px 12px'],
           borderRadius: '5px',
           backgroundColor: 'gray.300',
-          transition: 'background 0.2s',
+          transition: 'background 0.3s',
           _hover: { backgroundColor: 'gray.400' },
           minHeight: ['34px', '40px'],
         },
