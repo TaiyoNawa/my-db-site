@@ -68,8 +68,8 @@ export default function Stack({
   animationConfig = { stiffness: 260, damping: 20 },
   sendToBackOnClick = true,
 }: StackProps) {
-  const [cards, setCards] = useState(
-    cardsData.length
+  const [cards, setCards] = useState(() => {
+    const original = cardsData.length
       ? cardsData
       : [
           {
@@ -88,8 +88,15 @@ export default function Stack({
             id: 4,
             img: 'https://images.unsplash.com/photo-1572120360610-d971b9d7767c?q=80&w=500&auto=format',
           },
-        ]
-  );
+        ];
+
+    const reversed = original.slice().reverse();
+
+    return reversed.map((card, index) => ({
+      ...card,
+      id: index + 1, // 順番に1からIDを振る
+    }));
+  });
 
   const sendToBack = (id: number) => {
     setCards((prev) => {
@@ -142,7 +149,7 @@ export default function Stack({
             >
               <Image
                 src={card.img}
-                alt={`card-${card.id}`}
+                alt={`card-${cards.length + 1 - card.id}`}
                 className={styles.cardImage}
               />
             </motion.div>
