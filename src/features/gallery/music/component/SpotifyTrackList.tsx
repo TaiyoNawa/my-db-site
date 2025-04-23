@@ -10,11 +10,11 @@ type Track = {
   url: string;
 };
 
-type SpotifyTrackListrops = {
+type SpotifyTrackListProps = {
   keyword?: string;
 } & Omit<BoxProps, 'borderRadius' | 'bg'>;
 
-export const SpotifyTrackList: FC<SpotifyTrackListrops> = ({
+export const SpotifyTrackList: FC<SpotifyTrackListProps> = ({
   keyword = '',
   ...rest
 }) => {
