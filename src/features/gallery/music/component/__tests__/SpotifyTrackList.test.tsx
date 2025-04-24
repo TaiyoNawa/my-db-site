@@ -26,7 +26,7 @@ afterEach(() => {
   vi.resetAllMocks();
 });
 
-describe('SpotifyTrackList', () => {
+describe('SpotifyTrackList.tsxのテスト', () => {
   it('キーワードが空のときは何も表示されない', () => {
     renderWithChakra(<SpotifyTrackList keyword="" />);
     expect(screen.queryByText(/検索結果/)).not.toBeInTheDocument();
@@ -53,7 +53,7 @@ describe('SpotifyTrackList', () => {
     renderWithChakra(<SpotifyTrackList keyword="test" />);
 
     await waitFor(() =>
-      expect(screen.getByText('「test」の検索結果')).toBeInTheDocument()
+      expect(screen.getByText('"test"の検索結果')).toBeInTheDocument()
     );
   });
 

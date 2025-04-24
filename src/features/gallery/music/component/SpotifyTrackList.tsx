@@ -1,5 +1,12 @@
-// Spotify APIを使用して曲を検索する(search.tsとどこで繋がっている？)
-import { Box, Text, Spinner, Heading, BoxProps } from '@chakra-ui/react';
+//Playlistの検索結果一覧を表示するコンポーネント
+import {
+  Box,
+  Text,
+  Spinner,
+  Heading,
+  BoxProps,
+  SimpleGrid,
+} from '@chakra-ui/react';
 import { useEffect, useState, FC } from 'react';
 
 import SpotifyPlayer from './SpotifyPlayer';
@@ -26,7 +33,7 @@ export const SpotifyTrackList: FC<SpotifyTrackListProps> = ({
     const fetchTracks = async () => {
       try {
         const res = await fetch(
-          `/api/spotify/search?keyword=${encodeURIComponent(keyword)}` //ここでsearch.tsにリクエストを送信!
+          `/api/spotify/TrackSearch?keyword=${encodeURIComponent(keyword)}` //ここでsearch.tsにリクエストを送信!
         );
         const data = (await res.json()) as Track[];
         setTracks(data);
@@ -46,20 +53,22 @@ export const SpotifyTrackList: FC<SpotifyTrackListProps> = ({
 
   return (
     <Box {...rest}>
-      <Heading as="h3" fontSize="md">
-        「{keyword}」の検索結果
-      </Heading>
-      <Box mt={3}>
-        {tracks.length > 0 ? (
-          tracks.map((track) => (
-            <Box key={track.id} mb={3}>
-              <SpotifyPlayer type="track" trackId={track.id} />
+      <Heading fontSize="xl">&quot;{keyword}&quot;の検索結果</Heading>
+      {tracks.length > 0 ? (
+        <SimpleGrid
+          columns={{ base: 1, md: 2 }}
+          columnGap={{ base: 0, md: '20px' }}
+          mt={3}
+        >
+          {tracks.map((track) => (
+            <Box key={track.id} role="group" _hover={{ cursor: 'pointer' }}>
+              <SpotifyPlayer type="track" trackId={track.id} h="152px" />
             </Box>
-          ))
-        ) : (
-          <Text>該当する曲が見つかりませんでした。</Text>
-        )}
-      </Box>
+          ))}
+        </SimpleGrid>
+      ) : (
+        <Text>該当する曲が見つかりませんでした。</Text>
+      )}
     </Box>
   );
 };

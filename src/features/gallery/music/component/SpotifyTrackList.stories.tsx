@@ -9,11 +9,11 @@ const meta: Meta<typeof SpotifyTrackList> = {
   component: SpotifyTrackList,
   tags: ['autodocs'],
   args: {
-    keyword: 'YOASOBI',
+    keyword: 'Sky High',
   },
   argTypes: {
     keyword: {
-      description: 'Spotifyで検索するキーワード',
+      description: '検索するキーワード',
       control: { type: 'text' },
     },
   },
@@ -21,7 +21,7 @@ const meta: Meta<typeof SpotifyTrackList> = {
     docs: {
       description: {
         component:
-          'Spotify曲検索結果を埋め込みプレイヤーで一覧表示するコンポーネント',
+          'Spotifyの曲検索結果を埋め込みプレイヤーで一覧表示するコンポーネント',
       },
     },
   },
