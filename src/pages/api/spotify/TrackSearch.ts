@@ -17,7 +17,7 @@ type SpotifyTrackItem = {
     spotify: string;
   };
 };
-type SpotifyResponseItem = {
+type SpotifyTrackResponseItem = {
   //Spotify APIのレスポンスの型
   tracks: {
     items: SpotifyTrackItem[];
@@ -40,7 +40,7 @@ export default async function handler(
     const token = await getSpotifyAccessToken(); //アクセストークンを取得する
     const searchUrl = `https://api.spotify.com/v1/search?q=${encodeURIComponent(
       String(keyword)
-    )}&type=track&limit=8`; //検索URLを作成する
+    )}&type=track&limit=12`; //検索URLを作成する
 
     const searchRes = await fetch(searchUrl, {
       headers: {
@@ -50,13 +50,17 @@ export default async function handler(
 
     if (!searchRes.ok) throw new Error('検索失敗'); //エラー処理
 
-    const data = (await searchRes.json()) as SpotifyResponseItem; //レスポンスをJSON形式で取得する
-    console.log(data);
-    const tracks: Track[] = data.tracks.items.map((item) => ({
-      id: item.id,
-      name: item.name,
-      url: item.external_urls.spotify,
-    }));
+    const data = (await searchRes.json()) as SpotifyTrackResponseItem; //レスポンスをJSON形式で取得する
+    const tracks: Track[] = (data.tracks?.items || [])
+      .filter(
+        //filterでnullやundefinedを除外する
+        (item) => item && item.id && item.name && item.external_urls?.spotify
+      )
+      .map((item) => ({
+        id: item.id,
+        name: item.name,
+        url: item.external_urls.spotify,
+      }));
 
     res.status(200).json(tracks); //成功した場合は、HTTPステータスコード200を返し、取得した曲の情報をJSON形式でレスポンスする
   } catch (err) {
