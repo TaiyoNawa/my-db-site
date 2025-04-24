@@ -26,8 +26,7 @@ export const SpotifySearchForm: FC<SpotifySearchFormProps> = ({
     }
   };
   return (
-    <Box w="full" p={5} {...rest}>
-      🔍検索
+    <Box w="full" {...rest} py={5}>
       <form onSubmit={submit}>
         <InputGroup>
           <Input
@@ -35,7 +34,8 @@ export const SpotifySearchForm: FC<SpotifySearchFormProps> = ({
             placeholder="キーワードを入力"
             maxLength={100}
             bgColor="white"
-            _placeholder={{ color: 'gray.200' }}
+            _placeholder={{ color: 'gray.500' }}
+            borderColor="gray.400"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />

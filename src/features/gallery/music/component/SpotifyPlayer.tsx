@@ -1,23 +1,29 @@
-type SpotifyPlayerProps =
-  | { type: 'track'; trackId: string }
-  | { type: 'playlist'; playlistId: string };
+import { Box, BoxProps } from '@chakra-ui/react';
+import { FC } from 'react';
 
-export const SpotifyPlayer = (props: SpotifyPlayerProps) => {
+type SpotifyPlayerProps =
+  | ({ type: 'track'; trackId: string } & Omit<BoxProps, 'borderRadius' | 'bg'>)
+  | ({ type: 'playlist'; playlistId: string } & Omit<BoxProps, 'w'>);
+
+export const SpotifyPlayer: FC<SpotifyPlayerProps> = (props) => {
+  const { type, ...rest } = props;
+
   const src =
-    props.type === 'track'
+    type === 'track'
       ? `https://open.spotify.com/embed/track/${props.trackId}`
       : `https://open.spotify.com/embed/playlist/${props.playlistId}`;
 
   return (
-    <iframe
-      title="Spotify Embed"
-      src={src}
-      width="100%"
-      height="152"
-      frameBorder="0"
-      allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-      loading="lazy"
-    />
+    <Box w="100%" h={{ base: '152px', md: '360px' }} mb={5} {...rest}>
+      <iframe
+        title="Spotify Embed"
+        src={src}
+        width="100%"
+        height="100%"
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+        loading="lazy"
+      />
+    </Box>
   );
 };
 
