@@ -5,30 +5,45 @@ import {
   Spinner,
   Heading,
   BoxProps,
+  Flex,
   SimpleGrid,
 } from '@chakra-ui/react';
 import { useEffect, useState, FC } from 'react';
 
-import SpotifyPlayer from './SpotifyPlayer';
+import { ResetButton } from '@/components/ResetButton';
 
-type Track = {
-  id: string;
-  name: string;
-  url: string;
-};
+import { Track } from '@/assets/type/SpotifyTypes';
+
+import SpotifyPlayer from './SpotifyPlayer';
 
 type SpotifyTrackListProps = {
   keyword?: string;
+  onReset?: () => void;
 } & Omit<BoxProps, 'borderRadius' | 'bg'>;
 
 export const SpotifyTrackList: FC<SpotifyTrackListProps> = ({
   keyword = '',
+  onReset,
   ...rest
 }) => {
   const [tracks, setTracks] = useState<Track[]>([]);
   const [loading, setLoading] = useState(false);
+  const [isReset, setIsReset] = useState(false); //リセットフラグを追加
+
+  //リセットボタンが押されたときのハンドラー
+  const handleReset = () => {
+    setIsReset(true);
+    setTracks([]);
+    if (onReset) onReset(); //検索欄のリセット
+  };
 
   useEffect(() => {
+    setIsReset(false); //新しいキーワード検索時はリセットフラグをオフ
+    //keywordが空ならfetchもしないしloadingもfalseのまま
+    if (!keyword.trim()) {
+      setTracks([]);
+      return;
+    }
     setLoading(true);
     const fetchTracks = async () => {
       try {
@@ -53,7 +68,24 @@ export const SpotifyTrackList: FC<SpotifyTrackListProps> = ({
 
   return (
     <Box {...rest}>
-      <Heading fontSize="xl">&quot;{keyword}&quot;の検索結果</Heading>
+      <Flex
+        justifyContent="space-between"
+        flexDirection={{ base: 'column', md: 'row' }}
+        alignItems={{ base: 'left', md: 'center' }}
+      >
+        {!isReset && (
+          <>
+            <Heading fontSize="xl" maxW={{ md: '80%' }}>
+              &quot;{keyword}&quot;の検索結果
+            </Heading>
+            <ResetButton
+              onClick={handleReset}
+              w={{ base: '80px' }}
+              mt={{ base: '8px', md: '0px' }}
+            />
+          </>
+        )}
+      </Flex>
       {tracks.length > 0 ? (
         <SimpleGrid
           columns={{ base: 1, md: 2 }}
@@ -67,7 +99,7 @@ export const SpotifyTrackList: FC<SpotifyTrackListProps> = ({
           ))}
         </SimpleGrid>
       ) : (
-        <Text>該当する曲が見つかりませんでした。</Text>
+        !isReset && <Text>該当する曲が見つかりませんでした。</Text>
       )}
     </Box>
   );

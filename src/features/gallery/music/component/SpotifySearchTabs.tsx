@@ -10,7 +10,22 @@ export const SpotifySearchTabs = () => {
   const [trackKeyword, setTrackKeyword] = useState('');
   const [playlistKeyword, setPlaylistKeyword] = useState('');
   const [artistKeyword, setArtistKeyword] = useState('');
+  const [trackResetKey, setTrackResetKey] = useState(0);
+  const [playlistResetKey, setPlaylistResetKey] = useState(0);
+  const [artistResetKey, setArtistResetKey] = useState(0);
 
+  const handleTrackReset = () => {
+    setTrackKeyword('');
+    setTrackResetKey((prev) => prev + 1); // リセットキー更新 → propsの変更で再レンダーをトリガー
+  };
+  const handlePlaylistReset = () => {
+    setPlaylistKeyword('');
+    setPlaylistResetKey((prev) => prev + 1);
+  };
+  const handleArtistReset = () => {
+    setArtistKeyword('');
+    setArtistResetKey((prev) => prev + 1);
+  };
   return (
     <Tabs variant="enclosed" isFitted>
       <TabList>
@@ -56,16 +71,31 @@ export const SpotifySearchTabs = () => {
       </TabList>
       <TabPanels>
         <TabPanel p={0}>
-          <SpotifySearchForm onSearch={setTrackKeyword} />
-          <SpotifyTrackList keyword={trackKeyword} />
+          <SpotifySearchForm
+            key={`track-${trackResetKey}`} // keyを変更すると内部stateも初期化される
+            onSearch={setTrackKeyword}
+          />
+          <SpotifyTrackList keyword={trackKeyword} onReset={handleTrackReset} />
         </TabPanel>
         <TabPanel p={0}>
-          <SpotifySearchForm onSearch={setPlaylistKeyword} />
-          <SpotifyPlaylistList keyword={playlistKeyword} />
+          <SpotifySearchForm
+            key={`playlist-${playlistResetKey}`}
+            onSearch={setPlaylistKeyword}
+          />
+          <SpotifyPlaylistList
+            keyword={playlistKeyword}
+            onReset={handlePlaylistReset}
+          />
         </TabPanel>
         <TabPanel p={0}>
-          <SpotifySearchForm onSearch={setArtistKeyword} />
-          <SpotifyArtistList keyword={artistKeyword} />
+          <SpotifySearchForm
+            key={`artist-${artistResetKey}`}
+            onSearch={setArtistKeyword}
+          />
+          <SpotifyArtistList
+            keyword={artistKeyword}
+            onReset={handleArtistReset}
+          />
         </TabPanel>
       </TabPanels>
     </Tabs>

@@ -1,5 +1,6 @@
 import {
   Box,
+  Flex,
   Text,
   Spinner,
   Heading,
@@ -11,27 +12,38 @@ import {
 } from '@chakra-ui/react';
 import { useEffect, useState, FC } from 'react';
 
-type Artist = {
-  id: string;
-  name: string;
-  imageUrl?: string;
-  url: string;
-};
+import { ResetButton } from '@/components/ResetButton';
+
+import { Artist } from '@/assets/type/SpotifyTypes';
 
 type SpotifyArtistListProps = {
   keyword: string;
+  onReset?: () => void;
 } & Omit<BoxProps, 'borderRadius' | 'bg'>;
 
 export const SpotifyArtistList: FC<SpotifyArtistListProps> = ({
   keyword = '',
+  onReset,
   ...rest
 }) => {
   const [artists, setArtists] = useState<Artist[]>([]);
   const [loading, setLoading] = useState(false);
+  const [isReset, setIsReset] = useState(false); //リセットフラグを追加
+
+  const handleReset = () => {
+    setIsReset(true);
+    setArtists([]);
+    if (onReset) onReset();
+  };
 
   useEffect(() => {
+    setIsReset(false);
+    if (!keyword.trim()) {
+      setArtists([]);
+      return;
+    }
+    setLoading(true);
     const fetchArtists = async () => {
-      setLoading(true);
       try {
         const res = await fetch(
           `/api/spotify/ArtistSearch?keyword=${encodeURIComponent(keyword)}`
@@ -52,7 +64,24 @@ export const SpotifyArtistList: FC<SpotifyArtistListProps> = ({
 
   return (
     <Box {...rest}>
-      <Heading fontSize="xl">&quot;{keyword}&quot;の検索結果</Heading>
+      <Flex
+        justifyContent="space-between"
+        flexDirection={{ base: 'column', md: 'row' }}
+        alignItems={{ base: 'left', md: 'center' }}
+      >
+        {!isReset && (
+          <>
+            <Heading fontSize="xl" maxW={{ md: '80%' }}>
+              &quot;{keyword}&quot;の検索結果
+            </Heading>
+            <ResetButton
+              onClick={handleReset}
+              w={{ base: '80px' }}
+              mt={{ base: '8px', md: '0px' }}
+            />
+          </>
+        )}
+      </Flex>
       {artists.length > 0 ? (
         <SimpleGrid
           columns={{ base: 1, md: 2, lg: 4 }}
@@ -79,7 +108,7 @@ export const SpotifyArtistList: FC<SpotifyArtistListProps> = ({
           ))}
         </SimpleGrid>
       ) : (
-        <Text>該当するアーティストが見つかりませんでした。</Text>
+        !isReset && <Text>該当するアーティストが見つかりませんでした。</Text>
       )}
     </Box>
   );

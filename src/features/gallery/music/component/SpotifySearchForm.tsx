@@ -11,6 +11,7 @@ import { FC, useState } from 'react';
 
 type SpotifySearchFormProps = {
   onSearch: (query: string) => void;
+  onReset?: () => void;
 } & Omit<BoxProps, 'borderRadius' | 'bg'>;
 
 export const SpotifySearchForm: FC<SpotifySearchFormProps> = ({
@@ -25,6 +26,7 @@ export const SpotifySearchForm: FC<SpotifySearchFormProps> = ({
       onSearch(query);
     }
   };
+
   return (
     <Box w="full" {...rest} py={5}>
       <form onSubmit={submit}>
