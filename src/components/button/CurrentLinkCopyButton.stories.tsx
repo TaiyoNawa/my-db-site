@@ -1,6 +1,6 @@
 import { StoryFn } from '@storybook/react';
 
-import { LinkCopyButton } from './LinkCopyButton';
+import { LinkCopyButton } from './CurrentLinkCopyButton';
 
 const Default = {
   title: 'company/detail/LinkCopyButton',

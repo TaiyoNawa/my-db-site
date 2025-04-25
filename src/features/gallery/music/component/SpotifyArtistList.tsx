@@ -12,7 +12,7 @@ import {
 } from '@chakra-ui/react';
 import { useEffect, useState, FC } from 'react';
 
-import { ResetButton } from '@/components/ResetButton';
+import { ResetButton } from '@/components/button/ResetButton';
 
 import { Artist } from '@/assets/type/SpotifyTypes';
 

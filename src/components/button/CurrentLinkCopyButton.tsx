@@ -2,7 +2,7 @@ import { LinkIcon } from '@chakra-ui/icons';
 import { Button, ButtonProps, useClipboard } from '@chakra-ui/react';
 import { FC, useEffect } from 'react';
 
-export const LinkCopyButton: FC<ButtonProps> = ({ ...rest }) => {
+export const CurrentLinkCopyButton: FC<ButtonProps> = ({ ...rest }) => {
   const { onCopy, setValue, hasCopied } = useClipboard('');
 
   useEffect(() => {
