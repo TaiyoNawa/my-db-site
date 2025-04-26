@@ -1,16 +1,16 @@
 import { StoryFn } from '@storybook/react';
 
-import { LinkCopyButton } from './CurrentLinkCopyButton';
+import { CurrentLinkCopyButton } from './CurrentLinkCopyButton';
 
 const Default = {
-  title: 'company/detail/LinkCopyButton',
-  component: LinkCopyButton,
+  title: 'button/CurrentLinkCopyButton',
+  component: CurrentLinkCopyButton,
   args: {},
   tags: ['autodocs'],
   parameters: {
     docs: {
       description: {
-        component: 'リンクをコピーするボタンコンポーネント',
+        component: '現在のページのリンクをコピーするボタンコンポーネント',
       },
     },
   },
@@ -18,6 +18,6 @@ const Default = {
 
 export default Default;
 
-export const Template: StoryFn<typeof LinkCopyButton> = () => (
-  <LinkCopyButton />
+export const Template: StoryFn<typeof CurrentLinkCopyButton> = () => (
+  <CurrentLinkCopyButton />
 );
