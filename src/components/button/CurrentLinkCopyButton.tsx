@@ -15,7 +15,7 @@ export const CurrentLinkCopyButton: FC<ButtonProps> = ({ ...rest }) => {
       borderRadius="full"
       variant="outline"
       fontSize="xs"
-      aspectRatio={hasCopied ? '1.5' : '1/1'}
+      aspectRatio={hasCopied ? '1.5' : '1'}
       backgroundColor={'white'}
       _hover={{ backgroundColor: hasCopied ? 'white' : 'gray.80' }}
       {...rest}

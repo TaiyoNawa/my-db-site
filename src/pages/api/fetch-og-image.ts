@@ -13,6 +13,11 @@ export default async function handler(
   }
   try {
     const response = await fetch(url);
+    if (!response.ok) {
+      return res
+        .status(response.status)
+        .json({ error: `Failed to fetch URL: ${response.statusText}` });
+    }
     const html = await response.text();
     const $ = cheerio.load(html);
 
