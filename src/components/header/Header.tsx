@@ -279,9 +279,9 @@ const NAV_ITEMS: Array<NavItem> = [
         href: '#',
       },
       {
-        label: 'New & Noteworthy',
-        subLabel: 'Up-and-coming Designers',
-        href: '#',
+        label: 'リンク',
+        subLabel: 'リンクを集めた記事',
+        href: '/article/link',
       },
     ],
   },
