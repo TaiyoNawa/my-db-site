@@ -71,7 +71,7 @@ export const AnimeCard: FC<AnimeCardProps> = ({
           mt={2}
           noOfLines={1}
         >
-          スタジオ: {studio || '-'}
+          制作: {studio || '-'}
         </Text>
 
         <Text

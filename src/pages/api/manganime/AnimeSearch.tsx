@@ -110,7 +110,14 @@ export default async function handler(
         anime.title.native || anime.title.romaji || anime.title.english || '-',
       imageUrl: anime.coverImage?.large || anime.coverImage?.medium || '',
       seasonYear: anime.seasonYear?.toString() || '-',
-      studio: anime.studios?.nodes?.[0]?.name || '-',
+      studio:
+        anime.studios?.nodes && anime.studios.nodes.length > 0
+          ? anime.studios.nodes
+              .slice(0, 2) //制作は2社まで表示
+              .map((node) => node?.name)
+              .filter((name): name is string => !!name)
+              .join(', ') + (anime.studios.nodes.length > 2 ? ', ...' : '')
+          : '-',
       url: anime.siteUrl || '',
     }));
 

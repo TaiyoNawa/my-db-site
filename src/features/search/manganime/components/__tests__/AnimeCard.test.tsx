@@ -21,13 +21,11 @@ describe('AnimeCard コンポーネント', () => {
       </ChakraProvider>
     );
 
-  it('タイトル・スタジオ・放送年が表示される', () => {
+  it('タイトル・制作・放送年が表示される', () => {
     renderComponent();
 
     expect(screen.getByText(testProps.title)).toBeInTheDocument();
-    expect(
-      screen.getByText(`スタジオ: ${testProps.studio}`)
-    ).toBeInTheDocument();
+    expect(screen.getByText(`制作: ${testProps.studio}`)).toBeInTheDocument();
     expect(
       screen.getByText(`放送年: ${testProps.seasonYear}`)
     ).toBeInTheDocument();
@@ -55,7 +53,7 @@ describe('AnimeCard コンポーネント', () => {
       </ChakraProvider>
     );
 
-    expect(screen.getByText('スタジオ: -')).toBeInTheDocument();
+    expect(screen.getByText('制作: -')).toBeInTheDocument();
     expect(screen.getByText('放送年: -')).toBeInTheDocument();
   });
 });
