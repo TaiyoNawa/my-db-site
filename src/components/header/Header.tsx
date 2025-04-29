@@ -302,8 +302,15 @@ const NAV_ITEMS: Array<NavItem> = [
     ],
   },
   {
-    label: 'Learn Design',
-    href: '#',
+    label: '検索',
+    href: '/search',
+    children: [
+      {
+        label: 'マンガ・アニメ',
+        subLabel: 'Find your favorite manga/anime',
+        href: '/search/manganime',
+      },
+    ],
   },
   {
     label: 'Hire Designers',
