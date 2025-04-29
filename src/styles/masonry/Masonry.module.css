@@ -1,0 +1,21 @@
+.masonryGrid {
+  display: flex;
+  margin-left: -1rem; /* 横のgap */
+  width: auto;
+}
+
+.masonryGridColumn {
+  padding-left: 1rem;
+  background-clip: padding-box;
+}
+
+/* md以下のときに横のgapを小さくする */
+@media (max-width: 734px) {
+  .masonryGrid {
+    margin-left: -0.5rem;
+  }
+
+  .masonryGridColumn {
+    padding-left: 0.5rem;
+  }
+}
