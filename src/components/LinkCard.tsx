@@ -1,4 +1,3 @@
-// components/LinkCard.tsx
 import { Box, Flex, Image, Text, Link, AspectRatio } from '@chakra-ui/react';
 import axios from 'axios';
 import { FC, useEffect, useState } from 'react';
