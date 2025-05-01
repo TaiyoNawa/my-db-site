@@ -32,7 +32,12 @@ export default async function handler(
   const pageStr = Array.isArray(page) ? page[0] : page;
   const per_pageStr = Array.isArray(per_page) ? per_page[0] : per_page;
   const accessKey = process.env.UNSPLASH_ACCESS_KEY;
-
+  if (!accessKey) {
+    //アクセスキーが未定義場合の処理
+    return res.status(500).json({
+      error: 'Server misconfiguration: UNSPLASH_ACCESS_KEY is not defined.',
+    });
+  }
   const url = `https://api.unsplash.com/search/photos?query=${encodeURIComponent(
     query
   )}&page=${pageStr}&per_page=${per_pageStr}&client_id=${accessKey}`;

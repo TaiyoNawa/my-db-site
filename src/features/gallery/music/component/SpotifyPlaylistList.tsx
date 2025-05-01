@@ -68,7 +68,7 @@ export const SpotifyPlaylistList: FC<SpotifyPlaylistListProps> = ({
     return (
       <Box textAlign="center" py={{ base: '8%', sm: 10, md: 24 }} px={4}>
         <Heading as="h2" size={{ base: '16px', sm: 'lg', md: 'xl' }} mb={4}>
-          Find PlayLists by{' '}
+          Find Playlists by{' '}
           <Link href="https://open.spotify.com/">Spotify</Link>.
         </Heading>
         <Text fontSize={{ base: '10px', sm: 'sm', md: 'lg' }} color="gray.600">

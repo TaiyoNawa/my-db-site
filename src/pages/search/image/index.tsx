@@ -33,6 +33,14 @@ export default function ImageSearchPage() {
           keyword={keyword}
           onReset={handleReset}
         />
+        {/* ↓フォームをリセットするために key プロパティを使用して強制的に再マウントすることは効果的ですが、
+        将来的にさらに複雑な状態管理が必要になった場合に完全な再マウントを回避するために、コンポーネント内でリセット状態を管理することを検討してください。
+        <ImageSearchForm reset={reset} onSearch={setKeyword} />
+        <ImageList
+          keyword={keyword}
+          reset={reset}
+          onReset={handleReset}
+        /> */}
       </SectionWrapper>
     </>
   );
