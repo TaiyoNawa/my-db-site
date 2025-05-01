@@ -1,4 +1,12 @@
-import { Box, Text, Heading, Button, Skeleton, Flex } from '@chakra-ui/react';
+import {
+  Box,
+  Link,
+  Text,
+  Heading,
+  Button,
+  Skeleton,
+  Flex,
+} from '@chakra-ui/react';
 import { useEffect, useState, useCallback, FC } from 'react';
 import Masonry from 'react-masonry-css';
 
@@ -87,8 +95,17 @@ export const AnimeList: FC<AnimeListProps> = ({ keyword = '', onReset }) => {
   const isLoadMoreVisible =
     animes.length < MAX_ITEMS && animes.length % PER_PAGE === 0;
 
-  if (!keyword.trim()) {
-    return null;
+  if (!keyword.trim() || isReset) {
+    return (
+      <Box textAlign="center" py={{ base: '8%', sm: 10, md: 24 }} px={4}>
+        <Heading as="h2" size={{ base: '16px', sm: 'lg', md: 'xl' }} mb={4}>
+          Find Animes by <Link href="https://anilist.co/">AniList</Link>.
+        </Heading>
+        <Text fontSize={{ base: '10px', sm: 'sm', md: 'lg' }} color="gray.600">
+          キーワードを入力してアニメを検索しましょう。
+        </Text>
+      </Box>
+    );
   }
 
   return (

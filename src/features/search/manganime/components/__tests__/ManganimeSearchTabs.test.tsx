@@ -10,8 +10,8 @@ const renderWithChakra = (ui: React.ReactElement) =>
 describe('ManganimeSearchTabs.tsxのテスト', () => {
   it('3つのタブが表示される', () => {
     renderWithChakra(<ManganimeSearchTabs />);
-    expect(screen.getByText(/漫画/)).toBeInTheDocument();
-    expect(screen.getByText(/アニメ/)).toBeInTheDocument();
+    expect(screen.getAllByText(/マンガ/)[0]).toBeInTheDocument();
+    expect(screen.getAllByText(/アニメ/)[0]).toBeInTheDocument();
   });
 
   it('タブを切り替えると表示される検索フォームが変わる', () => {
@@ -20,7 +20,7 @@ describe('ManganimeSearchTabs.tsxのテスト', () => {
     fireEvent.change(input0, { target: { value: 'test keyword0' } });
     expect(input0).toHaveValue('test keyword0');
 
-    fireEvent.click(screen.getByText(/アニメ/));
+    fireEvent.click(screen.getAllByText(/アニメ/)[0]);
     const input1 = screen.getAllByPlaceholderText(/キーワードを入力/)[1];
     fireEvent.change(input1, { target: { value: 'test keyword1' } });
     expect(input1).toHaveValue('test keyword1');

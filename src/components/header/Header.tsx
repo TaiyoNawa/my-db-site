@@ -310,6 +310,11 @@ const NAV_ITEMS: Array<NavItem> = [
         subLabel: 'Find your favorite manga/anime',
         href: '/search/manganime',
       },
+      {
+        label: '画像',
+        subLabel: 'Find your favorite image',
+        href: '/search/image',
+      },
     ],
   },
   {
