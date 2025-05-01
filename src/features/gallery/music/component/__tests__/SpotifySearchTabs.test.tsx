@@ -10,9 +10,9 @@ const renderWithChakra = (ui: React.ReactElement) =>
 describe('SpotifySearchTabs', () => {
   it('3つのタブが表示される', () => {
     renderWithChakra(<SpotifySearchTabs />);
-    expect(screen.getByText(/楽曲/)).toBeInTheDocument();
-    expect(screen.getByText(/プレイリスト/)).toBeInTheDocument();
-    expect(screen.getByText(/アーティスト/)).toBeInTheDocument();
+    expect(screen.getAllByText(/楽曲/)[0]).toBeInTheDocument();
+    expect(screen.getAllByText(/プレイリスト/)[0]).toBeInTheDocument();
+    expect(screen.getAllByText(/アーティスト/)[0]).toBeInTheDocument();
   });
 
   it('タブを切り替えると表示される検索フォームが変わる', () => {
@@ -21,12 +21,12 @@ describe('SpotifySearchTabs', () => {
     fireEvent.change(input0, { target: { value: 'test keyword0' } });
     expect(input0).toHaveValue('test keyword0');
 
-    fireEvent.click(screen.getByText(/プレイリスト/));
+    fireEvent.click(screen.getAllByText(/プレイリスト/)[0]);
     const input1 = screen.getAllByPlaceholderText(/キーワードを入力/)[1];
     fireEvent.change(input1, { target: { value: 'test keyword1' } });
     expect(input1).toHaveValue('test keyword1');
 
-    fireEvent.click(screen.getByText(/アーティスト/));
+    fireEvent.click(screen.getAllByText(/アーティスト/)[0]);
     const input2 = screen.getAllByPlaceholderText(/キーワードを入力/)[2];
     fireEvent.change(input2, { target: { value: 'test keyword2' } });
     expect(input2).toHaveValue('test keyword2');

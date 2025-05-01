@@ -1,5 +1,6 @@
 import {
   Box,
+  Link,
   Flex,
   Text,
   Spinner,
@@ -63,7 +64,19 @@ export const SpotifyPlaylistList: FC<SpotifyPlaylistListProps> = ({
   }, [keyword]);
 
   if (loading) return <Spinner color="teal.500" />;
-  if (!keyword.trim()) return null;
+  if (!keyword.trim() || isReset) {
+    return (
+      <Box textAlign="center" py={{ base: '8%', sm: 10, md: 24 }} px={4}>
+        <Heading as="h2" size={{ base: '16px', sm: 'lg', md: 'xl' }} mb={4}>
+          Find PlayLists by{' '}
+          <Link href="https://open.spotify.com/">Spotify</Link>.
+        </Heading>
+        <Text fontSize={{ base: '10px', sm: 'sm', md: 'lg' }} color="gray.600">
+          キーワードを入力してプレイリストを検索しましょう。
+        </Text>
+      </Box>
+    );
+  }
 
   return (
     <Box {...rest}>

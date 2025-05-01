@@ -33,7 +33,7 @@ export const ManganimeSearchTabs = () => {
             bg: 'gray.100',
           }}
         >
-          漫画
+          マンガ
           <br />
           (Manga)
         </Tab>
