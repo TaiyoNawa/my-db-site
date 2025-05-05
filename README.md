@@ -1,5 +1,10 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+lib/notion.ts に Notionアクセスロジックをまとめる。
+pages/api/??.ts では lib/??.ts を呼び出してAPIレスポンスとして整形する。
+lib内のファイル名は関数名に合わせてOK。(例：getNotionDB.ts：小文字+キャメルケース)
+api内のファイル名はクライアントから呼ぶURLにしたい名前で決めるのが分かりやすいです。(例：notion.ts：小文字単語(ハイフンなし))
+
 ## Getting Started
 
 First, run the development server:

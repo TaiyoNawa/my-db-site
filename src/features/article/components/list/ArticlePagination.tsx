@@ -1,3 +1,4 @@
+// features/article/components/ArticlePagination.tsx
 import { HStack } from '@chakra-ui/react';
 import { FC } from 'react';
 import { AiOutlineEllipsis } from 'react-icons/ai';
