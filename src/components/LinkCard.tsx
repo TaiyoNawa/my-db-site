@@ -92,7 +92,7 @@ export const LinkCard: FC<LinkCardProps> = ({
           <Flex mt={2} justify="space-between" align="center">
             <Text
               fontSize={{ base: 'xs', lg: 'sm' }}
-              color="blue.500"
+              color="blue.600"
               isTruncated
             >
               {url.length > 70 ? `${url.slice(0, 70)}...` : url}

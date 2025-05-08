@@ -1,22 +1,44 @@
 //pages/article/[id].tsx
-import { Box, Heading } from '@chakra-ui/react';
 import { GetStaticPaths, GetStaticProps } from 'next';
-import ReactMarkdown from 'react-markdown';
+
+import { useStickyHeader } from '@/hooks/useStickyHeader';
 
 import { SectionWrapper } from '@/components/SectionWrapper';
+import { SecondHeader } from '@/components/header/SecondHeader';
 
+import { ArticleMeta } from '@/features/article/components/ArticleMeta';
+import { ArticleContents } from '@/features/article/components/id/ArticleContents';
+import { ArticleFooter } from '@/features/article/components/id/ArticleFooter';
+import { ArticleHeadline } from '@/features/article/components/id/ArticleHeadline';
 import { NotionDBItem } from '@/lib/notion/fetchNotionDBItems';
 
 const ArticlePage: React.FC<{
   article: NotionDBItem & { markdown: string };
-}> = ({ article }) => {
+  relatedArticles: NotionDBItem[];
+}> = ({ article, relatedArticles }) => {
+  const { isHeaderHidden } = useStickyHeader();
+
   return (
-    <SectionWrapper>
-      <Box>
-        <Heading>{article.title}</Heading>
-        <ReactMarkdown>{article.markdown}</ReactMarkdown>
-      </Box>
-    </SectionWrapper>
+    <>
+      <ArticleMeta
+        title={article.title}
+        description={article.description || article.title}
+        ogImage={article.ogImage || article.thumbnail}
+        ogUrl={`/article/${article.url}`}
+        category={article.category}
+      />
+      <SecondHeader title="Article" isHeaderHidden={isHeaderHidden} />
+      <SectionWrapper backgroundColor="white">
+        <ArticleHeadline
+          title={article.title}
+          category={article.category}
+          createdAt={article.releaseDate}
+          thumbnail={article.thumbnail}
+        />
+        <ArticleContents markdown={article.markdown} />
+        <ArticleFooter article={relatedArticles} />
+      </SectionWrapper>
+    </>
   );
 };
 export default ArticlePage;
@@ -61,6 +83,11 @@ export const getStaticProps: GetStaticProps = async (context) => {
     return { notFound: true };
   }
 
+  // 関連記事（現在のものを除外、最新3件）
+  const relatedArticles = (items ?? [])
+    .filter((item) => item.url !== id)
+    .slice(0, 3);
+
   const markdown = await fetchNotionPageContent(target.page_id);
 
   return {
@@ -70,6 +97,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
         ...target,
         markdown,
       },
+      relatedArticles,
     },
     revalidate: 60 * 30, // 30分
   };

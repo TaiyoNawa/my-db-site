@@ -1,4 +1,4 @@
-import { Box, Link, Image, Text } from '@chakra-ui/react';
+import { Box, Link, Image, Text, LinkProps } from '@chakra-ui/react';
 import { FC } from 'react';
 
 import { useLimitedLengthText } from '@/hooks/limitedLengthText';
@@ -9,7 +9,7 @@ export type ArticleCardProps = {
   title: string;
   description: string;
   url: string;
-};
+} & LinkProps;
 
 export const ArticleCard: FC<ArticleCardProps> = ({
   eyeCatch,
@@ -23,7 +23,7 @@ export const ArticleCard: FC<ArticleCardProps> = ({
   const descriptionSummary = useLimitedLengthText(description, 40);
 
   return (
-    <Link href={url} _hover={{ textDecoration: 'none' }}>
+    <Link href={url} _hover={{ textDecoration: 'none' }} {...rest}>
       <Box
         maxW="472px"
         w={{ base: 'auto', sm: '366px', md: '333px', lg: '472px' }}
@@ -36,7 +36,6 @@ export const ArticleCard: FC<ArticleCardProps> = ({
         transition="box-shadow 0.3s ease"
         _hover={{ boxShadow: 'lg' }}
         role="group" // ✅ 追加
-        {...rest}
       >
         {/* 画像box */}
         <Box

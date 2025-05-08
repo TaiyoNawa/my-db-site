@@ -213,37 +213,51 @@ const MobileNavItem = ({ label, children, href }: NavItem) => {
   const { isOpen, onToggle } = useDisclosure();
 
   return (
-    <Stack spacing={4} onClick={children && onToggle}>
-      <Box
+    <Stack spacing={0}>
+      <Flex
         py={2}
-        as="a"
-        href={href ?? '#'}
         justifyContent="space-between"
         alignItems="center"
         _hover={{
           textDecoration: 'none',
         }}
       >
-        <Text
-          fontWeight={600}
-          color={useColorModeValue('gray.600', 'gray.200')}
-        >
-          {label}
-        </Text>
+        <Box as="a" href={href ?? '#'} flex={1}>
+          <Text
+            fontWeight={600}
+            color={useColorModeValue('gray.600', 'gray.200')}
+          >
+            {label}
+          </Text>
+        </Box>
         {children && (
-          <ChevronDownIcon
-            color="pink.400"
-            transition={'all .25s ease-in-out'}
-            transform={isOpen ? 'rotate(180deg)' : ''}
-            w={6}
-            h={6}
+          <IconButton
+            aria-label="Toggle Sub-menu"
+            icon={
+              <ChevronDownIcon
+                color="pink.400"
+                transition={'all .25s ease-in-out'}
+                transform={isOpen ? 'rotate(180deg)' : ''}
+                w={6}
+                h={6}
+              />
+            }
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggle();
+            }}
+            variant="ghost"
           />
         )}
-      </Box>
+      </Flex>
 
-      <Collapse in={isOpen} animateOpacity style={{ marginTop: '0!important' }}>
+      <Collapse
+        in={isOpen}
+        animateOpacity
+        style={{ marginTop: '0!important', marginBottom: '10px!important' }}
+      >
         <Stack
-          mt={2}
+          mt={0}
           pl={4}
           borderLeft={1}
           borderStyle={'solid'}

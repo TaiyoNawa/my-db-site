@@ -19,6 +19,7 @@ export type NotionDBItem = {
   thumbnail: string;
   ogDescription: string;
   ogImage: string;
+  releaseDate: string;
 };
 
 // Initializing a client
@@ -48,6 +49,7 @@ export async function fetchNotionDBItems() {
         const thumbnailProp = item.properties['サムネイル画像'];
         const ogDescriptionProp = item.properties['og:description'];
         const ogImageProp = item.properties['og:image'];
+        const releaseDateProp = item.properties['公開日'];
 
         const title =
           titleProp?.type === 'title' && titleProp.title.length > 0
@@ -59,7 +61,7 @@ export async function fetchNotionDBItems() {
             : 'no status';
         const category =
           categoryProp?.type === 'multi_select' && categoryProp.multi_select
-            ? categoryProp.multi_select.map((c) => c.name).join(', ')
+            ? categoryProp.multi_select.map((c) => c.name).join('||')
             : 'no category';
         const description =
           descriptionProp?.type === 'rich_text' &&
@@ -90,6 +92,10 @@ export async function fetchNotionDBItems() {
               ? ogImageProp.files[0].file.url
               : '/favicon.ico' //ここはロゴ画像に変えて！！
             : '/favicon.ico'; //ここはロゴ画像に変えて！！
+        const releaseDate =
+          releaseDateProp?.type === 'date' && releaseDateProp.date
+            ? releaseDateProp.date.start
+            : '';
 
         return {
           page_id: item.id,
@@ -101,6 +107,7 @@ export async function fetchNotionDBItems() {
           thumbnail,
           ogDescription,
           ogImage,
+          releaseDate,
         };
       }
     );

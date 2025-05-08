@@ -9,10 +9,10 @@ describe('Footer コンポーネント', () => {
   it('各セクションヘッダーが表示される', () => {
     render(<Footer />);
 
-    expect(screen.getByText('Product')).toBeInTheDocument();
-    expect(screen.getByText('Company')).toBeInTheDocument();
-    expect(screen.getByText('Legal')).toBeInTheDocument();
-    expect(screen.getByText('Follow Us')).toBeInTheDocument();
+    expect(screen.getByText('記事')).toBeInTheDocument();
+    expect(screen.getByText('ギャラリー')).toBeInTheDocument();
+    expect(screen.getByText('検索')).toBeInTheDocument();
+    expect(screen.getByText('Hire Designers')).toBeInTheDocument();
   });
 
   it('著作権テキストが表示される', () => {
@@ -24,9 +24,28 @@ describe('Footer コンポーネント', () => {
 
   it('リンクが正しく表示されている', () => {
     render(<Footer />);
-    expect(screen.getByText('Overview')).toHaveAttribute('href', '#');
-    expect(screen.getByText('Careers')).toHaveAttribute('href', '#');
-    expect(screen.getByText('Privacy Policy')).toHaveAttribute('href', '#');
-    expect(screen.getByText('Twitter')).toHaveAttribute('href', '#');
+    expect(screen.getByRole('link', { name: '記事' })).toHaveAttribute(
+      'href',
+      '/article'
+    );
+    expect(screen.getByRole('link', { name: 'ギャラリー' })).toHaveAttribute(
+      'href',
+      '/gallery'
+    );
+    expect(screen.getByRole('link', { name: '検索' })).toHaveAttribute(
+      'href',
+      '/search'
+    );
+    expect(
+      screen.getByRole('link', { name: 'Hire Designers' })
+    ).toHaveAttribute('href', '#');
+    expect(screen.getByRole('link', { name: 'ランキング' })).toHaveAttribute(
+      'href',
+      '#'
+    );
+    expect(screen.getByRole('link', { name: 'リンク' })).toHaveAttribute(
+      'href',
+      '/article/link'
+    );
   });
 });
