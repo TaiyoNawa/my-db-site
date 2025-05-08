@@ -4,7 +4,7 @@ import {
   SimpleGrid,
   Stack,
   Text,
-  Link,
+  Link as ChakraLink,
   useColorModeValue,
 } from '@chakra-ui/react';
 import { FC } from 'react';
@@ -23,20 +23,60 @@ type FooterSectionProps = {
 
 const FooterSection: FC<FooterSectionProps> = ({ item }) => (
   <Stack align="flex-start">
-    <NextLink href={item.href} passHref>
-      <Link fontWeight="600" fontSize="lg" mb={2}>
-        {item.label}
-      </Link>
-    </NextLink>
+    {/* 親リンク */}
+    <ChakraLink
+      as={NextLink}
+      href={item.href}
+      fontWeight="600"
+      fontSize="lg"
+      mb={2}
+    >
+      {item.label}
+    </ChakraLink>
+
+    {/* 子リンク */}
     {item.children?.map((child, idx) => (
-      <NextLink href={child.href} passHref key={idx}>
-        <Link fontSize="sm" display="block">
-          {child.label}
-        </Link>
-      </NextLink>
+      <ChakraLink
+        as={NextLink}
+        href={child.href}
+        fontSize="sm"
+        display="block"
+        key={idx}
+      >
+        {child.label}
+      </ChakraLink>
     ))}
   </Stack>
 );
+
+export const Footer: FC = () => {
+  return (
+    <SectionWrapper>
+      <Box color={useColorModeValue('gray.700', 'gray.200')}>
+        <Container as={Stack} maxW="6xl" py={10}>
+          <SimpleGrid columns={{ base: 1, sm: 2, md: 4 }} spacing={8}>
+            {footerLinks.map((item, idx) => (
+              <FooterSection item={item} key={idx} />
+            ))}
+          </SimpleGrid>
+        </Container>
+
+        <Box py={10}>
+          <Box
+            borderBottom="1px solid"
+            borderColor={useColorModeValue('gray.200', 'gray.700')}
+            mx="auto"
+            maxW="6xl"
+            mb={6}
+          />
+          <Text fontSize="sm" textAlign="center">
+            © {new Date().getFullYear()} TaiyoNawa. All rights reserved.
+          </Text>
+        </Box>
+      </Box>
+    </SectionWrapper>
+  );
+};
 
 const footerLinks: FooterLink[] = [
   {
@@ -68,32 +108,3 @@ const footerLinks: FooterLink[] = [
     href: '#',
   },
 ];
-
-export const Footer: FC = () => {
-  return (
-    <SectionWrapper>
-      <Box color={useColorModeValue('gray.700', 'gray.200')}>
-        <Container as={Stack} maxW="6xl" py={10}>
-          <SimpleGrid columns={{ base: 1, sm: 2, md: 4 }} spacing={8}>
-            {footerLinks.map((item, idx) => (
-              <FooterSection item={item} key={idx} />
-            ))}
-          </SimpleGrid>
-        </Container>
-
-        <Box py={10}>
-          <Box
-            borderBottom="1px solid"
-            borderColor={useColorModeValue('gray.200', 'gray.700')}
-            mx="auto"
-            maxW="6xl"
-            mb={6}
-          />
-          <Text fontSize="sm" textAlign="center">
-            © {new Date().getFullYear()} TaiyoNawa. All rights reserved.
-          </Text>
-        </Box>
-      </Box>
-    </SectionWrapper>
-  );
-};
