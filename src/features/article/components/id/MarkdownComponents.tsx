@@ -44,7 +44,8 @@ function flattenToString(node: ReactNode): string {
     return node.map(flattenToString).join('');
   }
   if (isValidElement(node)) {
-    return flattenToString((node.props as any).children);
+    const element = node as React.ReactElement<{ children?: ReactNode }>;
+    return flattenToString(element.props.children);
   }
   return '';
 }
@@ -163,7 +164,7 @@ export const MarkdownComponents = {
   a: (props: MarkdownProps) => (
     <Box as="a" color="teal.600" textDecoration="underline" {...props} />
   ),
-  code: ({ children }: any) => {
+  code: ({ children }: { children: ReactNode }) => {
     const text = flattenToString(children);
     const isMultiline = text.includes('\n');
     return isMultiline ? (

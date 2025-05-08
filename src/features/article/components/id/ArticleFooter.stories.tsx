@@ -1,5 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react';
 import { ArticleFooter } from './ArticleFooter';
+
+import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof ArticleFooter> = {
   title: 'Article/ArticleFooter',

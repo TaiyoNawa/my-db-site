@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
-import { ArticleFooter } from '../ArticleFooter';
 import { describe, test, expect } from 'vitest';
+
+import { ArticleFooter } from '../ArticleFooter';
 
 describe('ArticleFooter', () => {
   test('renders with article data', () => {

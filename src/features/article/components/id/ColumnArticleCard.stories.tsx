@@ -1,5 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react';
 import { ColumnArticleCard } from './ColumnArticleCard';
+
+import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof ColumnArticleCard> = {
   title: 'Article/ColumnArticleCard',

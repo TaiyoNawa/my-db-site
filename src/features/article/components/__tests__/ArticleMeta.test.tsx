@@ -1,5 +1,6 @@
 import { render } from '@testing-library/react';
 import { describe, test, expect, vi, beforeEach } from 'vitest';
+
 import { ArticleMeta } from '../ArticleMeta';
 
 // モック関数で呼び出し情報を追跡
@@ -7,7 +8,7 @@ const nextSeoMock = vi.fn();
 
 // モック化（NextSeo をダミーReactコンポーネントにして追跡）
 vi.mock('next-seo', () => ({
-  NextSeo: (props: any) => {
+  NextSeo: (props: import('next-seo').NextSeoProps) => {
     nextSeoMock(props);
     return null; // 描画しない
   },

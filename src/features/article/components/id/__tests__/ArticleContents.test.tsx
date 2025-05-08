@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
-import { ArticleContents } from '../ArticleContents';
 import { describe, test, expect } from 'vitest';
+
+import { ArticleContents } from '../ArticleContents';
 import { generateAnchorId } from '../ArticleContents';
 
 describe('ArticleContents', () => {

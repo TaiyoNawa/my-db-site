@@ -1,5 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react';
 import { IndexOfContent } from './IndexOfContents';
+
+import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof IndexOfContent> = {
   title: 'Article/IndexOfContents',

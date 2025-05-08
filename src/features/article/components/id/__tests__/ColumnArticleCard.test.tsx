@@ -1,6 +1,7 @@
 import { render, screen, within } from '@testing-library/react';
-import { ColumnArticleCard } from '../ColumnArticleCard';
 import { describe, test, expect } from 'vitest';
+
+import { ColumnArticleCard } from '../ColumnArticleCard';
 
 describe('ColumnArticleCard', () => {
   const baseProps = {

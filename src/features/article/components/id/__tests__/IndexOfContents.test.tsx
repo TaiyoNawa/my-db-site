@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
+import { describe, it, expect } from 'vitest';
+
 import { IndexOfContent } from '../IndexOfContents';
-import { vi, describe, it, expect } from 'vitest';
 
 describe('IndexOfContents', () => {
   it('renders with headings', () => {
@@ -20,7 +21,7 @@ describe('IndexOfContents', () => {
   });
 
   it('renders nothing when no headings are provided', () => {
-    const headings: any[] = [];
+    const headings: { text: string; id: string }[] = [];
     const { container } = render(<IndexOfContent headings={headings} />);
     expect(container.firstChild).toBeNull();
   });

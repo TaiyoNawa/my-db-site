@@ -1,14 +1,15 @@
-/// <reference types="vitest" />
+import { Image } from '@chakra-ui/react';
 import { render, screen } from '@testing-library/react';
-import { ArticleHeadline } from '../ArticleHeadline';
 import { vi, describe, it, expect } from 'vitest';
+
+import { ArticleHeadline } from '../ArticleHeadline';
 
 // Mock the next/image component
 vi.mock('next/image', () => ({
   __esModule: true,
-  default: (props: any) => {
+  default: (props: React.ImgHTMLAttributes<HTMLImageElement>) => {
     // eslint-disable-next-line jsx-a11y/alt-text
-    return <img {...props} />;
+    return <Image {...props} />;
   },
 }));
 
