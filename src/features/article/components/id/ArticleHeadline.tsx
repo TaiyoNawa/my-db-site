@@ -27,7 +27,7 @@ export const ArticleHeadline: FC<Props> = ({
 }) => {
   // '||' で分割して複数タグを生成
   const categories = category
-    .split('||')
+    .split(', ')
     .map((c) => c.trim())
     .filter((c) => c);
 

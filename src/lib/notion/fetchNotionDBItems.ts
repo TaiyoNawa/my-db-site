@@ -61,7 +61,7 @@ export async function fetchNotionDBItems() {
             : 'no status';
         const category =
           categoryProp?.type === 'multi_select' && categoryProp.multi_select
-            ? categoryProp.multi_select.map((c) => c.name).join('||')
+            ? categoryProp.multi_select.map((c) => c.name).join(', ')
             : 'no category';
         const description =
           descriptionProp?.type === 'rich_text' &&
