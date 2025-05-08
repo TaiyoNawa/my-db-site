@@ -164,13 +164,13 @@ export const MarkdownComponents = {
   a: (props: MarkdownProps) => (
     <Box as="a" color="teal.600" textDecoration="underline" {...props} />
   ),
-  code: ({ children }: { children: ReactNode }) => {
-    const text = flattenToString(children);
+  code: (props: MarkdownProps) => {
+    const text = flattenToString(props.children);
     const isMultiline = text.includes('\n');
     return isMultiline ? (
-      <BlockCode>{children}</BlockCode>
+      <BlockCode {...props}>{props.children}</BlockCode>
     ) : (
-      <InlineCode>{children}</InlineCode>
+      <InlineCode {...props}>{props.children}</InlineCode>
     );
   },
   blockquote: (props: MarkdownProps) => (
