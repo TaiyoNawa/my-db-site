@@ -7,7 +7,7 @@ import {
   Wrap,
   WrapItem,
 } from '@chakra-ui/react';
-import Image from 'next/image';
+import NextImage from 'next/image';
 import { FC } from 'react';
 
 import { CurrentLinkCopyButton } from '@/components/button/CurrentLinkCopyButton';
@@ -61,16 +61,15 @@ export const ArticleHeadline: FC<Props> = ({
         {createdAt}
       </Text>
 
-      <Image
+      <NextImage
         src={thumbnail}
         alt={title}
+        layout="responsive"
         width={1200}
-        height={630}
+        height={675}
         style={{
           borderRadius: '1rem',
           objectFit: 'cover',
-          width: '100%',
-          height: 'auto',
         }}
       />
       {/* 現状早いのでnextのImageを使っているが、Chakraに変える可能性もあり */}

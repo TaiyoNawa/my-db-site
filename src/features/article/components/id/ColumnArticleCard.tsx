@@ -1,5 +1,6 @@
 //features/article/components/id/ColumnArticleCard.tsx
-import { Flex, Image, Text, Link, AspectRatio } from '@chakra-ui/react';
+import { Flex, Text, Link, AspectRatio } from '@chakra-ui/react';
+import NextImage from 'next/image';
 import { FC } from 'react';
 
 type ColumnArticleCardProps = {
@@ -37,12 +38,11 @@ export const ColumnArticleCard: FC<ColumnArticleCardProps> = ({
         _hover={{ '&:not(:has(button:hover))': { filter: 'brightness(90%)' } }}
       >
         <AspectRatio ratio={16 / 9} w={{ base: '100%', md: '35%' }}>
-          <Image
+          <NextImage
             src={articleImage}
             alt={title}
-            objectFit="cover"
-            borderTopRadius={{ base: 'lg', md: 'none' }}
-            borderLeftRadius={{ base: 'none', md: 'lg' }}
+            style={{ objectFit: 'cover' }}
+            fill
           />
         </AspectRatio>
         <Flex

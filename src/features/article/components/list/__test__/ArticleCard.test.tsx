@@ -5,7 +5,7 @@ import { render, screen } from '@/test/test-utils';
 import { ArticleCard } from '../ArticleCard';
 
 const testProps1 = {
-  eyeCatch: 'article.webp',
+  eyeCatch: '/article.webp',
   category: 'レポート',
   title: '東京都ITサービス業売上高トップ100',
   description: '東京都のITサービス業の売上高ランキングを発表します。',
@@ -13,7 +13,7 @@ const testProps1 = {
 };
 
 const testProps2 = {
-  eyeCatch: 'article.webp',
+  eyeCatch: '/article.webp',
   category: 'レポート',
   title:
     '東京都ITサービス業売上高トップ100東京都ITサービス業売上高トップ100東京都ITサービス業売上高トップ100東京都ITサービス業売上高トップ100東京都ITサービス業売上高トップ100東京都ITサービス業売上高トップ100',
@@ -27,7 +27,11 @@ describe('ArticleCard.tsxのテスト', () => {
     render(<ArticleCard {...testProps1} />);
     const image = screen.getByRole('img');
     expect(image).toBeInTheDocument();
-    expect(image).toHaveAttribute('src', testProps1.eyeCatch);
+    expect(image).toHaveAttribute('src');
+    // Next.js <Image>のsrc属性に画像パスが含まれていることを確認
+    expect(image.getAttribute('src')).toContain(
+      encodeURIComponent(testProps1.eyeCatch)
+    );
     expect(image).toHaveAttribute('alt', testProps1.title);
   });
 

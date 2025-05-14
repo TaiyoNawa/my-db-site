@@ -130,7 +130,7 @@ export const MarkdownComponents = {
   h2: (props: MarkdownProps) => (
     <Heading
       as="h2"
-      fontSize="3xl"
+      fontSize={{ base: 'xl', md: '3xl' }}
       mt={{ base: 16, md: 20 }}
       mb={{ base: 4, md: 6 }}
       pl={4}

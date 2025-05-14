@@ -1,10 +1,10 @@
 // lib/notion/fetchNotionDBItems.ts
 import {
   Client,
-  LogLevel,
   isNotionClientError,
   ClientErrorCode,
   APIErrorCode,
+  // LogLevel,
 } from '@notionhq/client';
 import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 //参考：https://github.com/makenotion/notion-sdk-js
@@ -25,7 +25,7 @@ export type NotionDBItem = {
 // Initializing a client
 const notion = new Client({
   auth: process.env.NOTION_TOKEN,
-  logLevel: LogLevel.DEBUG, //クライアントが応答本文をログに記録するようにしたい場合
+  // logLevel: LogLevel.DEBUG, //クライアントが応答本文をログに記録するようにしたい場合
 });
 
 export async function fetchNotionDBItems() {

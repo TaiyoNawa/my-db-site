@@ -23,12 +23,16 @@ export const IndexOfContent = ({ headings }: Props) => {
       bgColor="gray.50"
       borderRadius="md"
     >
-      <Text fontWeight="bold" mb={2}>
+      <Text fontWeight="bold" mb={2} fontSize={{ base: 'lg', md: 'xl' }}>
         目次
       </Text>
       {headings.map((heading) => (
-        <Box key={heading.id}>
-          <Link href={`#${heading.id}`} color="blue.600" fontSize="sm">
+        <Box key={heading.id} mb={1} pl={2}>
+          <Link
+            href={`#${heading.id}`}
+            color="blue.600"
+            fontSize={{ base: 'sm', md: 'md' }}
+          >
             {heading.text}
           </Link>
         </Box>

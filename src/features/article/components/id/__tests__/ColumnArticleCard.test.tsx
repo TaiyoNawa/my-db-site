@@ -12,38 +12,84 @@ describe('ColumnArticleCard', () => {
     url: '/test-article',
   };
 
-  test('renders with all provided props', () => {
-    render(<ColumnArticleCard {...baseProps} />);
+  describe('ColumnArticleCard', () => {
+    const baseProps = {
+      eyeCatch: '/test-image.png',
+      category: 'Testing',
+      title: 'Test Article Title',
+      description: 'This is a test description.',
+      url: '/test-article',
+    };
 
-    // 全体リンク取得
-    const linkEl = screen.getByRole('link');
-    expect(linkEl).toHaveAttribute('href', baseProps.url);
+    test('すべてのプロパティが指定された場合に正しくレンダリングされる', () => {
+      render(<ColumnArticleCard {...baseProps} />);
 
-    // link の中に title テキストが含まれていることを確認
-    expect(within(linkEl).getByText(baseProps.title)).toBeInTheDocument();
-    expect(screen.getByText(baseProps.category)).toBeInTheDocument();
-    expect(screen.getByText(baseProps.description)).toBeInTheDocument();
+      const linkEl = screen.getByRole('link');
+      expect(linkEl).toHaveAttribute('href', baseProps.url);
 
-    const imageEl = screen.getByRole('img', { name: baseProps.title });
-    expect(imageEl).toHaveAttribute('src', baseProps.eyeCatch);
+      expect(within(linkEl).getByText(baseProps.title)).toBeInTheDocument();
+      expect(screen.getByText(baseProps.category)).toBeInTheDocument();
+      expect(screen.getByText(baseProps.description)).toBeInTheDocument();
+
+      const imageEl = screen.getByRole('img', { name: baseProps.title });
+      // Next.js の <Image> は src をラップするので、元のパスが含まれているか確認
+      expect(imageEl).toHaveAttribute('src');
+      expect(imageEl.getAttribute('src')).toContain(
+        encodeURIComponent(baseProps.eyeCatch)
+      );
+    });
+
+    test('eyeCatch が空の場合はフォールバック画像が表示される', () => {
+      render(<ColumnArticleCard {...baseProps} eyeCatch="" />);
+      const fallbackImage = screen.getByRole('img', { name: baseProps.title });
+      expect(fallbackImage).toHaveAttribute('src');
+      expect(fallbackImage.getAttribute('src')).toContain(
+        encodeURIComponent('/alt_image.png')
+      );
+    });
+
+    test('カテゴリと説明文が省略されて表示される', () => {
+      render(<ColumnArticleCard {...baseProps} />);
+      const categoryEl = screen.getByText(baseProps.category);
+      const descriptionEl = screen.getByText(baseProps.description);
+
+      expect(categoryEl).toHaveClass('chakra-text');
+      expect(descriptionEl).toHaveClass('chakra-text');
+    });
+
+    test('カード全体がリンクでラップされ、タイトルが含まれている', () => {
+      render(<ColumnArticleCard {...baseProps} />);
+      const linkEl = screen.getByRole('link');
+      expect(linkEl).toBeInTheDocument();
+      expect(linkEl).toHaveAttribute('href', baseProps.url);
+      expect(within(linkEl).getByText(baseProps.title)).toBeInTheDocument();
+    });
+
+    test('画像の alt 属性が正しく設定されている', () => {
+      render(<ColumnArticleCard {...baseProps} />);
+      const imageEl = screen.getByRole('img', { name: baseProps.title });
+      expect(imageEl).toHaveAttribute('alt', baseProps.title);
+    });
+
+    test('異なるカテゴリと説明文が正しく表示される', () => {
+      const props = {
+        ...baseProps,
+        category: '別のカテゴリ',
+        description: '異なる説明文の内容。',
+      };
+      render(<ColumnArticleCard {...props} />);
+      expect(screen.getByText('別のカテゴリ')).toBeInTheDocument();
+      expect(screen.getByText('異なる説明文の内容。')).toBeInTheDocument();
+    });
+
+    test('長いタイトルでも正しく表示される', () => {
+      const longTitle = 'A'.repeat(100);
+      render(<ColumnArticleCard {...baseProps} title={longTitle} />);
+      expect(screen.getByText(longTitle)).toBeInTheDocument();
+    });
   });
 
-  test('renders fallback image if eyeCatch is empty', () => {
-    render(<ColumnArticleCard {...baseProps} eyeCatch="" />);
-    const fallbackImage = screen.getByRole('img', { name: baseProps.title });
-    expect(fallbackImage).toHaveAttribute('src', '/alt_image.png');
-  });
-
-  test('truncates category and description text', () => {
-    render(<ColumnArticleCard {...baseProps} />);
-    const categoryEl = screen.getByText(baseProps.category);
-    const descriptionEl = screen.getByText(baseProps.description);
-
-    expect(categoryEl).toHaveClass('chakra-text'); // Chakra `Text` コンポーネントで描画されることの確認
-    expect(descriptionEl).toHaveClass('chakra-text'); // noOfLines は class に反映される
-  });
-
-  test('link wraps the whole card and contains title', () => {
+  test('カード全体がリンクでラップされ、タイトルが含まれている', () => {
     render(<ColumnArticleCard {...baseProps} />);
     const linkEl = screen.getByRole('link');
     expect(linkEl).toBeInTheDocument();

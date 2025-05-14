@@ -1,7 +1,7 @@
 //lib/notion/fetchNotionPageContent.ts
 import {
   Client,
-  LogLevel,
+  // LogLevel,
   isNotionClientError,
   ClientErrorCode,
   APIErrorCode,
@@ -10,7 +10,7 @@ import { NotionToMarkdown } from 'notion-to-md';
 
 const notion = new Client({
   auth: process.env.NOTION_TOKEN,
-  logLevel: LogLevel.DEBUG,
+  // logLevel: LogLevel.DEBUG,
 });
 
 export async function fetchNotionPageContent(pageId: string): Promise<string> {
