@@ -15,7 +15,7 @@
 ・各アーティストの紹介記事などは手作りで、別のページで実装
     ・ここでSpotifyPlayerを使うのはアリ
     ・イベント情報一覧ページに繋げられたら理想
-・音量調整
+・音量調整(react-bitsのElastic Slider)
 
 *** 記事ページ
 ・とりあえず記事詳細を作る＋NotionDBとの連携をする
@@ -24,27 +24,21 @@
 ・理想はNotionで完結させる。Notionの画像読み込みを早くさせる。
 ・NotionAPIでDBを作成→配信させる
 ・NotionDBの画像表示が遅い件
+ImageWithSkeletonのsrcが正しく表示されるように修正
+index.tsxなどのfetch時に重複して表示されるのを防ぐ
+公開済みフィルター
 ・NextImageはISR機能が素晴らしいから、これにしよう
-    Next/Image化
-    記事の初回fetch数を減らして、さらに読み込むボタンを実装
+    Next/Image化(Markdown部分)
     つまり、fetchの最適化+ISRの初回ロード時に確実に画像を読み込めるような設計に
-    せっかくなら面白いローディングパッケージを使いたい
-・小規模プロジェクトなら、imgur.comを使えば最低限のcdnは実現できる。
-        ただし、数が増えてきたらちゃんとしたcdnに変換すべき。
-        imgurだと記事詳細ページの読み込み時に画像が出なかったりする。
-        cdnとして、toolpodを利用してもいいかも
-            その場合Next/imageにする必要がある。
-        Notionではtoolod+imgurリンクを貼るのもあり
-            その場合Notionの生画像にも対応できるようにしたい。
+・cdnとして、toolpodを利用してもいいかも
+    その場合Next/imageにする必要がある。
     https://qiita.com/kentawata/items/9693024c6dcef7dd2b6f
     cdn=https://toolpods.io/image-cdn
     https://imgur.com/user/whakamater/posts
     詳細ページ取得の高速化
 ・SafariとかだとSecondHeaderが見えない可能性(前田)
-・fetch高速化
-・読み込み時のスピナーの調整
+・投稿済み以外は表示しない
 ・APIのtest作成
-
 ・サムネ画像を動画に対応させる
 ・共有ボタン
 ・インデックスはidで付与しない方が良い(backボタンで何度も戻る羽目になる)
