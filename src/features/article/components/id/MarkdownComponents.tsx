@@ -191,7 +191,9 @@ export const MarkdownComponents = {
       </Table>
     </Box>
   ),
-  img: ({ src, alt }: { src?: string; alt?: string }) => (
+  img: (
+    { src, alt }: { src?: string; alt?: string } //できればNextImageを使いたいが例のエラーが出るので放置
+  ) => (
     <Image
       src={src ?? ''}
       alt={alt ?? ''}

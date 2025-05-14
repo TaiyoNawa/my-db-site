@@ -10,12 +10,17 @@ type ArticleListProps = Omit<
   'justifyContent' | 'flexDirection' | 'alignItem'
 > & {
   articles: ArticleCardProps[];
+  isLoading?: boolean;
 };
 
 const GAP_SIZE = { base: '24px', md: '26px', lg: '36px' };
 const FONT_SIZE = { base: '24px', md: '28px', lg: '32px' };
 
-export const ArticleList: FC<ArticleListProps> = ({ articles, ...rest }) => {
+export const ArticleList: FC<ArticleListProps> = ({
+  articles,
+  isLoading = false,
+  ...rest
+}) => {
   return (
     <Flex
       {...rest}
@@ -23,7 +28,7 @@ export const ArticleList: FC<ArticleListProps> = ({ articles, ...rest }) => {
       flexDirection="column"
       alignItems="center"
     >
-      {articles.length === 0 ? (
+      {articles.length === 0 && !isLoading ? (
         <Box w="100%" textAlign="left">
           <Heading as="h1" fontSize={FONT_SIZE} textAlign="left">
             記事はありません

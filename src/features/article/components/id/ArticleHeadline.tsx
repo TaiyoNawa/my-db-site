@@ -1,3 +1,4 @@
+//src/features/article/components/list/ArticleCard.tsx
 import {
   Box,
   Heading,
@@ -6,9 +7,10 @@ import {
   Tag,
   Wrap,
   WrapItem,
+  Skeleton,
 } from '@chakra-ui/react';
 import NextImage from 'next/image';
-import { FC } from 'react';
+import { FC, useState } from 'react';
 
 import { CurrentLinkCopyButton } from '@/components/button/CurrentLinkCopyButton';
 
@@ -25,16 +27,16 @@ export const ArticleHeadline: FC<Props> = ({
   thumbnail,
   createdAt,
 }) => {
-  // '||' で分割して複数タグを生成
   const categories = category
     .split(', ')
     .map((c) => c.trim())
     .filter((c) => c);
 
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
+
   return (
     <Box mb={{ base: '6', md: '10' }}>
       <HStack justify="space-between" align="start" mb="4">
-        {/* 分割したカテゴリごとにTagを表示。Wrapを使って折り返し対応 */}
         <Wrap spacing={2} maxW="100%">
           {categories.map((cat) => (
             <WrapItem key={cat}>
@@ -61,17 +63,31 @@ export const ArticleHeadline: FC<Props> = ({
         {createdAt}
       </Text>
 
-      <NextImage
-        src={thumbnail}
-        alt={title}
-        width={1200}
-        height={675}
-        style={{
-          borderRadius: '1rem',
-          objectFit: 'cover',
-        }}
-      />
-      {/* 現状早いのでnextのImageを使っているが、Chakraに変える可能性もあり */}
+      {/* Skeletonと画像 */}
+      <Box position="relative" width="100%" maxW="1200px" aspectRatio="16 / 9">
+        {!isImageLoaded && (
+          <Skeleton
+            borderRadius="1rem"
+            width="100%"
+            height="100%"
+            position="absolute"
+            top="0"
+            left="0"
+            zIndex="1"
+          />
+        )}
+        <NextImage
+          src={thumbnail}
+          alt={title}
+          width={1200}
+          height={675}
+          style={{
+            borderRadius: '1rem',
+            objectFit: 'cover',
+          }}
+          onLoad={() => setIsImageLoaded(true)}
+        />
+      </Box>
     </Box>
   );
 };

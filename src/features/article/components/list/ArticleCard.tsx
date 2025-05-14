@@ -1,6 +1,14 @@
-import { Box, Link, Text, LinkProps, AspectRatio } from '@chakra-ui/react';
+//src/features/article/components/list/ArticleCard.tsx
+import {
+  Box,
+  Link,
+  Text,
+  LinkProps,
+  AspectRatio,
+  Skeleton,
+} from '@chakra-ui/react';
 import NextImage from 'next/image';
-import { FC } from 'react';
+import { FC, useState } from 'react';
 
 import { useLimitedLengthText } from '@/hooks/limitedLengthText';
 
@@ -22,6 +30,8 @@ export const ArticleCard: FC<ArticleCardProps> = ({
 }) => {
   const titleSummary = useLimitedLengthText(title, 40);
   const descriptionSummary = useLimitedLengthText(description, 40);
+
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
 
   return (
     <Link href={url} _hover={{ textDecoration: 'none' }} w="100%" {...rest}>
@@ -45,12 +55,23 @@ export const ArticleCard: FC<ArticleCardProps> = ({
         >
           <AspectRatio ratio={16 / 9} w="100%">
             <Box position="relative" w="100%" h="100%">
+              {/* Skeleton表示 */}
+              {!isImageLoaded && (
+                <Skeleton
+                  position="absolute"
+                  w="100%"
+                  h="100%"
+                  borderRadius="0"
+                />
+              )}
+
               <NextImage
                 src={eyeCatch}
                 alt={titleSummary}
                 fill
                 style={{ objectFit: 'cover' }}
                 sizes="(max-width: 768px) 100vw, 472px"
+                onLoad={() => setIsImageLoaded(true)}
               />
             </Box>
           </AspectRatio>

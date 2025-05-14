@@ -1,7 +1,7 @@
 //features/article/components/id/ColumnArticleCard.tsx
-import { Flex, Text, Link, AspectRatio } from '@chakra-ui/react';
+import { Flex, Text, Link, AspectRatio, Skeleton } from '@chakra-ui/react';
 import NextImage from 'next/image';
-import { FC } from 'react';
+import { FC, useState } from 'react';
 
 type ColumnArticleCardProps = {
   eyeCatch: string;
@@ -19,6 +19,7 @@ export const ColumnArticleCard: FC<ColumnArticleCardProps> = ({
   url,
 }) => {
   const articleImage = eyeCatch || '/alt_image.png';
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
 
   return (
     <Link
@@ -28,7 +29,6 @@ export const ColumnArticleCard: FC<ColumnArticleCardProps> = ({
     >
       <Flex
         direction={{ base: 'column', md: 'row' }}
-        // borderWidth="1.5px"
         borderRadius="lg"
         borderColor="gray.400"
         overflow="hidden"
@@ -37,14 +37,33 @@ export const ColumnArticleCard: FC<ColumnArticleCardProps> = ({
         transition="filter 0.1s"
         _hover={{ '&:not(:has(button:hover))': { filter: 'brightness(90%)' } }}
       >
-        <AspectRatio ratio={16 / 9} w={{ base: '100%', md: '35%' }}>
-          <NextImage
-            src={articleImage}
-            alt={title}
-            style={{ objectFit: 'cover' }}
-            fill
-          />
+        <AspectRatio
+          ratio={16 / 9}
+          w={{ base: '100%', md: '35%' }}
+          position="relative"
+        >
+          <>
+            {!isImageLoaded && (
+              <Skeleton
+                position="absolute"
+                top="0"
+                left="0"
+                width="100%"
+                height="100%"
+                borderRadius="inherit"
+                zIndex="1"
+              />
+            )}
+            <NextImage
+              src={articleImage}
+              alt={title}
+              fill
+              style={{ objectFit: 'cover' }}
+              onLoad={() => setIsImageLoaded(true)}
+            />
+          </>
         </AspectRatio>
+
         <Flex
           p={6}
           flex="1"

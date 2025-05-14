@@ -24,17 +24,12 @@
 ・理想はNotionで完結させる。Notionの画像読み込みを早くさせる。
 ・NotionAPIでDBを作成→配信させる
 ・NotionDBの画像表示が遅い件
-ImageWithSkeletonのsrcが正しく表示されるように修正
-index.tsxなどのfetch時に重複して表示されるのを防ぐ
-公開済みフィルター
 ・NextImageはISR機能が素晴らしいから、これにしよう
-    Next/Image化(Markdown部分)
-    つまり、fetchの最適化+ISRの初回ロード時に確実に画像を読み込めるような設計に
+    Next/Image化(Markdown部分のみまだ出来てない)
+    詳細ページのHeadline以外の画像読み込み時にローディングさせる
 ・cdnとして、toolpodを利用してもいいかも
     その場合Next/imageにする必要がある。
     https://qiita.com/kentawata/items/9693024c6dcef7dd2b6f
-    cdn=https://toolpods.io/image-cdn
-    https://imgur.com/user/whakamater/posts
     詳細ページ取得の高速化
 ・SafariとかだとSecondHeaderが見えない可能性(前田)
 ・投稿済み以外は表示しない

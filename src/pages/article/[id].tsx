@@ -48,9 +48,10 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const { fetchNotionDBItems } = await import(
     '@/lib/notion/fetchNotionDBItems'
   );
-  const items = await fetchNotionDBItems();
+  const response = await fetchNotionDBItems();
+  const items = response?.results ?? [];
 
-  const paths = (items ?? []).map((item) => ({
+  const paths = items.map((item) => ({
     params: { id: item.url }, // 「URL名」を[id]として使う
   }));
 
@@ -76,15 +77,21 @@ export const getStaticProps: GetStaticProps = async (context) => {
     '@/lib/notion/fetchNotionPageContent'
   );
 
-  const items = await fetchNotionDBItems();
-  const target = (items ?? []).find((item) => item.url === id);
+  // 記事内容の取得
+  // fetchNotionDBItemsで全件取得するのではなく、idからpage_idを取得してfetchNotionPageContentを呼び出す必要がある
+  // 現状のfetchNotionDBItemsはページネーション対応しているため、全件取得は非効率
+  // TODO: idからpage_idを取得する効率的な方法を検討
+  // 一旦、fetchNotionDBItemsで全件取得してからfindする（非効率だが現状のコード構造を大きく変えないため）
+  const allItemsResponse = await fetchNotionDBItems();
+  const allItems = allItemsResponse?.results ?? [];
+  const target = allItems.find((item) => item.url === id);
 
   if (!target) {
     return { notFound: true };
   }
 
   // 関連記事（現在のものを除外、最新3件）
-  const relatedArticles = (items ?? [])
+  const relatedArticles = allItems
     .filter((item) => item.url !== id)
     .slice(0, 3);
 
@@ -99,6 +106,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
       },
       relatedArticles,
     },
-    revalidate: 60 * 30, // 30分
+    revalidate: 60 * 30, //30分
   };
 };

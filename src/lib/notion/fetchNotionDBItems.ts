@@ -28,10 +28,21 @@ const notion = new Client({
   // logLevel: LogLevel.DEBUG, //クライアントが応答本文をログに記録するようにしたい場合
 });
 
-export async function fetchNotionDBItems() {
+export async function fetchNotionDBItems(
+  pageSize?: number,
+  startCursor?: string
+) {
   try {
     const res = await notion.databases.query({
       database_id: process.env.NOTION_DATABASE_ID!,
+      page_size: pageSize,
+      start_cursor: startCursor,
+      filter: {
+        property: 'ステータス',
+        status: {
+          equals: '公開済み',
+        },
+      },
       sorts: [
         {
           property: '公開日',
@@ -111,7 +122,11 @@ export async function fetchNotionDBItems() {
         };
       }
     );
-    return items;
+    return {
+      results: items,
+      next_cursor: res.next_cursor,
+      has_more: res.has_more,
+    };
   } catch (error: unknown) {
     if (isNotionClientError(error)) {
       switch (error.code) {
