@@ -64,7 +64,6 @@ export const ArticleHeadline: FC<Props> = ({
       <NextImage
         src={thumbnail}
         alt={title}
-        layout="responsive"
         width={1200}
         height={675}
         style={{
