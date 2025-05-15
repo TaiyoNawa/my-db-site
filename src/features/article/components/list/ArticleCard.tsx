@@ -69,6 +69,7 @@ export const ArticleCard: FC<ArticleCardProps> = ({
                 src={eyeCatch}
                 alt={titleSummary}
                 fill
+                unoptimized
                 style={{ objectFit: 'cover' }}
                 sizes="(max-width: 768px) 100vw, 472px"
                 onLoad={() => setIsImageLoaded(true)}

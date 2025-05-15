@@ -81,6 +81,7 @@ export const ArticleHeadline: FC<Props> = ({
           alt={title}
           width={1200}
           height={675}
+          unoptimized
           style={{
             borderRadius: '1rem',
             objectFit: 'cover',

@@ -58,6 +58,7 @@ export const ColumnArticleCard: FC<ColumnArticleCardProps> = ({
               src={articleImage}
               alt={title}
               fill
+              unoptimized
               style={{ objectFit: 'cover' }}
               onLoad={() => setIsImageLoaded(true)}
             />

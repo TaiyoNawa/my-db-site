@@ -25,6 +25,7 @@
 ・NotionAPIでDBを作成→配信させる
 ・NotionDBの画像表示が遅い件
 ・NextImageはISR機能が素晴らしいから、これにしよう
+    unoptimizedを使う？
     Next/Image化(Markdown部分のみまだ出来てない)
     詳細ページのHeadline以外の画像読み込み時にローディングさせる
 ・cdnとして、toolpodを利用してもいいかも
