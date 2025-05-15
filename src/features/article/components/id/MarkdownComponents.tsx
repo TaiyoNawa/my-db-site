@@ -1,3 +1,4 @@
+//src/features/article/components/id/MarkdownComponents.tsx
 import { CheckIcon, CopyIcon } from '@chakra-ui/icons';
 import {
   Box,
@@ -191,18 +192,21 @@ export const MarkdownComponents = {
       </Table>
     </Box>
   ),
-  img: (
-    { src, alt }: { src?: string; alt?: string } //できればNextImageを使いたいが例のエラーが出るので放置
-  ) => (
-    <Image
-      src={src ?? ''}
-      alt={alt ?? ''}
-      maxH="500px"
-      mx="auto"
-      borderRadius="md"
-      objectFit="contain"
-    />
-  ),
+  img: ({ src, alt }: { src?: string; alt?: string }) => {
+    const proxiedSrc = src
+      ? `/api/notion/image-proxy?url=${encodeURIComponent(src)}`
+      : '';
+    return (
+      <Image
+        src={proxiedSrc}
+        alt={alt ?? ''}
+        maxH="500px"
+        mx="auto"
+        borderRadius="md"
+        objectFit="contain"
+      />
+    );
+  },
   thead: Thead,
   tbody: Tbody,
   tr: Tr,

@@ -33,6 +33,7 @@ export const ArticleHeadline: FC<Props> = ({
     .filter((c) => c);
 
   const [isImageLoaded, setIsImageLoaded] = useState(false);
+  const proxiedSrc = `/api/notion/image-proxy?url=${encodeURIComponent(thumbnail)}`;
 
   return (
     <Box mb={{ base: '6', md: '10' }}>
@@ -77,11 +78,10 @@ export const ArticleHeadline: FC<Props> = ({
           />
         )}
         <NextImage
-          src={thumbnail}
+          src={proxiedSrc}
           alt={title}
           width={1200}
           height={675}
-          unoptimized
           style={{
             borderRadius: '1rem',
             objectFit: 'cover',

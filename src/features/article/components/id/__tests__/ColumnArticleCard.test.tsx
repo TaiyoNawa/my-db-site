@@ -32,11 +32,13 @@ describe('ColumnArticleCard', () => {
       expect(screen.getByText(baseProps.description)).toBeInTheDocument();
 
       const imageEl = screen.getByRole('img', { name: baseProps.title });
-      // Next.js の <Image> は src をラップするので、元のパスが含まれているか確認
+
       expect(imageEl).toHaveAttribute('src');
-      expect(imageEl.getAttribute('src')).toContain(
+
+      const doubleEncodedPath = encodeURIComponent(
         encodeURIComponent(baseProps.eyeCatch)
       );
+      expect(imageEl.getAttribute('src')).toContain(doubleEncodedPath);
     });
 
     test('eyeCatch が空の場合はフォールバック画像が表示される', () => {
@@ -44,7 +46,7 @@ describe('ColumnArticleCard', () => {
       const fallbackImage = screen.getByRole('img', { name: baseProps.title });
       expect(fallbackImage).toHaveAttribute('src');
       expect(fallbackImage.getAttribute('src')).toContain(
-        encodeURIComponent('/alt_image.png')
+        '/_next/image?url=%2Fapi%2Fnotion%2Fimage-proxy%3Furl%3D%252Falt_image.png'
       );
     });
 

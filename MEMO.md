@@ -26,6 +26,8 @@
 ・NotionDBの画像表示が遅い件
 ・NextImageはISR機能が素晴らしいから、これにしよう
     unoptimizedを使う？
+        unoptimizedを使っても、Markdownの中身のimageは変わらないので、完全な解決にはならない
+        →やはり、開発環境でローディング時間がかかる時は表示されるので、ローディング時間を入れるべき？
     Next/Image化(Markdown部分のみまだ出来てない)
     詳細ページのHeadline以外の画像読み込み時にローディングさせる
 ・cdnとして、toolpodを利用してもいいかも
