@@ -20,7 +20,6 @@ export const ColumnArticleCard: FC<ColumnArticleCardProps> = ({
 }) => {
   const articleImage = eyeCatch || '/alt_image.png';
   const [isImageLoaded, setIsImageLoaded] = useState(false);
-  const proxiedSrc = `/api/notion/image-proxy?url=${encodeURIComponent(articleImage)}`;
 
   return (
     <Link
@@ -53,10 +52,11 @@ export const ColumnArticleCard: FC<ColumnArticleCardProps> = ({
                 height="100%"
                 borderRadius="inherit"
                 zIndex="1"
+                speed={0}
               />
             )}
             <NextImage
-              src={proxiedSrc}
+              src={articleImage}
               alt={title}
               fill
               style={{ objectFit: 'cover' }}

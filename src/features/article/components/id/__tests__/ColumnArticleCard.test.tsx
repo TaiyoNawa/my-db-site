@@ -35,10 +35,8 @@ describe('ColumnArticleCard', () => {
 
       expect(imageEl).toHaveAttribute('src');
 
-      const doubleEncodedPath = encodeURIComponent(
-        encodeURIComponent(baseProps.eyeCatch)
-      );
-      expect(imageEl.getAttribute('src')).toContain(doubleEncodedPath);
+      const encodedPath = encodeURIComponent(baseProps.eyeCatch);
+      expect(imageEl.getAttribute('src')).toContain(encodedPath);
     });
 
     test('eyeCatch が空の場合はフォールバック画像が表示される', () => {
@@ -46,7 +44,7 @@ describe('ColumnArticleCard', () => {
       const fallbackImage = screen.getByRole('img', { name: baseProps.title });
       expect(fallbackImage).toHaveAttribute('src');
       expect(fallbackImage.getAttribute('src')).toContain(
-        '/_next/image?url=%2Fapi%2Fnotion%2Fimage-proxy%3Furl%3D%252Falt_image.png'
+        encodeURIComponent('/alt_image.png')
       );
     });
 

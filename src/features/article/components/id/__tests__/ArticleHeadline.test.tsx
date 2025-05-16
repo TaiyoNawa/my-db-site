@@ -74,10 +74,8 @@ describe('ArticleHeadline', () => {
     const thumbnailElement = screen.getByRole('img', { name: title });
     expect(thumbnailElement).toBeInTheDocument();
 
-    // `src` の完全一致は避け、画像パスが含まれていることだけ検証
-    expect(thumbnailElement.getAttribute('src')).toContain(
-      encodeURIComponent(thumbnail)
-    );
+    expect(thumbnailElement).toHaveAttribute('src', thumbnail);
+
     expect(thumbnailElement).toHaveAttribute('alt', title);
   });
 

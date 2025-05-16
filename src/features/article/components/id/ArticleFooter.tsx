@@ -11,7 +11,7 @@ type ArticleFooterProps = {
 
 export const ArticleFooter: FC<ArticleFooterProps> = ({ article }) => {
   return (
-    <Box mt="16" pt="8" borderTop="1px solid" borderColor="gray.200">
+    <Box borderColor="gray.200">
       <Text fontSize="sm" color="gray.500">
         この記事がお役に立ちましたか？ ぜひシェアや感想をお聞かせください。
       </Text>

@@ -20,22 +20,13 @@
 *** 記事ページ
 ・とりあえず記事詳細を作る＋NotionDBとの連携をする
 やること
-・まあとりあえずChatGPT頼りにならず、取得されるデータをconsoleで見ながら、どんなパラメータを描画すれば良いかを見ていこうよ
-・理想はNotionで完結させる。Notionの画像読み込みを早くさせる。
+・Google Analytics
+・読み込みエラー画像を作る→Headlineとか
 ・NotionAPIでDBを作成→配信させる
 ・NotionDBの画像表示が遅い件
-・NextImageはISR機能が素晴らしいから、これにしよう
-    unoptimizedを使う？
-        unoptimizedを使っても、Markdownの中身のimageは変わらないので、完全な解決にはならない
-        →やはり、開発環境でローディング時間がかかる時は表示されるので、ローディング時間を入れるべき？
-    Next/Image化(Markdown部分のみまだ出来てない)
-    詳細ページのHeadline以外の画像読み込み時にローディングさせる
-・cdnとして、toolpodを利用してもいいかも
-    その場合Next/imageにする必要がある。
-    https://qiita.com/kentawata/items/9693024c6dcef7dd2b6f
-    詳細ページ取得の高速化
+    ・Next/Image化(Markdown部分のみまだ出来てない)
+    ・cdnとしてtoolpodを利用
 ・SafariとかだとSecondHeaderが見えない可能性(前田)
-・投稿済み以外は表示しない
 ・APIのtest作成
 ・サムネ画像を動画に対応させる
 ・共有ボタン

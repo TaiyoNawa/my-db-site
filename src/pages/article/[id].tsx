@@ -1,5 +1,7 @@
-//pages/article/[id].tsx
+// pages/article/[id].tsx
 import { GetStaticPaths, GetStaticProps } from 'next';
+import { useRouter } from 'next/router';
+import useSWR from 'swr';
 
 import { useStickyHeader } from '@/hooks/useStickyHeader';
 
@@ -12,11 +14,31 @@ import { ArticleFooter } from '@/features/article/components/id/ArticleFooter';
 import { ArticleHeadline } from '@/features/article/components/id/ArticleHeadline';
 import { NotionDBItem } from '@/lib/notion/fetchNotionDBItems';
 
-const ArticlePage: React.FC<{
+type ArticleData = {
   article: NotionDBItem & { markdown: string };
   relatedArticles: NotionDBItem[];
-}> = ({ article, relatedArticles }) => {
+};
+
+const fetcher = async (url: string): Promise<ArticleData> => {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error('Failed to fetch article data');
+  return res.json() as Promise<ArticleData>;
+};
+
+const ArticlePage: React.FC<ArticleData> = (initialData) => {
   const { isHeaderHidden } = useStickyHeader();
+  const router = useRouter();
+  const { id } = router.query;
+
+  const { data } = useSWR<ArticleData>(
+    id ? `/api/notion/article?id=${Array.isArray(id) ? id[0] : id}` : null,
+    fetcher,
+    { fallbackData: initialData }
+  );
+
+  if (!data) return null;
+
+  const { article, relatedArticles } = data;
 
   return (
     <>
@@ -36,6 +58,8 @@ const ArticlePage: React.FC<{
           thumbnail={article.thumbnail}
         />
         <ArticleContents markdown={article.markdown} />
+      </SectionWrapper>
+      <SectionWrapper>
         <ArticleFooter article={relatedArticles} />
       </SectionWrapper>
     </>
@@ -43,7 +67,7 @@ const ArticlePage: React.FC<{
 };
 export default ArticlePage;
 
-//getStaticPathでビルド時に各[id]の全てのパスを取得
+//ISR設定(getStaticPathでビルド時に各[id]の全てのパスを取得)
 export const getStaticPaths: GetStaticPaths = async () => {
   const { fetchNotionDBItems } = await import(
     '@/lib/notion/fetchNotionDBItems'
@@ -68,7 +92,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 // getStaticPropsは"/article/[id]" に初回アクセス or 再生成タイミング（revalidate後のアクセス）時に実行される
 export const getStaticProps: GetStaticProps = async (context) => {
-  const { id } = context.params as { id: string }; //URL名を取得し、idとする。contextは動的パラメータ[id]を含むparamsプロパティを持つ
+  const { id } = context.params as { id: string };
 
   const { fetchNotionDBItems } = await import(
     '@/lib/notion/fetchNotionDBItems'
@@ -94,11 +118,11 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const relatedArticles = allItems
     .filter((item) => item.url !== id)
     .slice(0, 3);
-
   const markdown = await fetchNotionPageContent(target.page_id);
 
   return {
     //このpropsはArticlePageコンポーネント(表示部分)に渡される
+
     props: {
       article: {
         ...target,
@@ -106,6 +130,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
       },
       relatedArticles,
     },
-    revalidate: 60 * 30, //30分
+    revalidate: 60 * 30,
   };
 };

@@ -193,12 +193,9 @@ export const MarkdownComponents = {
     </Box>
   ),
   img: ({ src, alt }: { src?: string; alt?: string }) => {
-    const proxiedSrc = src
-      ? `/api/notion/image-proxy?url=${encodeURIComponent(src)}`
-      : '';
     return (
       <Image
-        src={proxiedSrc}
+        src={src}
         alt={alt ?? ''}
         maxH="500px"
         mx="auto"
