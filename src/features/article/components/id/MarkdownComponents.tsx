@@ -195,7 +195,7 @@ export const MarkdownComponents = {
   img: ({ src, alt }: { src?: string; alt?: string }) => {
     return (
       <Image
-        src={src}
+        src={src ?? '/fallback_image.png'}
         alt={alt ?? ''}
         maxH="500px"
         mx="auto"

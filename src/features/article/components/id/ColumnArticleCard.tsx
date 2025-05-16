@@ -3,6 +3,8 @@ import { Flex, Text, Link, AspectRatio, Skeleton } from '@chakra-ui/react';
 import NextImage from 'next/image';
 import { FC, useState } from 'react';
 
+import { usePresignedImage } from '@/features/article/hooks/usePresignedImage';
+
 type ColumnArticleCardProps = {
   eyeCatch: string;
   category: string;
@@ -18,8 +20,8 @@ export const ColumnArticleCard: FC<ColumnArticleCardProps> = ({
   description,
   url,
 }) => {
-  const articleImage = eyeCatch || '/alt_image.png';
   const [isImageLoaded, setIsImageLoaded] = useState(false);
+  const imageSrc = usePresignedImage(eyeCatch) || '/fallback_image.png';
 
   return (
     <Link
@@ -56,7 +58,7 @@ export const ColumnArticleCard: FC<ColumnArticleCardProps> = ({
               />
             )}
             <NextImage
-              src={articleImage}
+              src={imageSrc}
               alt={title}
               fill
               style={{ objectFit: 'cover' }}

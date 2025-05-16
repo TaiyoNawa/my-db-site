@@ -14,6 +14,8 @@ import { FC, useState } from 'react';
 
 import { CurrentLinkCopyButton } from '@/components/button/CurrentLinkCopyButton';
 
+import { usePresignedImage } from '@/features/article/hooks/usePresignedImage';
+
 type Props = {
   title: string;
   category: string;
@@ -33,7 +35,8 @@ export const ArticleHeadline: FC<Props> = ({
     .filter((c) => c);
 
   const [isImageLoaded, setIsImageLoaded] = useState(false);
-  const imageSrc = thumbnail;
+  // ★期限チェック＆再取得
+  const imageSrc = usePresignedImage(thumbnail) || '/fallback_image.png';
 
   return (
     <Box mb={{ base: '6', md: '10' }}>

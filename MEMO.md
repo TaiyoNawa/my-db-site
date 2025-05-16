@@ -18,14 +18,20 @@
 ・音量調整(react-bitsのElastic Slider)
 
 *** 記事ページ
-・とりあえず記事詳細を作る＋NotionDBとの連携をする
 やること
 ・Google Analytics
 ・読み込みエラー画像を作る→Headlineとか
-・NotionAPIでDBを作成→配信させる
+・都度fetch
+    やること‼️
+    ・HeadLine画像だけはawrで再fetchさせる
+    ・Contentsはfallback_image表示(再ロードしてねという表記の写真)
+    ・FooterはとりあえずfallBackでできたら再fetch
+・fetchNotionDBItems を全件取得せず、Notionの「filter」機能などを活用して url === id のアイテムだけ取得するAPI（軽量化）を lib/notion に作るとより効率的です。
 ・NotionDBの画像表示が遅い件
     ・Next/Image化(Markdown部分のみまだ出来てない)
     ・cdnとしてtoolpodを利用
+
+
 ・SafariとかだとSecondHeaderが見えない可能性(前田)
 ・APIのtest作成
 ・サムネ画像を動画に対応させる
