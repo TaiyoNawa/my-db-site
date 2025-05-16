@@ -26,7 +26,8 @@
     ・HeadLine画像だけはawrで再fetchさせる
     ・Contentsはfallback_image表示(再ロードしてねという表記の写真)
     ・FooterはとりあえずfallBackでできたら再fetch
-・fetchNotionDBItems を全件取得せず、Notionの「filter」機能などを活用して url === id のアイテムだけ取得するAPI（軽量化）を lib/notion に作るとより効率的です。
+・fetchNotionDBItems を全件取得せず、Notionの「filter」機能などを活用して url === id のアイテムだけ取得する
+    API（軽量化）を lib/notion に作るとより効率的です。
 ・NotionDBの画像表示が遅い件
     ・Next/Image化(Markdown部分のみまだ出来てない)
     ・cdnとしてtoolpodを利用

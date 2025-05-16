@@ -193,14 +193,22 @@ export const MarkdownComponents = {
     </Box>
   ),
   img: ({ src, alt }: { src?: string; alt?: string }) => {
+    const fallbackSrc = '/fallback_image.png';
+
     return (
       <Image
-        src={src ?? '/fallback_image.png'}
+        src={src ?? fallbackSrc}
         alt={alt ?? ''}
         maxH="500px"
         mx="auto"
         borderRadius="md"
         objectFit="contain"
+        onError={(e) => {
+          const target = e.target as HTMLImageElement;
+          if (target.src !== window.location.origin + fallbackSrc) {
+            target.src = fallbackSrc;
+          }
+        }}
       />
     );
   },

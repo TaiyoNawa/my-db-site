@@ -7,23 +7,32 @@ interface RefreshThumbnailResponse {
   newUrl: string;
 }
 
-const fetcher = async (oldUrl: string): Promise<string> => {
+// 引数を [oldUrl, title] に変更
+const fetcher = async ([oldUrl, title]: [string, string]): Promise<string> => {
+  await new Promise((resolve) => setTimeout(resolve, 10000));
+
   const res = await fetch(
-    `/api/refresh-thumbnail?url=${encodeURIComponent(oldUrl)}`
+    `/api/notion/refresh-thumbnail?url=${encodeURIComponent(
+      oldUrl
+    )}&title=${encodeURIComponent(title)}`
   );
   if (!res.ok) throw new Error('Failed to fetch new image URL');
-  const data = (await res.json()) as unknown as RefreshThumbnailResponse;
+  const data = (await res.json()) as RefreshThumbnailResponse;
   return data.newUrl;
 };
 
-export const usePresignedImage = (initialUrl: string) => {
-  const expiresAt = getExpirationFromUrl(initialUrl);
+export const usePresignedImage = (oldUrl: string, title: string) => {
+  const expiresAt = getExpirationFromUrl(oldUrl);
   const isExpired = expiresAt ? new Date() > expiresAt : false;
 
-  const { data: updatedUrl } = useSWR(isExpired ? initialUrl : null, fetcher, {
-    revalidateOnFocus: false,
-    revalidateIfStale: false,
-  });
+  const { data: updatedUrl } = useSWR(
+    isExpired ? [oldUrl, title] : null,
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      revalidateIfStale: false,
+    }
+  );
 
-  return updatedUrl || initialUrl;
+  return updatedUrl || oldUrl;
 };

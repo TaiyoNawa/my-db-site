@@ -4,21 +4,23 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 
 const notion = new Client({ auth: process.env.NOTION_TOKEN });
 
-const getNewSignedImageUrl = async (slug: string): Promise<string> => {
+const getNewSignedImageUrlByTitle = async (title: string): Promise<string> => {
   const databaseId = process.env.NOTION_DATABASE_ID!;
   const res = await notion.databases.query({
     database_id: databaseId,
     filter: {
-      property: 'URL名',
-      rich_text: {
-        equals: slug,
+      property: 'タイトル',
+      title: {
+        equals: title,
       },
     },
   });
 
-  if (res.results.length === 0) throw new Error('No page found with that slug');
+  if (res.results.length === 0)
+    throw new Error('No page found with that title');
 
   const page = res.results[0];
+
   type NotionFile = {
     type: 'file' | 'external';
     file?: { url: string };
@@ -34,7 +36,6 @@ const getNewSignedImageUrl = async (slug: string): Promise<string> => {
     サムネイル画像?: ThumbnailProperty;
   };
 
-  // Check if 'properties' exists on the page object
   if (!('properties' in page)) {
     throw new Error('Page does not have properties');
   }
@@ -49,7 +50,7 @@ const getNewSignedImageUrl = async (slug: string): Promise<string> => {
         : thumbnailProp.files[0]?.type === 'external'
           ? thumbnailProp.files[0].external?.url
           : ''
-      : '/alt_image.png';
+      : '';
 
   return typeof newUrl === 'string' ? newUrl : '';
 };
@@ -58,24 +59,14 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { url } = req.query;
+  const { url, title } = req.query;
 
-  if (!url || typeof url !== 'string') {
-    return res.status(400).json({ error: 'Invalid URL' });
+  if (!url || typeof url !== 'string' || !title || typeof title !== 'string') {
+    return res.status(400).json({ error: 'Invalid URL or title' });
   }
 
   try {
-    const parsed = new URL(url);
-    const slug = parsed.pathname
-      .split('/')
-      .pop()
-      ?.replace(/\.jpg|\.png|\.webp|\.jpeg$/, '');
-
-    if (!slug) {
-      return res.status(400).json({ error: 'Could not extract slug' });
-    }
-
-    const newUrl = await getNewSignedImageUrl(slug);
+    const newUrl = await getNewSignedImageUrlByTitle(title);
     res.status(200).json({ newUrl });
   } catch (err) {
     console.error(err);

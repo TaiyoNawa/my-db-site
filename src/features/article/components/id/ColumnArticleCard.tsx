@@ -21,7 +21,7 @@ export const ColumnArticleCard: FC<ColumnArticleCardProps> = ({
   url,
 }) => {
   const [isImageLoaded, setIsImageLoaded] = useState(false);
-  const imageSrc = usePresignedImage(eyeCatch) || '/fallback_image.png';
+  const imageSrc = usePresignedImage(eyeCatch, title) || '/fallback_image.png';
 
   return (
     <Link

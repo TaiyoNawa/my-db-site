@@ -17,18 +17,15 @@ import {
   PulseLoader,
   RingLoader,
   RiseLoader,
-  RotateLoader,
   ScaleLoader,
   SyncLoader,
   ClimbingBoxLoader,
   MoonLoader,
-  PropagateLoader,
   SquareLoader,
   SkewLoader,
 } from 'react-spinners';
 
 const spinnerConfigs = [
-  //サイズ等は適宜調整する
   {
     Component: BarLoader,
     props: (size: number, color: string) => ({
@@ -55,7 +52,11 @@ const spinnerConfigs = [
   },
   {
     Component: ClockLoader,
-    props: (size: number, color: string) => ({ size, color }),
+    props: (size: number, color: string) => ({
+      height: size,
+      width: size,
+      color,
+    }),
   },
   {
     Component: DotLoader,
@@ -64,8 +65,7 @@ const spinnerConfigs = [
   {
     Component: FadeLoader,
     props: (size: number, color: string) => ({
-      height: size / 2,
-      width: size,
+      size,
       color,
     }),
   },
@@ -98,10 +98,6 @@ const spinnerConfigs = [
     props: (size: number, color: string) => ({ size, color }),
   },
   {
-    Component: RotateLoader,
-    props: (size: number, color: string) => ({ size, color }),
-  },
-  {
     Component: ScaleLoader,
     props: (size: number, color: string) => ({
       height: size,
@@ -115,14 +111,10 @@ const spinnerConfigs = [
   },
   {
     Component: ClimbingBoxLoader,
-    props: (size: number, color: string) => ({ size, color }),
+    props: (size: number, color: string) => ({ size: size / 2, color }),
   },
   {
     Component: MoonLoader,
-    props: (size: number, color: string) => ({ size, color }),
-  },
-  {
-    Component: PropagateLoader,
     props: (size: number, color: string) => ({ size, color }),
   },
   {

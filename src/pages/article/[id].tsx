@@ -130,6 +130,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
       },
       relatedArticles,
     },
-    revalidate: 60 * 30,
+    revalidate: 60 * 30, // 30分ごとに再生成
   };
 };
