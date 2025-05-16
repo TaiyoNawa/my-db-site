@@ -1,4 +1,4 @@
-// src/features/article/hooks/usePresignedImage.ts
+// src/utils/getExpirationFromUrl.ts
 export const getExpirationFromUrl = (url: string): Date | null => {
   try {
     const parsed = new URL(url);
