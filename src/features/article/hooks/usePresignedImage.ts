@@ -9,8 +9,6 @@ interface RefreshThumbnailResponse {
 
 // 引数を [oldUrl, title] に変更
 const fetcher = async ([oldUrl, title]: [string, string]): Promise<string> => {
-  await new Promise((resolve) => setTimeout(resolve, 10000));
-
   const res = await fetch(
     `/api/notion/refresh-thumbnail?url=${encodeURIComponent(
       oldUrl
