@@ -2421,15 +2421,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@next/third-parties@npm:^15.3.2":
-  version: 15.3.2
-  resolution: "@next/third-parties@npm:15.3.2"
+"@next/third-parties@npm:14.2.14":
+  version: 14.2.14
+  resolution: "@next/third-parties@npm:14.2.14"
   dependencies:
     third-party-capital: "npm:1.0.20"
   peerDependencies:
-    next: ^13.0.0 || ^14.0.0 || ^15.0.0
-    react: ^18.2.0 || 19.0.0-rc-de68d2f4-20241204 || ^19.0.0
-  checksum: 10c0/7e2c6ac9beb2117a363e25b31a2241b56e02e449f8542ccd84c2c4b9e418c029e8b8f9e3f659f451f9c2a3b29a83e879c08faee4a201fb3c9240bc6915a6bd62
+    next: ^13.0.0 || ^14.0.0
+    react: ^18.2.0
+  checksum: 10c0/3af876f5f09c40c99aa3d9bfbe3d2dadb26483e20f3cd366521c278a9fd327e079d8f1465bf40bf082ed0dc0db9f5798b4fae5479446dd680e5ece74462a53ed
   languageName: node
   linkType: hard
 
@@ -9434,7 +9434,7 @@ __metadata:
     "@chromatic-com/storybook": "npm:^3.2.6"
     "@emotion/react": "npm:^11.11.4"
     "@emotion/styled": "npm:^11.11.5"
-    "@next/third-parties": "npm:^15.3.2"
+    "@next/third-parties": "npm:14.2.14"
     "@notionhq/client": "npm:^2.3.0"
     "@storybook/addon-a11y": "npm:^8.6.12"
     "@storybook/addon-actions": "npm:^8.6.12"
