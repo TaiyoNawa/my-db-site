@@ -8,7 +8,7 @@ import { DefaultMeta } from '@/components/meta/DefaultMeta';
 import { theme } from '../styles/theme';
 
 import type { AppProps } from 'next/app';
-const gtmId: string = process.env.GOOGLE_TAG_MANAGER_ID || '';
+const gtmId: string = process.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID || '';
 
 const options = {
   focusThrottleInterval: 60_000,
