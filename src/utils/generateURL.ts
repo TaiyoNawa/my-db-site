@@ -9,14 +9,15 @@ export const getBaseUrl = (): string => {
     return window.location.origin;
   }
 
-  // サーバー環境(テスト環境)
+  // サーバー環境(テスト・本番環境)
   const vercelUrl = process.env.NEXT_PUBLIC_VERCEL_URL;
-
+  //NEXT_PUBLIC_VERCEL_URLはvercel側で自動で設定される環境変数。デプロイごとに異なる
+  //例： https://your-branch-name.vercel.app
   if (vercelUrl) {
     return `https://${vercelUrl}`;
   }
 
-  // ローカル開発など
+  // ローカル開発(localhost)など
   return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 };
 
