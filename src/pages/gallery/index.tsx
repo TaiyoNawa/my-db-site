@@ -13,7 +13,7 @@ export default function Posts() {
     <>
       <GalleryMeta
         title="ギャラリー | Alkyne"
-        description="ギャラリーを見つけましょう"
+        description="ギャラリーをご覧ください。"
         ogUrl="/gallery"
       />
       <SecondHeader isHeaderHidden={isHeaderHidden} title="Gallery" />
