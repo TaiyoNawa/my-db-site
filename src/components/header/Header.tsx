@@ -16,11 +16,12 @@ import {
   PopoverTrigger,
   PopoverContent,
   useColorModeValue,
+  Link,
+  Image,
   // useBreakpointValue,
   useDisclosure,
 } from '@chakra-ui/react';
 import { FC } from 'react';
-import { AiOutlineQq } from 'react-icons/ai';
 
 import { HeaderWrapper } from './HeaderWrapper';
 import { HEADER_HEIGHT } from '../../assets/data/HeaderAssets';
@@ -58,9 +59,15 @@ export const Header: FC = () => {
             />
           </Flex>
           <Flex flex={{ base: 1 }} justify={{ base: 'center', md: 'start' }}>
-            <Box borderRadius={'full'} bg="pink.100">
-              <AiOutlineQq size={30} color="#ff002b" />
-            </Box>
+            <Link borderRadius="full" href="/">
+              <Image
+                src="/AlkyneCircleLogo.png"
+                alt="Alkyne Logo"
+                width={7}
+                objectFit="cover"
+                borderRadius="full"
+              />
+            </Link>
 
             <Flex display={{ base: 'none', md: 'flex' }} ml={10}>
               <DesktopNav />

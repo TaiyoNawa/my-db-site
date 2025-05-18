@@ -43,7 +43,7 @@ const ArticlePage: React.FC<ArticleData> = (initialData) => {
   return (
     <>
       <ArticleMeta
-        title={article.title}
+        title={article.title + ' | Alkyne'}
         description={article.description || article.title}
         // ogImage={article.ogImage || article.thumbnail}//一旦ogImageはロゴを使用
         ogUrl={`/article/${article.url}`}

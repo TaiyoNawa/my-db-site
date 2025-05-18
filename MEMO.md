@@ -1,6 +1,9 @@
 ** MEMO
-*** 優先順位
-- 記事作成+NotionDB接続
+*** やること‼️
+- ArticleContentsの画像を自動再fetch
+- 音量調整(react-bitsのElastic Slider)
+- Musicページを検索ページに引っ越し
+- (記事フィルター機能)
 
 *** 検索ページ
 ・Music, Manga, Anime, Imageとかを全てごちゃ混ぜで検索できる
@@ -15,11 +18,8 @@
 ・各アーティストの紹介記事などは手作りで、別のページで実装
     ・ここでSpotifyPlayerを使うのはアリ
     ・イベント情報一覧ページに繋げられたら理想
-・音量調整(react-bitsのElastic Slider)
 
 *** 記事ページ
-やること‼️
-    ・Google Analytics
     ・fetchNotionDBItems を全件取得せず、Notionの「filter」機能などを活用して url === id の　アイテムだけ取得する→→PI（軽量化）を lib/notion に作るとより効率的です。
 ・NotionDBの画像表示が遅い件
     ・Next/Image化(Markdown部分のみまだ出来てない)
@@ -28,9 +28,9 @@
 ・APIのtest作成
 ・サムネ画像を動画に対応させる
 ・共有ボタン
-・インデックスはidで付与しない方が良い(backボタンで何度も戻る羽目になる)
+・目次の各項目はidで付与しない方が良い(backボタンで何度も戻る羽目になる)
 
-・Meta情報!大事!
+*** Meta情報!大事!
     Galleryページの漫画とMusicはまだメタ設定してないが、サイトの構成が決まっていないので、それが決まり次第GalleryMetaを使って更新。
 
 

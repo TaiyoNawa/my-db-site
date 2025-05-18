@@ -50,7 +50,6 @@ export const SpotifyPlaylistList: FC<SpotifyPlaylistListProps> = ({
           `/api/spotify/PlaylistSearch?keyword=${encodeURIComponent(keyword)}` //リクエスト送信
         );
         const data = (await res.json()) as Playlist[];
-        console.log(data);
         setPlaylists(data);
       } catch (err) {
         console.error('プレイリスト検索エラー:', err);
