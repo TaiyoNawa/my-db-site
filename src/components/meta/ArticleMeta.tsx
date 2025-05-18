@@ -1,19 +1,21 @@
-// features/article/components/ArticleMeta.tsx
+// src/components/meta/ArticleMeta.tsx
 import { NextSeo } from 'next-seo';
 import { FC } from 'react';
 
-type Props = {
+import { generateUrl } from '@/utils/generateURL';
+
+type ArticleMetaProps = {
   title: string;
   description: string;
-  ogImage: string;
+  ogImage?: string;
   ogUrl: string;
   category?: string;
 };
 
-export const ArticleMeta: FC<Props> = ({
+export const ArticleMeta: FC<ArticleMetaProps> = ({
   title,
   description,
-  ogImage,
+  ogImage = '/AlkyneLogo.png',
   ogUrl,
   category,
 }) => {
@@ -21,20 +23,19 @@ export const ArticleMeta: FC<Props> = ({
     <NextSeo
       title={title}
       description={description}
-      canonical={ogUrl}
+      canonical={generateUrl(ogUrl)}
       openGraph={{
-        url: ogUrl,
+        url: generateUrl(ogUrl),
         title,
         description,
         images: [
           {
-            url: ogImage,
+            url: generateUrl(ogImage),
             width: 1200,
             height: 630,
             alt: title,
           },
         ],
-        site_name: 'Your Site Name',
       }}
       additionalMetaTags={
         category ? [{ name: 'category', content: category }] : undefined

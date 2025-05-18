@@ -3,6 +3,7 @@ import { GoogleTagManager } from '@next/third-parties/google';
 import { SWRConfig } from 'swr';
 
 import { Layout } from '@/components/Layout';
+import { DefaultMeta } from '@/components/meta/DefaultMeta';
 
 import { theme } from '../styles/theme';
 
@@ -18,11 +19,12 @@ const options = {
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <ChakraProvider theme={theme}>
+      <DefaultMeta />
+      <GoogleTagManager gtmId={gtmId} />
       <Layout>
         <SWRConfig value={options}>
           <Component {...pageProps} />
         </SWRConfig>
-        <GoogleTagManager gtmId={gtmId} />
       </Layout>
     </ChakraProvider>
   );

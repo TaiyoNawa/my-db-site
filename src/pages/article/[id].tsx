@@ -7,8 +7,8 @@ import { useStickyHeader } from '@/hooks/useStickyHeader';
 
 import { SectionWrapper } from '@/components/SectionWrapper';
 import { SecondHeader } from '@/components/header/SecondHeader';
+import { ArticleMeta } from '@/components/meta/ArticleMeta';
 
-import { ArticleMeta } from '@/features/article/components/ArticleMeta';
 import { ArticleContents } from '@/features/article/components/id/ArticleContents';
 import { ArticleFooter } from '@/features/article/components/id/ArticleFooter';
 import { ArticleHeadline } from '@/features/article/components/id/ArticleHeadline';
@@ -45,7 +45,7 @@ const ArticlePage: React.FC<ArticleData> = (initialData) => {
       <ArticleMeta
         title={article.title}
         description={article.description || article.title}
-        ogImage={article.ogImage || article.thumbnail}
+        // ogImage={article.ogImage || article.thumbnail}//一旦ogImageはロゴを使用
         ogUrl={`/article/${article.url}`}
         category={article.category}
       />

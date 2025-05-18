@@ -8,6 +8,7 @@ import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { SectionWrapper } from '@/components/SectionWrapper';
 import { CurrentLinkCopyButton } from '@/components/button/CurrentLinkCopyButton';
 import { SecondHeader } from '@/components/header/SecondHeader';
+import { ArticleMeta } from '@/components/meta/ArticleMeta';
 
 import { ArticleCardProps } from '@/features/article/components/list/ArticleCard';
 import { ArticleList } from '@/features/article/components/list/ArticleList';
@@ -73,6 +74,12 @@ export default function Posts() {
 
   return (
     <>
+      <ArticleMeta
+        title={'記事一覧 | Alkyne'}
+        description={'記事を見つけましょう'}
+        ogImage={'/AlkyneLogo.png'}
+        ogUrl={'/article'}
+      />
       <SecondHeader isHeaderHidden={isHeaderHidden} title="Article" />
       <SectionWrapper>
         <CurrentLinkCopyButton mb="10" />

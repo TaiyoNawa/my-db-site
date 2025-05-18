@@ -5,10 +5,10 @@ import { useStickyHeader } from '@/hooks/useStickyHeader';
 
 import { SectionWrapper } from '@/components/SectionWrapper';
 import { SecondHeader } from '@/components/header/SecondHeader';
+import { SearchMeta } from '@/components/meta/SearchMeta';
 
 import { ImageList } from '@/features/search/image/components/ImageList';
 import { ImageSearchForm } from '@/features/search/image/components/ImageSearchForm';
-
 export default function ImageSearchPage() {
   const { isHeaderHidden } = useStickyHeader();
   const [keyword, setKeyword] = useState('');
@@ -21,8 +21,13 @@ export default function ImageSearchPage() {
 
   return (
     <>
+      <SearchMeta
+        title="画像 | Alkyne"
+        description="画像を検索しましょう"
+        ogUrl="/search/image"
+        category="画像"
+      />
       <SecondHeader isHeaderHidden={isHeaderHidden} title="Search" />
-
       <SectionWrapper>
         <Heading as="h4" fontSize="2xl" mb={2}>
           探す（Find）

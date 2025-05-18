@@ -4,14 +4,20 @@ import { useStickyHeader } from '@/hooks/useStickyHeader';
 
 import { SectionWrapper } from '@/components/SectionWrapper';
 import { SecondHeader } from '@/components/header/SecondHeader';
+import { SearchMeta } from '@/components/meta/SearchMeta';
 
 import { ManganimeSearchTabs } from '@/features/search/manganime/components/ManganimeSearchTabs';
-
 export default function ManganimeIndex() {
   const { isHeaderHidden } = useStickyHeader();
 
   return (
     <>
+      <SearchMeta
+        title="漫画・アニメ | Alkyne"
+        description="漫画・アニメを検索しましょう"
+        ogUrl="/search/manganime"
+        category="漫画, アニメ"
+      />
       <SecondHeader isHeaderHidden={isHeaderHidden} title="Search" />
 
       <SectionWrapper>
