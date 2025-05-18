@@ -1,4 +1,5 @@
 import { ChakraProvider } from '@chakra-ui/react';
+import { GoogleTagManager } from '@next/third-parties/google';
 import { SWRConfig } from 'swr';
 
 import { Layout } from '@/components/Layout';
@@ -6,6 +7,7 @@ import { Layout } from '@/components/Layout';
 import { theme } from '../styles/theme';
 
 import type { AppProps } from 'next/app';
+const gtmId: string = process.env.GOOGLE_TAG_MANAGER_ID || '';
 
 const options = {
   focusThrottleInterval: 60_000,
@@ -20,7 +22,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <SWRConfig value={options}>
           <Component {...pageProps} />
         </SWRConfig>
-        {/* <GoogleTagManagerLoader sec={2} /> */}
+        <GoogleTagManager gtmId={gtmId} />
       </Layout>
     </ChakraProvider>
   );
