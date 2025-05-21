@@ -5,8 +5,8 @@ import { useStickyHeader } from '@/hooks/useStickyHeader';
 import { SectionWrapper } from '@/components/SectionWrapper';
 import { SecondHeader } from '@/components/header/SecondHeader';
 
-import { SpotifyPlayer } from '@/features/gallery/music/component/SpotifyPlayer';
-import { SpotifySearchTabs } from '@/features/gallery/music/component/SpotifySearchTabs';
+import { SpotifyPlayer } from '@/features/search/music/component/SpotifyPlayer';
+import { SpotifySearchTabs } from '@/features/search/music/component/SpotifySearchTabs';
 
 export default function Posts() {
   const { isHeaderHidden } = useStickyHeader();

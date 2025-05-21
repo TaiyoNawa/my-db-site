@@ -91,15 +91,13 @@ const footerLinks: FooterLink[] = [
   {
     label: 'ギャラリー',
     href: '/gallery',
-    children: [
-      { label: 'マンガ', href: '/gallery/manga' },
-      { label: 'ミュージック', href: '/gallery/music' },
-    ],
+    children: [{ label: 'マンガ', href: '/gallery/manga' }],
   },
   {
     label: '検索',
     href: '/search',
     children: [
+      { label: 'ミュージック', href: '/search/music' },
       { label: 'マンガ・アニメ', href: '/search/manganime' },
       { label: '画像', href: '/search/image' },
     ],

@@ -315,17 +315,17 @@ const NAV_ITEMS: Array<NavItem> = [
         subLabel: 'Find your favorite story',
         href: '/gallery/manga',
       },
-      {
-        label: 'ミュージック',
-        subLabel: 'An exclusive list to listen',
-        href: '/gallery/music',
-      },
     ],
   },
   {
     label: '検索',
     href: '/search',
     children: [
+      {
+        label: 'ミュージック',
+        subLabel: 'An exclusive list to listen',
+        href: '/search/music',
+      },
       {
         label: 'マンガ・アニメ',
         subLabel: 'Find your favorite manga/anime',
