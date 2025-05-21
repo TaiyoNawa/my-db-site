@@ -2,7 +2,7 @@
 *** やること‼️
 - ArticleContentsの画像を自動再fetch
 - 音量調整(react-bitsのElastic Slider)
-- Musicページを検索ページに引っ越し
+- Homeページ(https://alkyne.net/
 - (記事フィルター機能)
 
 *** 検索ページ
