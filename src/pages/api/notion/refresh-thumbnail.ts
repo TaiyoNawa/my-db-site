@@ -1,3 +1,4 @@
+// src/pages/api/notion/refresh-thumbnail.ts
 import { Client } from '@notionhq/client';
 
 import type { NextApiRequest, NextApiResponse } from 'next';

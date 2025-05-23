@@ -57,7 +57,7 @@ const ArticlePage: React.FC<ArticleData> = (initialData) => {
           createdAt={article.releaseDate}
           thumbnail={article.thumbnail}
         />
-        <ArticleContents markdown={article.markdown} />
+        <ArticleContents markdown={article.markdown} pageId={article.page_id} />
       </SectionWrapper>
       <SectionWrapper>
         <ArticleFooter article={relatedArticles} />

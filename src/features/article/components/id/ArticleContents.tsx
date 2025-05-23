@@ -5,13 +5,14 @@ import ReactMarkdown from 'react-markdown';
 import rehypeHighlight from 'rehype-highlight';
 import remarkGfm from 'remark-gfm';
 
-import 'highlight.js/styles/github.css';
 import { MarkdownComponents } from '@/features/article/components/id/MarkdownComponents';
+import { PageIdContext } from '@/features/article/contexts/PageIdContext';
 
 import { IndexOfContent } from './IndexOfContents';
 
 type Props = {
   markdown: string;
+  pageId: string;
 };
 
 // h2の文字の不要な部分を消す関数
@@ -20,7 +21,7 @@ export const generateAnchorId = (text: string) => {
   return encodeURIComponent(text.replace(/\s+/g, ''));
 };
 
-export const ArticleContents: FC<Props> = ({ markdown }) => {
+export const ArticleContents: FC<Props> = ({ markdown, pageId }) => {
   // h2にidを付与
   const headings = useMemo(() => {
     const lines = markdown.split('\n');
@@ -34,20 +35,22 @@ export const ArticleContents: FC<Props> = ({ markdown }) => {
   }, [markdown]);
 
   return (
-    <Box
-      fontSize={{ base: 'md', md: 'lg' }}
-      lineHeight="tall"
-      fontFamily="body"
-    >
-      <IndexOfContent headings={headings} />
-      <ReactMarkdown
-        remarkPlugins={[remarkGfm]}
-        rehypePlugins={[rehypeHighlight]}
-        components={MarkdownComponents}
-        unwrapDisallowed={true}
+    <PageIdContext.Provider value={pageId}>
+      <Box
+        fontSize={{ base: 'md', md: 'lg' }}
+        lineHeight="tall"
+        fontFamily="body"
       >
-        {markdown}
-      </ReactMarkdown>
-    </Box>
+        <IndexOfContent headings={headings} />
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
+          rehypePlugins={[rehypeHighlight]}
+          components={MarkdownComponents}
+          unwrapDisallowed={true}
+        >
+          {markdown}
+        </ReactMarkdown>
+      </Box>
+    </PageIdContext.Provider>
   );
 };

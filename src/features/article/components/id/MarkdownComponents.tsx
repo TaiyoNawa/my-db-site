@@ -13,7 +13,6 @@ import {
   Tr,
   Text,
   Heading,
-  Image,
   useClipboard,
   Button,
 } from '@chakra-ui/react';
@@ -25,6 +24,7 @@ import React, {
 } from 'react';
 
 import { generateAnchorId } from '@/features/article/components/id/ArticleContents';
+import { MarkdownImage } from '@/features/article/components/id/MarkdownImage';
 
 type MarkdownProps = PropsWithChildren<{ id?: string }>;
 
@@ -192,26 +192,7 @@ export const MarkdownComponents = {
       </Table>
     </Box>
   ),
-  img: ({ src, alt }: { src?: string; alt?: string }) => {
-    const fallbackSrc = '/fallback_image.png';
-
-    return (
-      <Image
-        src={src ?? fallbackSrc}
-        alt={alt ?? ''}
-        maxH="500px"
-        mx="auto"
-        borderRadius="md"
-        objectFit="contain"
-        onError={(e) => {
-          const target = e.target as HTMLImageElement;
-          if (target.src !== window.location.origin + fallbackSrc) {
-            target.src = fallbackSrc;
-          }
-        }}
-      />
-    );
-  },
+  img: (props: { src?: string; alt?: string }) => <MarkdownImage {...props} />,
   thead: Thead,
   tbody: Tbody,
   tr: Tr,
