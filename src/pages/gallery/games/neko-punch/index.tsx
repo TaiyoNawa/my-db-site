@@ -20,7 +20,6 @@ const NekoPunchGame: React.FC = () => {
   const { isHeaderHidden } = useStickyHeader();
 
   const startGame = () => {
-    console.log('startGame called');
     setGameState('play');
   };
 
