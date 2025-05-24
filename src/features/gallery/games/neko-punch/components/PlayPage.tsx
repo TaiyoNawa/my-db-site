@@ -109,7 +109,7 @@ export const PlayPage: React.FC<PlayPageProps> = ({ onEnd }) => {
             setTimeout(() => setFakeAnimal(null), 500);
             fakeCountRef.current += 1;
           }
-        }, 1000); // 1秒ごとに判定（最大6回程度可能）
+        }, 1000); // 1秒ごとに判定（最大7回程度出現）
       };
 
       const fakeStartTimer = setTimeout(() => {
@@ -138,7 +138,7 @@ export const PlayPage: React.FC<PlayPageProps> = ({ onEnd }) => {
     } else if (gameState === 'wait' || gameState === 'countdown') {
       setGameState('penalty');
       setTimeout(() => {
-        onEnd(null); // ペナルティ時は null を返す
+        onEnd(null); // フライングはnullを返す
       }, 1000);
     }
   };

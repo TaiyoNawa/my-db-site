@@ -1,6 +1,5 @@
 ** MEMO
 *** やること‼️
-- 
 - 音量調整(react-bitsのElastic Slider)
 - 各ページのホームでアイテムをカードで一覧表示
 - Homeページ(https://alkyne.net/
