@@ -45,7 +45,6 @@ const NekoPunchGame: React.FC = () => {
       <SecondHeader title="Gallery" isHeaderHidden={isHeaderHidden} />
       <SectionWrapper>
         <Box minH="100vh">
-          {' '}
           {/* 背景色と最小高さを追加 */}
           {gameState === 'home' && <HomePage onStart={startGame} />}
           {gameState === 'play' && <PlayPage onEnd={endGame} />}
