@@ -8,9 +8,9 @@ import { SectionWrapper } from '@/components/SectionWrapper';
 import { SecondHeader } from '@/components/header/SecondHeader';
 import { GalleryMeta } from '@/components/meta/GalleryMeta';
 
-import { HomePage } from '../../../../features/gallery/games/neko-punch/components/HomePage';
-import { PlayPage } from '../../../../features/gallery/games/neko-punch/components/PlayPage';
-import { ResultPage } from '../../../../features/gallery/games/neko-punch/components/ResultPage';
+import { HomePage } from '@/features/gallery/games/neko-punch/components/HomePage';
+import { PlayPage } from '@/features/gallery/games/neko-punch/components/PlayPage';
+import { ResultPage } from '@/features/gallery/games/neko-punch/components/ResultPage';
 
 type GameState = 'home' | 'play' | 'result';
 
