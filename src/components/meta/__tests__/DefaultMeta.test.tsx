@@ -28,20 +28,20 @@ describe('DefaultMeta', () => {
     render(<DefaultMeta />);
 
     expect(defaultSeoMock).toHaveBeenCalledWith({
-      title: 'Alkyne',
+      title: 'Haruhate',
       description: 'Always You are the best.',
       canonical: '',
       openGraph: {
-        title: 'Alkyne',
+        title: 'Haruhate',
         description: 'Always You are the best.',
         type: 'website',
         url: '',
         images: [
           {
-            url: 'AlkyneLogo.png',
+            url: 'HaruhateTitleLogo.png',
           },
         ],
-        site_name: 'Alkyne',
+        site_name: 'Haruhate',
         locale: 'ja_JP',
       },
       additionalMetaTags: [
@@ -57,25 +57,25 @@ describe('DefaultMeta', () => {
       additionalLinkTags: [
         {
           rel: 'icon',
-          href: '/AlkyneCircleLogo.png',
+          href: '/HaruhateLogo.png',
         },
         {
           rel: 'icon',
           type: 'image/png',
           sizes: '16x16',
-          href: '/AlkyneCircleLogo.png',
+          href: '/HaruhateLogo.png',
         },
         {
           rel: 'icon',
           type: 'image/png',
           sizes: '32x32',
-          href: '/AlkyneCircleLogo.png',
+          href: '/HaruhateLogo.png',
         },
         {
           rel: 'icon',
           type: 'image/png',
           sizes: '96x96',
-          href: '/AlkyneCircleLogo.png',
+          href: '/HaruhateLogo.png',
         },
       ],
     });

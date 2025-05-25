@@ -15,7 +15,7 @@ type GalleryMetaProps = {
 export const GalleryMeta: FC<GalleryMetaProps> = ({
   title,
   description,
-  ogImage = '/AlkyneLogo.png',
+  ogImage = '/HaruhateTitleLogo.png',
   ogUrl,
   category,
 }) => {

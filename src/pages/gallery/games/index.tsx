@@ -11,7 +11,7 @@ export default function Home() {
   return (
     <>
       <GalleryMeta
-        title="ゲーム | Alkyne"
+        title="ゲーム | Haruhate"
         description="ゲームをプレイしよう"
         ogUrl="/gallery/games"
         category="ゲーム"

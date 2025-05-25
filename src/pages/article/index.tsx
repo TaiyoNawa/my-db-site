@@ -75,9 +75,9 @@ export default function Posts() {
   return (
     <>
       <ArticleMeta
-        title={'記事一覧 | Alkyne'}
+        title={'記事一覧 | Haruhate'}
         description={'記事を見つけましょう'}
-        ogImage={'/AlkyneLogo.png'}
+        ogImage={'/HaruhateTitleLogo.png'}
         ogUrl={'/article'}
       />
       <SecondHeader isHeaderHidden={isHeaderHidden} title="Article" />

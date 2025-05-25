@@ -3,7 +3,7 @@ import { FC } from 'react';
 
 import { generateUrl } from '@/utils/generateURL';
 
-const SITE_NAME = 'Alkyne';
+const SITE_NAME = 'Haruhate';
 
 export const DefaultMeta: FC = () => {
   const defaultTitle = `${SITE_NAME}`;
@@ -22,7 +22,7 @@ export const DefaultMeta: FC = () => {
         url: generateUrl(''),
         images: [
           {
-            url: generateUrl('AlkyneLogo.png'),
+            url: generateUrl('HaruhateTitleLogo.png'),
           },
         ],
         site_name: SITE_NAME,
@@ -41,25 +41,25 @@ export const DefaultMeta: FC = () => {
       additionalLinkTags={[
         {
           rel: 'icon',
-          href: generateUrl('/AlkyneCircleLogo.png'),
+          href: generateUrl('/HaruhateLogo.png'),
         },
         {
           rel: 'icon',
           type: 'image/png',
           sizes: '16x16',
-          href: generateUrl('/AlkyneCircleLogo.png'),
+          href: generateUrl('/HaruhateLogo.png'),
         },
         {
           rel: 'icon',
           type: 'image/png',
           sizes: '32x32',
-          href: generateUrl('/AlkyneCircleLogo.png'),
+          href: generateUrl('/HaruhateLogo.png'),
         },
         {
           rel: 'icon',
           type: 'image/png',
           sizes: '96x96',
-          href: generateUrl('/AlkyneCircleLogo.png'),
+          href: generateUrl('/HaruhateLogo.png'),
         },
       ]}
     />

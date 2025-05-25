@@ -96,7 +96,7 @@ export async function fetchNotionDBItems(
           ogDescriptionProp?.type === 'rich_text' &&
           ogDescriptionProp.rich_text.length > 0
             ? ogDescriptionProp.rich_text[0].plain_text
-            : 'alkyne is a blog that provides information on the latest trends in the IT industry, including news, analysis, and insights on various topics.';
+            : 'Haruhate is a blog that provides information on the latest trends in the IT industry, including news, analysis, and insights on various topics.';
         const ogImage =
           ogImageProp?.type === 'files' && ogImageProp.files.length > 0
             ? ogImageProp.files[0]?.type === 'file'

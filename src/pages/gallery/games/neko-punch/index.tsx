@@ -36,7 +36,7 @@ const NekoPunchGame: React.FC = () => {
   return (
     <>
       <GalleryMeta
-        title="ネコパンチ！ | Alkyne"
+        title="ネコパンチ！ | Haruhate"
         description="ネコパンチ！をプレイしよう！"
         ogUrl="/gallery/games/neko-punch"
         category="ゲーム"

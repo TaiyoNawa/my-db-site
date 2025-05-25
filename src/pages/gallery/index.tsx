@@ -12,7 +12,7 @@ export default function Posts() {
   return (
     <>
       <GalleryMeta
-        title="ギャラリー | Alkyne"
+        title="ギャラリー | Haruhate"
         description="ギャラリーをご覧ください。"
         ogUrl="/gallery"
       />

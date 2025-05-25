@@ -22,7 +22,7 @@ export default function ImageSearchPage() {
   return (
     <>
       <SearchMeta
-        title="画像 | Alkyne"
+        title="画像 | Haruhate"
         description="画像を検索しましょう"
         ogUrl="/search/image"
         category="画像"

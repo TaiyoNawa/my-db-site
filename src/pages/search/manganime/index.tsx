@@ -13,7 +13,7 @@ export default function ManganimeIndex() {
   return (
     <>
       <SearchMeta
-        title="漫画・アニメ | Alkyne"
+        title="漫画・アニメ | Haruhate"
         description="漫画・アニメを検索しましょう"
         ogUrl="/search/manganime"
         category="漫画, アニメ"

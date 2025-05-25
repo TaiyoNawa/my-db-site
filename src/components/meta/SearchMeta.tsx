@@ -15,7 +15,7 @@ type SearchMetaProps = {
 export const SearchMeta: FC<SearchMetaProps> = ({
   title,
   description,
-  ogImage = '/AlkyneLogo.png',
+  ogImage = '/HaruhateTitleLogo.png',
   ogUrl,
   category,
 }) => {

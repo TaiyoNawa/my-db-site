@@ -61,9 +61,9 @@ export const Header: FC = () => {
           <Flex flex={{ base: 1 }} justify={{ base: 'center', md: 'start' }}>
             <Link borderRadius="full" href="/">
               <Image
-                src="/AlkyneCircleLogo.png"
-                alt="Alkyne Logo"
-                width={7}
+                src="/HaruhateLogo.png"
+                alt="Haruhate Logo"
+                width={9}
                 objectFit="cover"
                 borderRadius="full"
               />
@@ -120,7 +120,7 @@ const DesktopNav = () => {
   const popoverContentBgColor = useColorModeValue('white', 'gray.800');
 
   return (
-    <Stack direction={'row'} spacing={4}>
+    <Stack direction={'row'} spacing={4} align={'center'}>
       {NAV_ITEMS.map((navItem) => (
         <Box key={navItem.label}>
           <Popover trigger={'hover'} placement={'bottom-start'}>

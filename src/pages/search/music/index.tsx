@@ -5,6 +5,7 @@ import { useStickyHeader } from '@/hooks/useStickyHeader';
 
 import { SectionWrapper } from '@/components/SectionWrapper';
 import { SecondHeader } from '@/components/header/SecondHeader';
+import { SearchMeta } from '@/components/meta/SearchMeta';
 
 import { SpotifyPlayer } from '@/features/search/music/component/SpotifyPlayer';
 import { SpotifySearchTabs } from '@/features/search/music/component/SpotifySearchTabs';
@@ -14,6 +15,12 @@ export default function Posts() {
 
   return (
     <>
+      <SearchMeta
+        title="ミュージック | Haruhate"
+        description="音楽を検索しましょう"
+        ogUrl="/search/music"
+        category="音楽"
+      />
       <SecondHeader isHeaderHidden={isHeaderHidden} title="Gallery" />
 
       <SectionWrapper>

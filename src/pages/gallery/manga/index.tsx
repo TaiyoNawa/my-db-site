@@ -16,7 +16,7 @@ export default function Posts() {
   return (
     <>
       <GalleryMeta
-        title="漫画紹介 | Alkyne"
+        title="漫画紹介 | Haruhate"
         description="漫画を紹介します"
         ogUrl="/gallery/manga"
         category="漫画"

@@ -11,7 +11,7 @@ export default function Posts() {
   return (
     <>
       <SearchMeta
-        title="検索 | Alkyne"
+        title="検索 | Haruhate"
         description="検索しましょう"
         ogUrl="/search"
       />
