@@ -5,7 +5,7 @@ import React from 'react';
 import { SectionWrapper } from './SectionWrapper';
 
 const Default = {
-  title: 'SectionWrapper',
+  title: 'components/SectionWrapper',
   component: SectionWrapper,
   args: {
     backgroundColor: 'gray.80',

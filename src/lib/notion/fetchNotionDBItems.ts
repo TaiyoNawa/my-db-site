@@ -91,7 +91,7 @@ export async function fetchNotionDBItems(
               : thumbnailProp.files[0]?.type === 'external'
                 ? thumbnailProp.files[0].external.url
                 : ''
-            : '/alt_image.png';
+            : '/alt/alt_image.png';
         const ogDescription =
           ogDescriptionProp?.type === 'rich_text' &&
           ogDescriptionProp.rich_text.length > 0

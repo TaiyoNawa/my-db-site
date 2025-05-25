@@ -5,7 +5,7 @@ import { SpotifySearchTabs } from './SpotifySearchTabs';
 import type { Meta, StoryFn } from '@storybook/react';
 
 const meta: Meta<typeof SpotifySearchTabs> = {
-  title: 'components/SpotifySearchTabs',
+  title: 'search/music/SpotifySearchTabs',
   component: SpotifySearchTabs,
   tags: ['autodocs'],
   parameters: {

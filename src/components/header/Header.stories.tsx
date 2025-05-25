@@ -4,7 +4,7 @@ import React from 'react';
 import { Header } from './Header';
 
 const Default = {
-  title: 'components/Header',
+  title: 'components/header/Header',
   component: Header,
   args: {},
   tags: ['autodocs'],

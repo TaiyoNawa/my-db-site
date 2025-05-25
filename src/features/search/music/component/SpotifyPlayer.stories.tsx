@@ -3,7 +3,7 @@ import { SpotifyPlayer } from './SpotifyPlayer';
 import type { Meta, StoryFn } from '@storybook/react';
 
 const meta: Meta<typeof SpotifyPlayer> = {
-  title: 'components/SpotifyPlayer',
+  title: 'search/music/SpotifyPlayer',
   component: SpotifyPlayer,
   tags: ['autodocs'],
   argTypes: {

@@ -15,7 +15,7 @@ type ArticleMetaProps = {
 export const ArticleMeta: FC<ArticleMetaProps> = ({
   title,
   description,
-  ogImage = '/HaruhateTitleLogo.png',
+  ogImage = '/logo/HaruhateTitleLogo.png',
   ogUrl,
   category,
 }) => {

@@ -4,9 +4,28 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
+        // Notion image
         protocol: 'https',
         hostname: 'prod-files-secure.s3.us-west-2.amazonaws.com',
         pathname: '/**',
+      },
+      {
+        // Unsplash image
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+        pathname: '/**',
+      },
+      {
+        // Pixabay image
+        protocol: 'https',
+        hostname: 'cdn.pixabay.com',
+        pathname: '/**',
+      },
+      {
+        // furiirakun
+        protocol: 'https',
+        hostname: 'furiirakun.com',
+        pathname: '/wp/wp-content/uploads/2021/07/zunzun.gif',
       },
     ],
   },

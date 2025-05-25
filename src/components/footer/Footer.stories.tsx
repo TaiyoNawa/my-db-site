@@ -4,7 +4,7 @@ import React from 'react';
 import { Footer } from './Footer';
 
 const Default = {
-  title: 'components/Footer',
+  title: 'components/footer/Footer',
   component: Footer,
   args: {},
   tags: ['autodocs'],

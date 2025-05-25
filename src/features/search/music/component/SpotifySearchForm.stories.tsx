@@ -3,7 +3,7 @@ import { SpotifySearchForm } from './SpotifySearchForm';
 import type { Meta, StoryFn } from '@storybook/react';
 
 const meta: Meta<typeof SpotifySearchForm> = {
-  title: 'components/SpotifySearchForm',
+  title: 'search/music/SpotifySearchForm',
   component: SpotifySearchForm,
   tags: ['autodocs'],
   args: {

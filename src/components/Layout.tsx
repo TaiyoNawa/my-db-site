@@ -24,8 +24,10 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
         display="flex"
         flexDirection="column"
         backgroundColor="gray.80"
+        maxW={{ base: '100%' }}
+        minH="100vh"
       >
-        <Box maxW={{ base: '100%' }}>{children}</Box>
+        {children}
       </Box>
       <Footer />
     </Box>

@@ -4,7 +4,7 @@ import React from 'react';
 import { SecondHeader } from './SecondHeader';
 
 const Default = {
-  title: 'components/SecondHeader',
+  title: 'components/header/SecondHeader',
   component: SecondHeader,
   args: {
     title: 'ギャラリー',

@@ -53,6 +53,7 @@ export const theme = extendTheme({
       '900': '#003311',
     },
     gray: {
+      '70': '#f9f9f9',
       '80': '#f4f4f4',
     },
   },

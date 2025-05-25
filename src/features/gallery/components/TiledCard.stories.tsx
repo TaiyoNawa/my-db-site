@@ -5,7 +5,7 @@ import TiltedCard from './TiltedCard';
 import type { Meta, StoryFn } from '@storybook/react';
 
 const meta: Meta<typeof TiltedCard> = {
-  title: 'components/TiltedCard',
+  title: 'gallery/TiltedCard',
   component: TiltedCard,
   tags: ['autodocs'],
   args: {

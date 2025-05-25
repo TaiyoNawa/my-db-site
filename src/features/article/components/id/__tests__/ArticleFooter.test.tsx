@@ -8,26 +8,26 @@ describe('ArticleFooter', () => {
     const article = [
       {
         page_id: '1',
-        thumbnail: '/alt_image.png',
+        thumbnail: '/sample/image1.png',
         category: 'Technology',
         title: 'Sample Article 1',
         description: 'This is a description for sample article 1.',
         url: '/article/1',
         status: 'Published',
         ogDescription: 'OG Description 1',
-        ogImage: '/og_image1.png',
+        ogImage: '/sample/image1.png',
         releaseDate: '2023-10-27',
       },
       {
         page_id: '2',
-        thumbnail: '/alt_image2.png',
+        thumbnail: '/sample/image2.png',
         category: 'Lifestyle',
         title: 'Sample Article 2',
         description: 'This is a description for sample article 2.',
         url: '/article/2',
         status: 'Published',
         ogDescription: 'OG Description 2',
-        ogImage: '/og_image2.png',
+        ogImage: '/sample/image2.png',
         releaseDate: '2023-10-28',
       },
     ];
@@ -44,7 +44,7 @@ describe('ArticleFooter', () => {
     const article = [
       {
         page_id: '1',
-        thumbnail: '/alt_image.png',
+        thumbnail: '/alt/alt_image.png',
         category: 'Technology',
         title: 'Sample Article 1',
         description: 'This is a description for sample article 1.',
@@ -66,7 +66,7 @@ describe('ArticleFooter', () => {
     const article = [
       {
         page_id: '1',
-        thumbnail: '/alt_image.png',
+        thumbnail: '/alt/alt_image.png',
         category: 'Technology',
         title: 'Sample Article',
         description: 'Description here.',

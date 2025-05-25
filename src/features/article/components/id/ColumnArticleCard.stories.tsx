@@ -27,7 +27,7 @@ type Story = StoryObj<typeof ColumnArticleCard>;
 
 export const Default: Story = {
   args: {
-    eyeCatch: '/alt_image.png',
+    eyeCatch: '/alt/alt_image.png',
     category: 'Technology',
     title: 'Sample Article Title',
     description: 'This is a sample description for the article card.',

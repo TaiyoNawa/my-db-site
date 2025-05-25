@@ -3,7 +3,7 @@ import { StoryFn } from '@storybook/react';
 import { CurrentLinkCopyButton } from './CurrentLinkCopyButton';
 
 const Default = {
-  title: 'button/CurrentLinkCopyButton',
+  title: 'components/button/CurrentLinkCopyButton',
   component: CurrentLinkCopyButton,
   args: {},
   tags: ['autodocs'],

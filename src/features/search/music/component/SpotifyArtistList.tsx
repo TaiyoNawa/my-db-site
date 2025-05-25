@@ -105,7 +105,7 @@ export const SpotifyArtistList: FC<SpotifyArtistListProps> = ({
               <Link href={artist.url} isExternal>
                 <HStack spacing={3}>
                   <Image
-                    src={artist.imageUrl || '/stranger_icon.png'}
+                    src={artist.imageUrl || '/search/musicstranger_icon.png'}
                     boxSize="100px"
                     borderRadius="full"
                     alt={artist.name}

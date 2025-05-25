@@ -3,7 +3,7 @@ import { StoryFn } from '@storybook/react';
 import { LinkCopyButton } from './LinkCopyButton';
 
 const Default = {
-  title: 'button/LinkCopyButton',
+  title: 'components/button/LinkCopyButton',
   component: LinkCopyButton,
   args: {
     href: 'https://github.com',

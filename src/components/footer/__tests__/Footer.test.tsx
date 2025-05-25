@@ -12,7 +12,7 @@ describe('Footer コンポーネント', () => {
     expect(screen.getByText('記事')).toBeInTheDocument();
     expect(screen.getByText('ギャラリー')).toBeInTheDocument();
     expect(screen.getByText('検索')).toBeInTheDocument();
-    expect(screen.getByText('Hire Designers')).toBeInTheDocument();
+    expect(screen.getByText('お問い合わせ・要望')).toBeInTheDocument();
   });
 
   it('著作権テキストが表示される', () => {
@@ -37,7 +37,7 @@ describe('Footer コンポーネント', () => {
       '/search'
     );
     expect(
-      screen.getByRole('link', { name: 'Hire Designers' })
+      screen.getByRole('link', { name: 'お問い合わせ・要望' })
     ).toHaveAttribute('href', '#');
     expect(screen.getByRole('link', { name: 'ランキング' })).toHaveAttribute(
       'href',

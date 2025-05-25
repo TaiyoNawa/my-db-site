@@ -78,7 +78,7 @@ describe('MangaList.tsxのテスト', () => {
 
     await waitFor(() =>
       expect(
-        screen.getByText('該当する漫画が見つかりませんでした。')
+        screen.getByText('該当するマンガが見つかりませんでした。')
       ).toBeInTheDocument()
     );
   });

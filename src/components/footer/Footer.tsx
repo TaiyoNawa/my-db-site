@@ -93,7 +93,7 @@ const footerLinks: FooterLink[] = [
     href: '/gallery',
     children: [
       { label: 'マンガ', href: '/gallery/manga' },
-      { label: 'ゲーム', href: '/gallery/games' },
+      { label: 'ゲーム', href: '/gallery/game' },
     ],
   },
   {
@@ -106,7 +106,7 @@ const footerLinks: FooterLink[] = [
     ],
   },
   {
-    label: 'Hire Designers',
+    label: 'お問い合わせ・要望',
     href: '#',
   },
 ];

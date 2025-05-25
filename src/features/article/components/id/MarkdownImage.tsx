@@ -11,7 +11,7 @@ type Props = {
   alt?: string;
 };
 
-const fallbackSrc = '/fallback_image.png';
+const fallbackSrc = '/alt/fallback_image.png';
 
 export const MarkdownImage: FC<Props> = ({ src, alt }) => {
   //TODO: fallbackSrcをうまく表示できるようにする。(本番環境ではできているのかもしれないので、検証する)

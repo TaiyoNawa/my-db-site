@@ -7,7 +7,7 @@ const ArticleCardDefault = {
   title: 'article/ArticleCard',
   component: ArticleCard,
   args: {
-    eyeCatch: 'image1.png',
+    eyeCatch: '/sample/image1.png',
     category: 'レポート',
     title: '東京都ITサービス業売上高トップ100',
     description:

@@ -4,7 +4,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof MangaList> = {
   component: MangaList,
-  title: 'Features/MangaList',
+  title: 'search/manganime/MangaList',
 };
 
 export default meta;

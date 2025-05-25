@@ -38,7 +38,7 @@ describe('DefaultMeta', () => {
         url: '',
         images: [
           {
-            url: 'HaruhateTitleLogo.png',
+            url: '/logo/HaruhateTitleLogo.png',
           },
         ],
         site_name: 'Haruhate',
@@ -57,25 +57,25 @@ describe('DefaultMeta', () => {
       additionalLinkTags: [
         {
           rel: 'icon',
-          href: '/HaruhateLogo.png',
+          href: '/logo/HaruhateLogo.png',
         },
         {
           rel: 'icon',
           type: 'image/png',
           sizes: '16x16',
-          href: '/HaruhateLogo.png',
+          href: '/logo/HaruhateLogo.png',
         },
         {
           rel: 'icon',
           type: 'image/png',
           sizes: '32x32',
-          href: '/HaruhateLogo.png',
+          href: '/logo/HaruhateLogo.png',
         },
         {
           rel: 'icon',
           type: 'image/png',
           sizes: '96x96',
-          href: '/HaruhateLogo.png',
+          href: '/logo/HaruhateLogo.png',
         },
       ],
     });

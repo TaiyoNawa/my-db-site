@@ -61,7 +61,7 @@ export const Header: FC = () => {
           <Flex flex={{ base: 1 }} justify={{ base: 'center', md: 'start' }}>
             <Link borderRadius="full" href="/">
               <Image
-                src="/HaruhateLogo.png"
+                src="/logo/HaruhateLogo.png"
                 alt="Haruhate Logo"
                 width={9}
                 objectFit="cover"
@@ -318,7 +318,7 @@ const NAV_ITEMS: Array<NavItem> = [
       {
         label: 'ゲーム',
         subLabel: 'Find your favorite game',
-        href: '/gallery/games',
+        href: '/gallery/game',
       },
     ],
   },
@@ -344,7 +344,7 @@ const NAV_ITEMS: Array<NavItem> = [
     ],
   },
   {
-    label: 'Hire Designers',
+    label: 'お問い合わせ・要望',
     href: '#',
   },
 ];

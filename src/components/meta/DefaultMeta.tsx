@@ -22,7 +22,7 @@ export const DefaultMeta: FC = () => {
         url: generateUrl(''),
         images: [
           {
-            url: generateUrl('HaruhateTitleLogo.png'),
+            url: generateUrl('/logo/HaruhateTitleLogo.png'),
           },
         ],
         site_name: SITE_NAME,
@@ -41,25 +41,25 @@ export const DefaultMeta: FC = () => {
       additionalLinkTags={[
         {
           rel: 'icon',
-          href: generateUrl('/HaruhateLogo.png'),
+          href: generateUrl('/logo/HaruhateLogo.png'),
         },
         {
           rel: 'icon',
           type: 'image/png',
           sizes: '16x16',
-          href: generateUrl('/HaruhateLogo.png'),
+          href: generateUrl('/logo/HaruhateLogo.png'),
         },
         {
           rel: 'icon',
           type: 'image/png',
           sizes: '32x32',
-          href: generateUrl('/HaruhateLogo.png'),
+          href: generateUrl('/logo/HaruhateLogo.png'),
         },
         {
           rel: 'icon',
           type: 'image/png',
           sizes: '96x96',
-          href: generateUrl('/HaruhateLogo.png'),
+          href: generateUrl('/logo/HaruhateLogo.png'),
         },
       ]}
     />

@@ -169,17 +169,6 @@ export const ImageList = ({
                 _hover={{ textDecoration: 'none' }}
               >
                 {img.user.name}
-              </Link>{' '}
-              on{' '}
-              <Link
-                href="https://unsplash.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                color="gray.500"
-                borderBottom={'0.5px solid'}
-                _hover={{ textDecoration: 'none' }}
-              >
-                Unsplash
               </Link>
             </Text>
           </Box>

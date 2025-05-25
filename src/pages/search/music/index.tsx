@@ -21,7 +21,7 @@ export default function Posts() {
         ogUrl="/search/music"
         category="音楽"
       />
-      <SecondHeader isHeaderHidden={isHeaderHidden} title="Gallery" />
+      <SecondHeader isHeaderHidden={isHeaderHidden} title="Search" />
 
       <SectionWrapper>
         <Heading as="h4" fontSize="2xl" mb={2}>

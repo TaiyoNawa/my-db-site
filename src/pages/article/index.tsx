@@ -6,7 +6,6 @@ import { useStickyHeader } from '@/hooks/useStickyHeader';
 
 import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { SectionWrapper } from '@/components/SectionWrapper';
-import { CurrentLinkCopyButton } from '@/components/button/CurrentLinkCopyButton';
 import { SecondHeader } from '@/components/header/SecondHeader';
 import { ArticleMeta } from '@/components/meta/ArticleMeta';
 
@@ -77,12 +76,11 @@ export default function Posts() {
       <ArticleMeta
         title={'記事一覧 | Haruhate'}
         description={'記事を見つけましょう'}
-        ogImage={'/HaruhateTitleLogo.png'}
+        ogImage={'/logo/HaruhateTitleLogo.png'}
         ogUrl={'/article'}
       />
       <SecondHeader isHeaderHidden={isHeaderHidden} title="Article" />
       <SectionWrapper>
-        <CurrentLinkCopyButton mb="10" />
         <Box>
           <ArticleList
             articles={articles}

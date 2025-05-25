@@ -28,7 +28,7 @@ export const Default: Story = {
   args: {
     title: 'Sample Article Title',
     category: 'Technology',
-    thumbnail: '/image1.png',
+    thumbnail: '/sample/image1.png',
     createdAt: '2023-10-27',
   },
 };

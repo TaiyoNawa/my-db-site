@@ -36,7 +36,8 @@ export const ArticleHeadline: FC<Props> = ({
 
   const [isImageLoaded, setIsImageLoaded] = useState(false);
   // ★期限チェック＆再取得
-  const imageSrc = usePresignedImage(thumbnail, title) || '/fallback_image.png';
+  const imageSrc =
+    usePresignedImage(thumbnail, title) || '/alt/fallback_image.png';
 
   return (
     <Box mb={{ base: '6', md: '10' }}>

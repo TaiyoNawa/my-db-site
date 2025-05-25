@@ -1,3 +1,4 @@
+// src/fetures/article/components/list/ArticleList.tsx
 import { Box, Flex, SimpleGrid, Heading } from '@chakra-ui/react';
 import { FlexProps } from '@chakra-ui/react';
 import React, { FC } from 'react';
@@ -48,6 +49,7 @@ export const ArticleList: FC<ArticleListProps> = ({
             justifyItems="center"
             columnGap={GAP_SIZE}
             rowGap={GAP_SIZE}
+            w="100%"
           >
             {articles.map((article, index) => (
               <ArticleCard key={index} {...article} />

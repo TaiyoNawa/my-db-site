@@ -44,7 +44,7 @@ describe('ColumnArticleCard', () => {
       const fallbackImage = screen.getByRole('img', { name: baseProps.title });
       expect(fallbackImage).toHaveAttribute('src');
       expect(fallbackImage.getAttribute('src')).toContain(
-        encodeURIComponent('/fallback_image.png')
+        encodeURIComponent('/alt/fallback_image.png')
       );
     });
 

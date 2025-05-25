@@ -69,7 +69,7 @@ export const MangaList: FC<MangaListProps> = ({ keyword = '', onReset }) => {
           setMangas((prev) => [...prev, ...data]);
         }
       } catch (err) {
-        console.error('漫画検索エラー:', err);
+        console.error('マンガ検索エラー:', err);
       } finally {
         setLoading(false);
       }
@@ -153,7 +153,7 @@ export const MangaList: FC<MangaListProps> = ({ keyword = '', onReset }) => {
         </Masonry>
       ) : (
         !loading &&
-        !isReset && <Text>該当する漫画が見つかりませんでした。</Text>
+        !isReset && <Text>該当するマンガが見つかりませんでした。</Text>
       )}
 
       {loading && (
