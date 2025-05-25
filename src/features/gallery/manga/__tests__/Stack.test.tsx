@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 
 import { render, screen } from '@/test/test-utils';
 
-import Stack from '../../manga/Stack';
+import Stack from '../Stack';
 
 const images = [
   {
