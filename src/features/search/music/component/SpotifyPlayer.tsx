@@ -1,3 +1,4 @@
+// src/features/search/music/component/SpotifyPlayer.tsx
 import { Box, BoxProps } from '@chakra-ui/react';
 import { FC } from 'react';
 

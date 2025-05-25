@@ -1,4 +1,5 @@
-import { Heading, Flex } from '@chakra-ui/react';
+// src/pages/search/music/index.tsx
+import { Heading, Flex, Text } from '@chakra-ui/react';
 
 import { useStickyHeader } from '@/hooks/useStickyHeader';
 
@@ -23,12 +24,14 @@ export default function Posts() {
           w="100%"
           gap={{ base: 0, md: 6 }}
           flexDirection={{ base: 'column', md: 'row' }}
-          mb={{ base: 6, md: 12 }}
         >
           <SpotifyPlayer playlistId="37i9dQZF1DXcBWIGoYBM5M" type="playlist" />
           <SpotifyPlayer playlistId="37i9dQZEVXbKXQ4mDTEBXq" type="playlist" />
         </Flex>
-
+        <Text fontSize={{ base: 'sm', md: 'lg' }} mb={{ base: 6, md: 12 }}>
+          ⚠︎音量が大きい場合がありますのでご注意ください。(Please be careful as
+          the volume may be loud.)
+        </Text>
         <Heading as="h4" fontSize="2xl" mb={2}>
           探す(Find)
         </Heading>

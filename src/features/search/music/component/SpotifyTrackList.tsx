@@ -1,3 +1,4 @@
+// src/features/search/music/component/SpotifyTrackList.tsx
 //Playlistの検索結果一覧を表示するコンポーネント
 import {
   Box,

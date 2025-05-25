@@ -28,9 +28,9 @@ export const SpotifySearchTabs = () => {
   };
   return (
     <Tabs variant="enclosed" isFitted>
-      <TabList>
+      <TabList overflowX="auto" overflowY="hidden">
         <Tab
-          fontSize={{ base: 'xs', sm: 'sm', md: 'md' }}
+          fontSize={{ base: '11px', sm: 'sm', md: 'md' }}
           bgColor="white"
           _selected={{
             borderBottom: '1px',
@@ -43,7 +43,7 @@ export const SpotifySearchTabs = () => {
           (Tracks)
         </Tab>
         <Tab
-          fontSize={{ base: 'xs', sm: 'sm', md: 'md' }}
+          fontSize={{ base: '11px', sm: 'sm', md: 'md' }}
           bgColor="white"
           _selected={{
             borderBottom: '1px',
@@ -56,7 +56,7 @@ export const SpotifySearchTabs = () => {
           (Playlists)
         </Tab>
         <Tab
-          fontSize={{ base: 'xs', sm: 'sm', md: 'md' }}
+          fontSize={{ base: '11px', sm: 'sm', md: 'md' }}
           bgColor="white"
           _selected={{
             borderBottom: '1px',
