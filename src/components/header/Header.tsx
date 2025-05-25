@@ -315,6 +315,11 @@ const NAV_ITEMS: Array<NavItem> = [
         subLabel: 'Find your favorite story',
         href: '/gallery/manga',
       },
+      {
+        label: 'ゲーム',
+        subLabel: 'Find your favorite game',
+        href: '/gallery/games',
+      },
     ],
   },
   {

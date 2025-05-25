@@ -1,7 +1,7 @@
 ** MEMO
 *** やること‼️
-- ArticleContentsの画像を自動再fetch
 - 音量調整(react-bitsのElastic Slider)
+- 各ページのホームでアイテムをカードで一覧表示
 - Homeページ(https://alkyne.net/
 - (記事フィルター機能)
 
@@ -33,6 +33,10 @@
 *** Meta情報!大事!
     Galleryページの漫画とMusicはまだメタ設定してないが、サイトの構成が決まっていないので、それが決まり次第GalleryMetaを使って更新。
 
+*** Gameページ
+- neko-punch
+    - ランキング作成
+    - PlayPageのクリック時のテスト
 
 *** リンクページ
 ・とりあえず記事詳細を作る＋NotionDBとの連携をする

@@ -5,6 +5,7 @@ import { useStickyHeader } from '@/hooks/useStickyHeader';
 import { SectionWrapper } from '@/components/SectionWrapper';
 import { CurrentLinkCopyButton } from '@/components/button/CurrentLinkCopyButton';
 import { SecondHeader } from '@/components/header/SecondHeader';
+import { GalleryMeta } from '@/components/meta/GalleryMeta';
 
 import { MangaItems } from '@/assets/data/MangaItems';
 import { StackCardList } from '@/features/gallery/components/StackCardList';
@@ -14,6 +15,12 @@ export default function Posts() {
 
   return (
     <>
+      <GalleryMeta
+        title="漫画紹介 | Alkyne"
+        description="漫画を紹介します"
+        ogUrl="/gallery/manga"
+        category="漫画"
+      />
       <SecondHeader isHeaderHidden={isHeaderHidden} title="Gallery" />
 
       <SectionWrapper>
