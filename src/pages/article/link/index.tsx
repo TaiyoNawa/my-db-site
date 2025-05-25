@@ -2,8 +2,8 @@ import { Box } from '@chakra-ui/react';
 
 import { useStickyHeader } from '@/hooks/useStickyHeader';
 
-import { LinkCard } from '@/components/card/LinkCard';
 import { SectionWrapper } from '@/components/SectionWrapper';
+import { LinkCard } from '@/components/card/LinkCard';
 import { SecondHeader } from '@/components/header/SecondHeader';
 import { ArticleMeta } from '@/components/meta/ArticleMeta';
 

@@ -25,7 +25,7 @@ const nextConfig = {
         // furiirakun
         protocol: 'https',
         hostname: 'furiirakun.com',
-        pathname: '/wp/wp-content/uploads/2021/07/zunzun.gif',
+        pathname: '/**',
       },
     ],
   },
