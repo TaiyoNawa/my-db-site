@@ -11,6 +11,7 @@ export type HomeCardProps = {
   title: string;
   description: string;
   url: string;
+  objectFit?: 'cover' | 'contain' | 'fill' | 'none' | 'scale-down';
 } & LinkProps;
 
 export const HomeCard: FC<HomeCardProps> = ({
@@ -19,6 +20,7 @@ export const HomeCard: FC<HomeCardProps> = ({
   title,
   description,
   url,
+  objectFit = 'cover',
   ...rest
 }) => {
   const titleSummary = useLimitedLengthText(title, 40);
@@ -50,7 +52,7 @@ export const HomeCard: FC<HomeCardProps> = ({
                 src={eyeCatch}
                 alt={titleSummary}
                 fill
-                style={{ objectFit: 'cover' }} //TODO:場合によって変更
+                style={{ objectFit: objectFit }}
                 sizes="(max-width: 768px) 100vw, 472px"
               />
             </Box>

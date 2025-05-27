@@ -38,5 +38,6 @@ const items = [
     title: 'ネコパンチ！一番反射が早いのは誰ニャ？',
     description: '反射神経を試しましょう',
     url: '/gallery/game/neko-punch',
+    objectFit: 'contain' as const,
   },
 ];
