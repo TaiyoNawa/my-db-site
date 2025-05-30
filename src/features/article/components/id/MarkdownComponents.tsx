@@ -15,6 +15,7 @@ import {
   Heading,
   useClipboard,
   Button,
+  Link,
 } from '@chakra-ui/react';
 import React, {
   useState,
@@ -163,7 +164,13 @@ export const MarkdownComponents = {
   ),
   li: (props: MarkdownProps) => <ListItem mb={2}>{props.children}</ListItem>,
   a: (props: MarkdownProps) => (
-    <Box as="a" color="teal.600" textDecoration="underline" {...props} />
+    <Link
+      as="a"
+      color="blue.600"
+      textDecoration="underline"
+      {...props}
+      isExternal
+    />
   ),
   code: (props: MarkdownProps) => {
     const text = flattenToString(props.children);
