@@ -18,7 +18,7 @@ const GAP_SIZE = { base: '24px', md: '26px', lg: '35.5px' };
 const FONT_SIZE = { base: '24px', md: '28px', lg: '32px' };
 
 export const HomeCardList: FC<HomeCardListProps> = ({
-  title = 'アイテム',
+  title,
   items,
   ...rest
 }) => {
@@ -37,11 +37,13 @@ export const HomeCardList: FC<HomeCardListProps> = ({
         </Box>
       ) : (
         <>
-          <Box w="100%" mb={{ base: '24px', md: '32px' }}>
-            <Heading as="h1" fontSize={FONT_SIZE} textAlign="left">
-              {title}一覧
-            </Heading>
-          </Box>
+          {title && (
+            <Box w="100%" mb={{ base: '24px', md: '32px' }}>
+              <Heading as="h1" fontSize={FONT_SIZE} textAlign="left">
+                {title}
+              </Heading>
+            </Box>
+          )}
 
           <SimpleGrid
             columns={{ base: 1, md: 2, lg: 3 }}

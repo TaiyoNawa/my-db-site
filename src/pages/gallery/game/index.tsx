@@ -23,6 +23,7 @@ export default function Posts() {
         <Box>
           <HomeCardList
             items={items}
+            title="ゲーム一覧"
             mb={{ base: '44px', md: '64px', lg: '80px' }}
           />
         </Box>

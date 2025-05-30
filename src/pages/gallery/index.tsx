@@ -20,7 +20,7 @@ export default function Posts() {
       <SectionWrapper>
         <Box>
           <HomeCardList
-            title="ギャラリー"
+            title="ギャラリー一覧"
             items={items}
             mb={{ base: '44px', md: '64px', lg: '80px' }}
           />
