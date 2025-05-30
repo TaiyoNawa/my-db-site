@@ -1,6 +1,8 @@
+// src/pages/Home2.tsx
 import { ChevronDownIcon } from '@chakra-ui/icons';
 import { Box, Text, Icon, VStack } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
 
 import { useStickyHeader } from '@/hooks/useStickyHeader';
 
@@ -8,10 +10,33 @@ import { SectionWrapper } from '@/components/SectionWrapper';
 import { HomeCardList } from '@/components/card/HomeCardList';
 import { SecondHeader } from '@/components/header/SecondHeader';
 
+type RandomImageData = {
+  id: string;
+  imageUrl: string;
+  alt: string;
+  authorName: string;
+  authorLink: string;
+  imageLink: string;
+};
 const MotionBox = motion(Box);
 
 export default function Home() {
   const { isHeaderHidden } = useStickyHeader();
+
+  const [heroImage, setHeroImage] = useState<string | null>(null);
+  //この辺はunsplashの画像をランダムで取得するAPIだが、API制限があるので実際の運用時は画像を10枚ぐらい用意してランダムの方が良いかも
+  useEffect(() => {
+    const fetchHeroImage = async () => {
+      try {
+        const res = await fetch('/api/image/random?query=nature');
+        const data = (await res.json()) as RandomImageData;
+        setHeroImage(data.imageUrl);
+      } catch (error) {
+        console.error('画像取得失敗:', error);
+      }
+    };
+    void fetchHeroImage();
+  }, []);
 
   return (
     <>
@@ -19,7 +44,7 @@ export default function Home() {
 
       {/* Hero セクション */}
       <Box
-        bgImage="/HomeImage.jpg"
+        bgImage={`url(${heroImage ?? '/HomeImage.jpg'})`}
         bgSize="cover"
         bgPosition="center"
         bgRepeat="no-repeat"
