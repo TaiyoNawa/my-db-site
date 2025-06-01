@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 
 import { render, screen, fireEvent } from '@/test/test-utils';
 
-import RightLeftGame from '../index';
+import { RightLeftGame } from '../RightLeftGame';
 
 describe('RightLeftGameページのテスト', () => {
   it('初期状態で正しく表示されること', () => {

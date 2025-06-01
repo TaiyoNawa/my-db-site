@@ -1,6 +1,6 @@
-import type { Meta, StoryFn } from '@storybook/react';
+import { RightLeftGame } from './RightLeftGame';
 
-import RightLeftGame from './index';
+import type { Meta, StoryFn } from '@storybook/react';
 
 const meta: Meta<typeof RightLeftGame> = {
   title: 'gallery/game/RightLeftGame',
