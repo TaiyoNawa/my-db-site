@@ -42,7 +42,7 @@ const items = [
     objectFit: 'contain' as const,
   },
   {
-    eyeCatch: '/card-icon/gallery/game/right-left-game.png', // 仮の画像URL
+    eyeCatch: '/card-icon/gallery/game/right-left-game.png',
     title: '右・左どっち？！',
     description: '右か左か、運試し！',
     url: '/gallery/game/right-left-game',
