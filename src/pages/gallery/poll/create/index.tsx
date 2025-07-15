@@ -231,9 +231,24 @@ const CreatePollPage = () => {
                       break;
                   }
                   if (value !== 'custom') {
-                    // ISO文字列からdatetime-local形式へ変換
-                    const localDateTime = now.toISOString().slice(0, 16);
-                    setCustomDeadline(localDateTime);
+                    const now = new Date();
+                    switch (value) {
+                      case '1hour':
+                        now.setHours(now.getHours() + 1);
+                        break;
+                      case '24hours':
+                        now.setDate(now.getDate() + 1);
+                        break;
+                      case '1week':
+                        now.setDate(now.getDate() + 7);
+                        break;
+                    }
+
+                    // JSTに変換してdatetime-local表示に使う
+                    const offset = now.getTimezoneOffset();
+                    const jst = new Date(now.getTime() - offset * 60 * 1000);
+                    const japanDateTime = jst.toISOString().slice(0, 16);
+                    setCustomDeadline(japanDateTime);
                   }
                 }
               }}
