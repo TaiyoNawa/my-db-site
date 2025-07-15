@@ -320,6 +320,11 @@ const NAV_ITEMS: Array<NavItem> = [
         subLabel: 'Find your favorite game',
         href: '/gallery/game',
       },
+      {
+        label: 'アンケート',
+        subLabel: 'Make or participate in a poll',
+        href: '/gallery/poll',
+      },
     ],
   },
   {

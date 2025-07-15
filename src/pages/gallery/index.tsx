@@ -46,4 +46,11 @@ const items = [
     description: '自作のゲームで遊べます',
     url: '/gallery/game',
   },
+  {
+    eyeCatch:
+      'https://images.unsplash.com/photo-1585432959322-4db03962b004?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    title: 'アンケート',
+    description: 'アンケートを回答/作成できます',
+    url: '/gallery/poll',
+  },
 ];

@@ -94,6 +94,7 @@ const footerLinks: FooterLink[] = [
     children: [
       { label: 'マンガ', href: '/gallery/manga' },
       { label: 'ゲーム', href: '/gallery/game' },
+      { label: 'アンケート', href: '/gallery/poll' },
     ],
   },
   {

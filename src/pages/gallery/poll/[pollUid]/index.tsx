@@ -1,6 +1,5 @@
 import {
   Box,
-  Container,
   Heading,
   Text,
   VStack,
@@ -19,7 +18,9 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import useSWR from 'swr';
 
+import { SectionWrapper } from '@/components/SectionWrapper';
 import { LinkCopyButton } from '@/components/button/LinkCopyButton';
+import { GalleryMeta } from '@/components/meta/GalleryMeta';
 
 // Define types for poll data
 interface PollOption {
@@ -59,6 +60,19 @@ const PollDetailPage = () => {
   const [voterId, setVoterId] = useState<string | null>(null);
   const [hasVoted, setHasVoted] = useState(false);
 
+  // ラッパー関数：すべてのreturnを統一的にラップ
+  const renderWithLayout = (content: React.ReactNode) => (
+    <SectionWrapper>
+      <GalleryMeta
+        title="アンケート | Haruhate"
+        description="アンケートに回答しよう"
+        ogUrl={`/gallery/poll/${typeof pollUid === 'string' ? pollUid : '[pollUid]'}`}
+        category="ギャラリー"
+      />
+      {content}
+    </SectionWrapper>
+  );
+
   // Manage voter ID and check if already voted
   useEffect(() => {
     if (!pollUid || typeof pollUid !== 'string') return;
@@ -92,7 +106,7 @@ const PollDetailPage = () => {
     isLoading,
     mutate, // mutate function to manually trigger revalidation
   } = useSWR<PollData, Error>( // Explicitly type the error as Error
-    typeof pollUid === 'string' ? `/api/polls/${pollUid}` : null, // Fetch only if pollUid is a string
+    typeof pollUid === 'string' ? `/api/poll/${pollUid}` : null, // Fetch only if pollUid is a string
     fetcher,
     {
       refreshInterval: 5000, // Poll every 5 seconds for real-time updates
@@ -114,7 +128,7 @@ const PollDetailPage = () => {
 
     setIsVoting(true);
     try {
-      const response = await fetch(`/api/polls/${pollUid}/vote`, {
+      const response = await fetch(`/api/poll/${pollUid}/vote`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -158,33 +172,29 @@ const PollDetailPage = () => {
   };
 
   if (isLoading) {
-    return (
-      <Container maxW="container.md" py={8} centerContent>
+    return renderWithLayout(
+      <VStack py={8} align="center">
         <Spinner size="xl" />
         <Text mt={4}>読み込み中...</Text>
-      </Container>
+      </VStack>
     );
   }
 
   if (error) {
-    return (
-      <Container maxW="container.md" py={8}>
-        <Alert status="error">
-          <AlertIcon />
-          アンケートデータの取得に失敗しました: {error.message}
-        </Alert>
-      </Container>
+    return renderWithLayout(
+      <Alert status="error" mx="auto" maxW="container.md">
+        <AlertIcon />
+        アンケートデータの取得に失敗しました: {error.message}
+      </Alert>
     );
   }
 
   if (!pollData) {
-    return (
-      <Container maxW="container.md" py={8}>
-        <Alert status="info">
-          <AlertIcon />
-          アンケートが見つかりませんでした。
-        </Alert>
-      </Container>
+    return renderWithLayout(
+      <Alert status="info" mx="auto" maxW="container.md">
+        <AlertIcon />
+        アンケートが見つかりませんでした。
+      </Alert>
     );
   }
 
@@ -192,108 +202,106 @@ const PollDetailPage = () => {
     pollData.status === '受付中' &&
     (!pollData.deadline || new Date(pollData.deadline) > new Date());
 
-  return (
-    <Container maxW="container.md" py={8}>
-      <VStack gap={6} align="stretch">
-        <Heading as="h1" size="xl">
-          {pollData.title}
-        </Heading>
-        {pollData.description && <Text>{pollData.description}</Text>}
-        {pollData.deadline && (
-          <Text fontSize="sm" color="gray.500">
-            締め切り: {new Date(pollData.deadline).toLocaleString()}
-          </Text>
-        )}
-        {/* Voting Section */}
-        {isVotingOpen && !hasVoted ? (
-          <Box>
-            <Heading as="h2" size="md" mb={4}>
-              投票する
-            </Heading>
-            <RadioGroup
-              onChange={setSelectedOptionId}
-              value={selectedOptionId || ''}
-            >
-              <Stack direction="column" gap={3}>
-                {pollData.options.map((option) => (
-                  <Radio key={option.id} value={option.id}>
-                    {option.text}
-                  </Radio>
-                ))}
-              </Stack>
-            </RadioGroup>
-            <Button
-              mt={4}
-              colorScheme="blue"
-              onClick={() => {
-                void handleVote();
-              }}
-              isLoading={isVoting}
-              isDisabled={!selectedOptionId}
-            >
-              投票する
-            </Button>
-          </Box>
-        ) : (
-          <Text fontSize="lg" color="gray.600">
-            {hasVoted ? '投票済みです。' : '投票期間は終了しました。'}
-          </Text>
-        )}
-        {/* Results Section - Show only if voted or voting is closed */}
-        {(hasVoted || !isVotingOpen) && (
-          <Box>
-            <Heading as="h2" size="md" mb={4}>
-              投票結果
-            </Heading>
-            {pollData.totalVotes === 0 ? (
-              <Text>まだ投票はありません。</Text>
-            ) : (
-              <VStack gap={4} align="stretch">
-                {pollData.options.map((option) => {
-                  const percentage =
-                    pollData.totalVotes > 0
-                      ? (option.votes / pollData.totalVotes) * 100
-                      : 0;
-                  return (
-                    <Box key={option.id}>
-                      <Text fontWeight="bold">{option.text}</Text>
-                      <Progress
-                        value={percentage}
-                        size="lg"
-                        colorScheme="teal"
-                        hasStripe
-                        isAnimated
-                      />
-                      <Text fontSize="sm" color="gray.600">
-                        {option.votes} 票 ({percentage.toFixed(1)}%)
-                      </Text>
-                    </Box>
-                  );
-                })}
-                <Text fontWeight="bold" mt={4}>
-                  合計投票数: {pollData.totalVotes} 票
-                </Text>
-              </VStack>
-            )}
-          </Box>
-        )}
-        {/* Share URL Section */}
-        {pollUid && (
-          <Box mt={6}>
-            <Heading as="h2" size="md" mb={2}>
-              このアンケートを共有する
-            </Heading>
-            <LinkCopyButton
-              href={
-                typeof pollUid === 'string'
-                  ? `${window.location.origin}/polls/${pollUid}`
-                  : ''
-              }
-            />
-          </Box>
-        )}
-      </VStack>
-    </Container>
+  return renderWithLayout(
+    <VStack gap={6} align="stretch" maxW="container.md" mx="auto" py={8}>
+      <Heading as="h1" size="xl">
+        {pollData.title}
+      </Heading>
+      {pollData.description && <Text>{pollData.description}</Text>}
+      {pollData.deadline && (
+        <Text fontSize="sm" color="gray.500">
+          締め切り: {new Date(pollData.deadline).toLocaleString()}
+        </Text>
+      )}
+      {/* Voting Section */}
+      {isVotingOpen && !hasVoted ? (
+        <Box>
+          <Heading as="h2" size="md" mb={4}>
+            投票する
+          </Heading>
+          <RadioGroup
+            onChange={setSelectedOptionId}
+            value={selectedOptionId || ''}
+          >
+            <Stack direction="column" gap={3}>
+              {pollData.options.map((option) => (
+                <Radio key={option.id} value={option.id}>
+                  {option.text}
+                </Radio>
+              ))}
+            </Stack>
+          </RadioGroup>
+          <Button
+            mt={4}
+            colorScheme="blue"
+            onClick={() => {
+              void handleVote();
+            }}
+            isLoading={isVoting}
+            isDisabled={!selectedOptionId}
+          >
+            投票する
+          </Button>
+        </Box>
+      ) : (
+        <Text fontSize="lg" color="gray.600">
+          {hasVoted ? '投票済みです。' : '投票期間は終了しました。'}
+        </Text>
+      )}
+      {/* Results Section - Show only if voted or voting is closed */}
+      {(hasVoted || !isVotingOpen) && (
+        <Box>
+          <Heading as="h2" size="md" mb={4}>
+            投票結果
+          </Heading>
+          {pollData.totalVotes === 0 ? (
+            <Text>まだ投票はありません。</Text>
+          ) : (
+            <VStack gap={4} align="stretch">
+              {pollData.options.map((option) => {
+                const percentage =
+                  pollData.totalVotes > 0
+                    ? (option.votes / pollData.totalVotes) * 100
+                    : 0;
+                return (
+                  <Box key={option.id}>
+                    <Text fontWeight="bold">{option.text}</Text>
+                    <Progress
+                      value={percentage}
+                      size="lg"
+                      colorScheme="teal"
+                      hasStripe
+                      isAnimated
+                    />
+                    <Text fontSize="sm" color="gray.600">
+                      {option.votes} 票 ({percentage.toFixed(1)}%)
+                    </Text>
+                  </Box>
+                );
+              })}
+              <Text fontWeight="bold" mt={4}>
+                合計投票数: {pollData.totalVotes} 票
+              </Text>
+            </VStack>
+          )}
+        </Box>
+      )}
+      {/* Share URL Section */}
+      {pollUid && (
+        <Box mt={6}>
+          <Heading as="h2" size="md" mb={2}>
+            ↓このアンケートを共有する
+          </Heading>
+          <LinkCopyButton
+            href={
+              typeof pollUid === 'string'
+                ? `${window.location.origin}/gallery/poll/${pollUid}`
+                : ''
+            }
+          />
+        </Box>
+      )}
+    </VStack>
   );
 };
 
