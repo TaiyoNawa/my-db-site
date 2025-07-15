@@ -32,9 +32,9 @@ export default function Posts() {
           <ArticleCard
             mt={10}
             eyeCatch="/alt/alt_image.png"
-            title="アンケートの例"
+            title="あなたの好きなSNSは？"
             description="アンケートの説明A"
-            url="/gallery/poll/xULqnw4r"
+            url="/gallery/poll/6gcMX5sO"
             objectFit="contain"
             category="アンケート"
           />
