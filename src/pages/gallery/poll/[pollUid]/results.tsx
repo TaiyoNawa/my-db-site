@@ -186,9 +186,10 @@ const PollResultsPage = () => {
       }
       case 'text': {
         const textResult = result as TextResult;
+        const reversedTexts = [...textResult.texts].reverse(); //古い順にナンバリングするために逆順にする
         return (
           <Accordion allowMultiple>
-            {textResult.texts.map((text, i) => (
+            {reversedTexts.map((text, i) => (
               <AccordionItem key={i}>
                 <h2>
                   <AccordionButton>

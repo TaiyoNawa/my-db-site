@@ -369,7 +369,7 @@ const CreatePollPageV2 = () => {
                 onChange={(v: '全体公開' | '限定公開') => setVisibility(v)}
                 value={visibility}
               >
-                <Stack direction="row" spacing={4}>
+                <Stack direction={{ base: 'column', md: 'row' }} spacing={4}>
                   <Radio value="全体公開">全体公開</Radio>
                   <Radio value="限定公開">
                     限定公開 (URLを知っている人のみ)
