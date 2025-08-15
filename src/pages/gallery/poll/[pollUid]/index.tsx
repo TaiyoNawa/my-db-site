@@ -108,7 +108,10 @@ const PollPage = () => {
     const isDeadlinePassed =
       poll.deadline && new Date() > new Date(poll.deadline);
 
-    if (isDeadlinePassed || poll.hasVoted) {
+    if (isDeadlinePassed) {
+      const resultsUrl = `/gallery/poll/${poll.pollUid}/results`;
+      void router.push(resultsUrl);
+    } else if (poll.hasVoted) {
       const resultsUrl = `/gallery/poll/${poll.pollUid}/results`;
       void router.push(resultsUrl);
     } else {

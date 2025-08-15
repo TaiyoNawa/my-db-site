@@ -23,14 +23,6 @@ import {
 import { Image } from '@chakra-ui/react';
 import { nanoid } from 'nanoid';
 import { useState } from 'react';
-// import {
-//   DragDropContext,
-//   Draggable,
-//   DraggableProvided,
-//   Droppable,
-//   DroppableProvided,
-//   DropResult,
-// } from 'react-beautiful-dnd';
 
 import { useStickyHeader } from '@/hooks/useStickyHeader';
 
@@ -160,14 +152,6 @@ const CreatePollPageV2 = () => {
       })
     );
   };
-
-  // const onDragEnd = (result: DropResult) => {
-  //   if (!result.destination) return;
-  //   const items = Array.from(questions);
-  //   const [reorderedItem] = items.splice(result.source.index, 1);
-  //   items.splice(result.destination.index, 0, reorderedItem);
-  //   setQuestions(items);
-  // };
 
   // --- Form Submission ---
   const handleSubmit = async (e: React.FormEvent<HTMLDivElement>) => {
@@ -497,7 +481,6 @@ const CreatePollPageV2 = () => {
                 w="100%"
               >
                 <HStack mb={4}>
-                  {/* <DragHandleIcon /> */}
                   <Text fontWeight="bold">質問 {index + 1}</Text>
                   <IconButton
                     aria-label="質問を削除"
