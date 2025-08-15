@@ -1,236 +1,406 @@
-import { DeleteIcon } from '@chakra-ui/icons';
+'use client';
+import { AddIcon, DeleteIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
+  FormControl,
+  FormLabel,
   Heading,
   HStack,
+  IconButton,
   Input,
   Radio,
   RadioGroup,
+  Select,
+  SimpleGrid,
   Stack,
+  Switch,
   Text,
   Textarea,
   VStack,
+  useToast,
 } from '@chakra-ui/react';
+import { Image } from '@chakra-ui/react';
+import { nanoid } from 'nanoid';
 import { useState } from 'react';
-import React from 'react'; // Import React for event types
+// import {
+//   DragDropContext,
+//   Draggable,
+//   DraggableProvided,
+//   Droppable,
+//   DroppableProvided,
+//   DropResult,
+// } from 'react-beautiful-dnd';
 
 import { useStickyHeader } from '@/hooks/useStickyHeader';
 
 import { SectionWrapper } from '@/components/SectionWrapper';
-import { LinkCopyButton } from '@/components/button/LinkCopyButton'; // Import LinkCopyButton
+import { BackButton } from '@/components/button/BackButton';
+import { LinkCopyButton } from '@/components/button/LinkCopyButton';
 import { SecondHeader } from '@/components/header/SecondHeader';
 import { GalleryMeta } from '@/components/meta/GalleryMeta';
 
-// Define the expected response type from the API
-interface CreatePollResponse {
-  pollUid: string;
-}
+type QuestionType = 'single_choice' | 'multiple_choice' | 'slider' | 'text';
 
-const CreatePollPage = () => {
+type Question = {
+  id: string;
+  text: string;
+  type: QuestionType;
+  options: string[];
+  min: number;
+  max: number;
+  isRequired: boolean;
+};
+
+type CreatePollResponse = {
+  pollUid: string;
+};
+
+type ErrorResponse = {
+  message?: string;
+};
+
+const CreatePollPageV2 = () => {
+  const toast = useToast();
   const { isHeaderHidden } = useStickyHeader();
 
+  // Poll-level state
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [options, setOptions] = useState<string[]>(['', '']);
+  const [visibility, setVisibility] = useState<'全体公開' | '限定公開'>(
+    '全体公開'
+  );
+  const [deadline, setDeadline] = useState<string | null>(null);
   const [deadlinePreset, setDeadlinePreset] = useState('none');
-  const [customDeadline, setCustomDeadline] = useState('');
+
+  // Questions state
+  const [questions, setQuestions] = useState<Question[]>([
+    {
+      id: nanoid(),
+      text: '',
+      type: 'single_choice',
+      options: ['', ''],
+      min: 0,
+      max: 100,
+      isRequired: false,
+    },
+  ]);
+
+  // UI state
   const [isLoading, setIsLoading] = useState(false);
   const [pollUrl, setPollUrl] = useState('');
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
-  const handleOptionChange = (index: number, value: string) => {
-    const newOptions = [...options];
-    newOptions[index] = value;
-    setOptions(newOptions);
+  const pollImages = [
+    'pollImage01.png',
+    'pollImage02.jpg',
+    'pollImage03.jpg',
+    'pollImage04.png',
+    'pollImage05.png',
+  ];
+
+  // --- Question Handlers ---
+  const handleAddQuestion = () => {
+    setQuestions([
+      ...questions,
+      {
+        id: nanoid(),
+        text: '',
+        type: 'single_choice',
+        options: ['', ''],
+        min: 0,
+        max: 100,
+        isRequired: false,
+      },
+    ]);
   };
 
-  const handleAddOption = () => {
-    setOptions([...options, '']);
+  const handleRemoveQuestion = (id: string) => {
+    setQuestions(questions.filter((q) => q.id !== id));
   };
 
-  const handleRemoveOption = (index: number) => {
-    const newOptions = options.filter((_, i) => i !== index);
-    setOptions(newOptions);
+  const handleQuestionChange = (
+    id: string,
+    field: keyof Question,
+    value: string | number | boolean | string[]
+  ) => {
+    setQuestions(
+      questions.map((q) => (q.id === id ? { ...q, [field]: value } : q))
+    );
   };
 
+  const handleOptionChange = (qId: string, optIndex: number, value: string) => {
+    const newQuestions = questions.map((q) => {
+      if (q.id === qId) {
+        const newOptions = [...q.options];
+        newOptions[optIndex] = value;
+        return { ...q, options: newOptions };
+      }
+      return q;
+    });
+    setQuestions(newQuestions);
+  };
+
+  const handleAddOption = (qId: string) => {
+    setQuestions(
+      questions.map((q) =>
+        q.id === qId ? { ...q, options: [...q.options, ''] } : q
+      )
+    );
+  };
+
+  const handleRemoveOption = (qId: string, optIndex: number) => {
+    setQuestions(
+      questions.map((q) => {
+        if (q.id === qId) {
+          const newOptions = q.options.filter((_, i) => i !== optIndex);
+          return { ...q, options: newOptions };
+        }
+        return q;
+      })
+    );
+  };
+
+  // const onDragEnd = (result: DropResult) => {
+  //   if (!result.destination) return;
+  //   const items = Array.from(questions);
+  //   const [reorderedItem] = items.splice(result.source.index, 1);
+  //   items.splice(result.destination.index, 0, reorderedItem);
+  //   setQuestions(items);
+  // };
+
+  // --- Form Submission ---
   const handleSubmit = async (e: React.FormEvent<HTMLDivElement>) => {
-    // Changed event type to HTMLDivElement
     e.preventDefault();
     setIsLoading(true);
     setPollUrl('');
 
-    // Basic validation
-    if (
-      !title.trim() ||
-      options.some((opt) => !opt.trim()) ||
-      options.length < 2
-    ) {
-      alert('タイトルと2つ以上の選択肢は必須です。');
-      setIsLoading(false);
-      return;
-    }
+    // --- Validation for questions and options ---
+    for (const q of questions) {
+      if (q.type.includes('choice')) {
+        // Check for empty options
+        if (q.options.some((opt) => opt.trim() === '')) {
+          toast({
+            title: '空の選択肢があります',
+            description: `質問「${q.text || '(無題)'}」の選択肢を確認してください。`,
+            status: 'error',
+            isClosable: true,
+          });
+          setIsLoading(false);
+          return;
+        }
 
-    let deadlineValue: string | null = null;
-    if (deadlinePreset !== 'none') {
-      const now = new Date();
-      switch (deadlinePreset) {
-        case '1hour':
-          now.setHours(now.getHours() + 1);
-          deadlineValue = now.toISOString();
-          break;
-        case '24hours':
-          now.setDate(now.getDate() + 1);
-          deadlineValue = now.toISOString();
-          break;
-        case '1week':
-          now.setDate(now.getDate() + 7);
-          deadlineValue = now.toISOString();
-          break;
-        case 'custom':
-          if (customDeadline) {
-            deadlineValue = new Date(customDeadline).toISOString();
-          }
-          break;
-        default:
-          deadlineValue = null;
+        // Check for duplicate options
+        const trimmedOptions = q.options.map((opt) => opt.trim());
+        const uniqueOptions = new Set(trimmedOptions);
+        if (uniqueOptions.size !== trimmedOptions.length) {
+          toast({
+            title: '選択肢が重複しています',
+            description: `質問「${q.text || '(無題)'}」の選択肢を確認してください。`,
+            status: 'error',
+            isClosable: true,
+          });
+          setIsLoading(false);
+          return;
+        }
       }
     }
 
     const pollData = {
       title,
       description,
-      options: options.filter((opt) => opt.trim() !== ''),
-      deadline: deadlineValue,
+      visibility,
+      deadline,
+      eyeCatchImage: selectedImage,
+      questions: questions.map((q, index) => ({
+        text: q.text,
+        type: q.type,
+        options: q.type.includes('choice')
+          ? q.options.filter((opt) => opt.trim() !== '')
+          : undefined,
+        min: q.type === 'slider' ? q.min : undefined,
+        max: q.type === 'slider' ? q.max : undefined,
+        isRequired: q.isRequired,
+        order: index,
+      })),
     };
 
     try {
       const response = await fetch('/api/poll/create', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(pollData),
       });
 
+      const data = (await response.json()) as
+        | CreatePollResponse
+        | ErrorResponse;
+
       if (!response.ok) {
-        throw new Error(`Error: ${response.status}`);
+        const errorData = data as ErrorResponse;
+        throw new Error(
+          errorData.message ||
+            'アンケートの作成中に不明なエラーが発生しました。'
+        );
       }
 
-      const data = (await response.json()) as CreatePollResponse; // Cast response to CreatePollResponse type
-      setPollUrl(`${window.location.origin}/gallery/poll/${data.pollUid}`);
-      // Redirect to the poll page after creation (optional, can show URL first)
-      // window.location.href = `/poll/${data.pollUid}`;
+      const successData = data as CreatePollResponse;
+      setPollUrl(
+        `${window.location.origin}/gallery/poll/${successData.pollUid}`
+      );
     } catch (error) {
       console.error('Failed to create poll:', error);
-      alert('アンケートの作成に失敗しました。');
+      if (error instanceof Error) {
+        toast({
+          title: 'エラー',
+          description: error.message,
+          status: 'error',
+          isClosable: true,
+        });
+      } else {
+        toast({
+          title: 'エラー',
+          description: 'アンケートの作成中に不明なエラーが発生しました。',
+          status: 'error',
+          isClosable: true,
+        });
+      }
     } finally {
       setIsLoading(false);
     }
   };
 
+  const renderQuestionInputs = (q: Question) => {
+    switch (q.type) {
+      case 'single_choice':
+      case 'multiple_choice':
+        return (
+          <VStack align="stretch" mt={2}>
+            {q.options.map((opt, i) => (
+              <HStack key={i}>
+                <Input
+                  value={opt}
+                  onChange={(e) => handleOptionChange(q.id, i, e.target.value)}
+                  placeholder={`選択肢 ${i + 1}`}
+                />
+                {q.options.length > 2 && (
+                  <IconButton
+                    aria-label="選択肢を削除"
+                    icon={<DeleteIcon />}
+                    onClick={() => handleRemoveOption(q.id, i)}
+                  />
+                )}
+              </HStack>
+            ))}
+            {q.options.length < 10 && (
+              <Button
+                size="sm"
+                onClick={() => handleAddOption(q.id)}
+                leftIcon={<AddIcon />}
+              >
+                選択肢を追加
+              </Button>
+            )}
+          </VStack>
+        );
+      case 'slider':
+        return (
+          <HStack mt={2} spacing={4}>
+            <FormControl>
+              <FormLabel fontSize="sm">最小値</FormLabel>
+              <Input
+                type="number"
+                value={q.min}
+                onChange={(e) =>
+                  handleQuestionChange(
+                    q.id,
+                    'min',
+                    parseInt(e.target.value, 10)
+                  )
+                }
+              />
+            </FormControl>
+            <FormControl>
+              <FormLabel fontSize="sm">最大値</FormLabel>
+              <Input
+                type="number"
+                value={q.max}
+                onChange={(e) =>
+                  handleQuestionChange(
+                    q.id,
+                    'max',
+                    parseInt(e.target.value, 10)
+                  )
+                }
+              />
+            </FormControl>
+          </HStack>
+        );
+      case 'text':
+        return (
+          <Text fontSize="sm" color="gray.500" mt={2}>
+            自由記述欄が設置されます。
+          </Text>
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <>
+      <GalleryMeta
+        title="アンケート作成 | Haruhate"
+        description="新しいアンケートを作成します。"
+        ogUrl="/gallery/poll/create"
+      />
       <SecondHeader isHeaderHidden={isHeaderHidden} title="Gallery" />
-
       <SectionWrapper>
-        <GalleryMeta
-          title="アンケート作成 | Haruhate"
-          description="アンケートを作成しよう"
-          ogUrl="/gallery/poll/create"
-          category="ギャラリー"
-        />
         <VStack
-          gap={6}
           as="form"
-          onSubmit={(e) => {
-            void handleSubmit(e);
-          }}
+          onSubmit={(e) => void handleSubmit(e)}
+          gap={8}
+          w="100%"
         >
           <Heading as="h1" size="xl">
             アンケート作成
           </Heading>
 
-          {/* アンケートタイトル */}
-          <Box w="100%">
-            <label htmlFor="title">アンケートタイトル</label>
-            <Input
-              id="title"
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="例: 夏休みの旅行先アンケート！"
-              mt={1} // Add some margin top for spacing
-            />
-          </Box>
-
-          {/* 詳しい説明 */}
-          <Box w="100%">
-            <label htmlFor="description">詳しい説明 (任意)</label>
-            <Textarea
-              id="description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="補足情報など"
-              mt={1} // Add some margin top for spacing
-            />
-          </Box>
-
-          {/* 投票選択肢 */}
-          <Box w="100%">
-            <label htmlFor="options">投票選択肢 (2個以上10個以下)</label>
-            <VStack gap={3} align="stretch" mt={1}>
-              {' '}
-              {/* Add margin top */}
-              {options.map((option, index) => (
-                <HStack key={index}>
-                  <Input
-                    value={option}
-                    onChange={(e) => handleOptionChange(index, e.target.value)}
-                    placeholder={`選択肢 ${index + 1}`}
-                  />
-                  {options.length > 2 && (
-                    <Button
-                      aria-label="Remove option"
-                      onClick={() => handleRemoveOption(index)}
-                    >
-                      <DeleteIcon />
-                      削除
-                    </Button>
-                  )}
-                </HStack>
-              ))}
-              {options.length < 10 && ( // Limit to 10 options for now as per spec
-                <Button
-                  onClick={handleAddOption}
-                  size="sm"
-                  alignSelf="flex-start"
-                >
-                  選択肢を追加
-                </Button>
-              )}
-            </VStack>
-          </Box>
-
-          {/* 締め切り日時 */}
-          <Box w="100%">
-            <label>締め切り日時 (任意)</label>
-            <RadioGroup
-              onChange={(value) => {
-                setDeadlinePreset(value);
-                if (value !== 'none') {
-                  const now = new Date();
-                  switch (value) {
-                    case '1hour':
-                      now.setHours(now.getHours() + 1);
-                      break;
-                    case '24hours':
-                      now.setDate(now.getDate() + 1);
-                      break;
-                    case '1week':
-                      now.setDate(now.getDate() + 7);
-                      break;
-                  }
-                  if (value !== 'custom') {
+          {/* Poll Settings */}
+          <VStack w="100%" align="stretch" gap={4}>
+            <FormControl isRequired>
+              <FormLabel>アンケートタイトル</FormLabel>
+              <Input value={title} onChange={(e) => setTitle(e.target.value)} />
+            </FormControl>
+            <FormControl>
+              <FormLabel>詳しい説明 (任意)</FormLabel>
+              <Textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              />
+            </FormControl>
+            <FormControl>
+              <FormLabel>公開設定</FormLabel>
+              <RadioGroup
+                onChange={(v: '全体公開' | '限定公開') => setVisibility(v)}
+                value={visibility}
+              >
+                <Stack direction="row" spacing={4}>
+                  <Radio value="全体公開">全体公開</Radio>
+                  <Radio value="限定公開">
+                    限定公開 (URLを知っている人のみ)
+                  </Radio>
+                </Stack>
+              </RadioGroup>
+            </FormControl>
+            <FormControl>
+              <FormLabel>締切日時 (任意)</FormLabel>
+              <RadioGroup
+                onChange={(value) => {
+                  setDeadlinePreset(value);
+                  if (value === 'none') {
+                    setDeadline(null);
+                  } else if (value !== 'custom') {
                     const now = new Date();
                     switch (value) {
                       case '1hour':
@@ -243,39 +413,156 @@ const CreatePollPage = () => {
                         now.setDate(now.getDate() + 7);
                         break;
                     }
-
-                    // JSTに変換してdatetime-local表示に使う
-                    const offset = now.getTimezoneOffset();
-                    const jst = new Date(now.getTime() - offset * 60 * 1000);
-                    const japanDateTime = jst.toISOString().slice(0, 16);
-                    setCustomDeadline(japanDateTime);
+                    setDeadline(now.toISOString());
                   }
-                }
-              }}
-              value={deadlinePreset}
-              mt={1}
-            >
-              <Stack direction={{ base: 'column', md: 'row' }} spacing={4}>
-                <Radio value="none">なし</Radio>
-                <Radio value="1hour">1時間後</Radio>
-                <Radio value="24hours">24時間後</Radio>
-                <Radio value="1week">1週間後</Radio>
-                <Radio value="custom">日時を指定</Radio>
-              </Stack>
-            </RadioGroup>
+                }}
+                value={deadlinePreset}
+              >
+                <Stack direction={{ base: 'column', md: 'row' }} spacing={4}>
+                  <Radio value="none">なし</Radio>
+                  <Radio value="1hour">1時間後</Radio>
+                  <Radio value="24hours">24時間後</Radio>
+                  <Radio value="1week">1週間後</Radio>
+                  <Radio value="custom">日時を指定</Radio>
+                </Stack>
+              </RadioGroup>
+              {deadlinePreset !== 'none' && (
+                <Input
+                  mt={2}
+                  type="datetime-local"
+                  value={
+                    deadline
+                      ? new Date(
+                          new Date(deadline).getTime() -
+                            new Date().getTimezoneOffset() * 60000
+                        )
+                          .toISOString()
+                          .slice(0, 16)
+                      : ''
+                  }
+                  onChange={(e) => {
+                    if (e.target.value) {
+                      const localDate = new Date(e.target.value);
+                      setDeadline(localDate.toISOString());
+                      setDeadlinePreset('custom');
+                    } else {
+                      setDeadline(null);
+                    }
+                  }}
+                />
+              )}
+            </FormControl>
+            <FormControl>
+              <FormLabel>アイキャッチ画像 (任意)</FormLabel>
+              <SimpleGrid columns={{ base: 2, md: 3, lg: 5 }} spacing={4}>
+                {pollImages.map((img) => (
+                  <Box
+                    key={img}
+                    as="button"
+                    type="button"
+                    onClick={() =>
+                      setSelectedImage(selectedImage === img ? null : img)
+                    }
+                    border="2px solid"
+                    borderColor={
+                      selectedImage === img ? 'blue.500' : 'gray.200'
+                    }
+                    borderRadius="md"
+                    overflow="hidden"
+                    p={1}
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                    minH="100px" // 最小高さを設定
+                  >
+                    <Image
+                      src={`/pollImage/${img}`}
+                      alt={img}
+                      objectFit="cover"
+                    />
+                  </Box>
+                ))}
+              </SimpleGrid>
+            </FormControl>
+          </VStack>
 
-            {/* 締切日付の編集フィールドは常に表示 */}
-            {deadlinePreset !== 'none' && (
-              <Input
-                mt={2}
-                type="datetime-local"
-                value={customDeadline}
-                onChange={(e) => setCustomDeadline(e.target.value)}
-              />
-            )}
-          </Box>
+          {/* Questions */}
+          <VStack w="100%" align="stretch" gap={6}>
+            {questions.map((q, index) => (
+              <Box
+                key={q.id}
+                p={4}
+                borderWidth="1px"
+                borderRadius="md"
+                w="100%"
+              >
+                <HStack mb={4}>
+                  {/* <DragHandleIcon /> */}
+                  <Text fontWeight="bold">質問 {index + 1}</Text>
+                  <IconButton
+                    aria-label="質問を削除"
+                    icon={<DeleteIcon />}
+                    size="sm"
+                    onClick={() => handleRemoveQuestion(q.id)}
+                    ml="auto"
+                  />
+                </HStack>
+                <VStack align="stretch" gap={3}>
+                  <FormControl isRequired>
+                    <FormLabel>質問文</FormLabel>
+                    <Input
+                      value={q.text}
+                      onChange={(e) =>
+                        handleQuestionChange(q.id, 'text', e.target.value)
+                      }
+                    />
+                  </FormControl>
+                  <FormControl>
+                    <FormLabel>質問形式</FormLabel>
+                    <Select
+                      value={q.type}
+                      onChange={(e) =>
+                        handleQuestionChange(
+                          q.id,
+                          'type',
+                          e.target.value as QuestionType
+                        )
+                      }
+                    >
+                      <option value="single_choice">単一選択</option>
+                      <option value="multiple_choice">複数選択</option>
+                      <option value="slider">スライダー</option>
+                      <option value="text">自由記述</option>
+                    </Select>
+                  </FormControl>
+                  {renderQuestionInputs(q)}
+                  <FormControl display="flex" alignItems="center">
+                    <FormLabel htmlFor={`isRequired-${q.id}`} mb="0">
+                      必須回答にする
+                    </FormLabel>
+                    <Switch
+                      id={`isRequired-${q.id}`}
+                      isChecked={q.isRequired}
+                      onChange={(e) =>
+                        handleQuestionChange(
+                          q.id,
+                          'isRequired',
+                          e.target.checked
+                        )
+                      }
+                    />
+                  </FormControl>
+                </VStack>
+              </Box>
+            ))}
+          </VStack>
 
-          {!pollUrl && (
+          <Button onClick={handleAddQuestion} leftIcon={<AddIcon />}>
+            質問を追加
+          </Button>
+
+          {/* Submission */}
+          {!pollUrl ? (
             <Button
               type="submit"
               colorScheme="blue"
@@ -284,21 +571,29 @@ const CreatePollPage = () => {
             >
               アンケートを作成
             </Button>
-          )}
-
-          {pollUrl && (
-            <VStack w="100%" mt={3} p={4}>
-              <Heading as="h2" size="md" mt={4} mb={2}>
-                アンケートを作成しました！
+          ) : (
+            <VStack
+              w="100%"
+              mt={4}
+              p={4}
+              borderWidth="1px"
+              borderRadius="md"
+              bg="green.50"
+            >
+              <Heading as="h2" size="md">
+                作成完了！
               </Heading>
-              <Text>↓アンケートのリンクをコピーして共有する↓</Text>
+              <Text>↓このURLを共有してください↓</Text>
               <LinkCopyButton href={pollUrl} />
             </VStack>
           )}
         </VStack>
+        <Box pt={16}>
+          <BackButton href="/gallery/poll">アンケート一覧に戻る</BackButton>
+        </Box>
       </SectionWrapper>
     </>
   );
 };
 
-export default CreatePollPage;
+export default CreatePollPageV2;

@@ -102,9 +102,7 @@ export default async function handler(
       });
 
       if (existingVotesWithPoll.results.length > 0) {
-        return res
-          .status(409)
-          .json({ message: 'You have already voted in this poll.' });
+        return res.status(409).json({ message: 'すでに投票しています。' });
       }
     }
 

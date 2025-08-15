@@ -1,16 +1,25 @@
+'use client';
 import {
   Box,
+  Button,
+  Checkbox,
+  CheckboxGroup,
+  FormControl,
+  FormLabel,
   Heading,
+  Radio,
+  RadioGroup,
+  Slider,
+  SliderFilledTrack,
+  SliderThumb,
+  SliderTrack,
+  Stack,
   Text,
+  Textarea,
   VStack,
-  Spinner,
+  useToast,
   Alert,
   AlertIcon,
-  Progress,
-  Button,
-  RadioGroup,
-  Stack,
-  Radio,
 } from '@chakra-ui/react';
 import Cookies from 'js-cookie';
 import { nanoid } from 'nanoid';
@@ -18,291 +27,316 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import useSWR from 'swr';
 
+import { useStickyHeader } from '@/hooks/useStickyHeader';
+
+import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { SectionWrapper } from '@/components/SectionWrapper';
-import { LinkCopyButton } from '@/components/button/LinkCopyButton';
+import { BackButton } from '@/components/button/BackButton';
+import { SecondHeader } from '@/components/header/SecondHeader';
 import { GalleryMeta } from '@/components/meta/GalleryMeta';
 
-// Define types for poll data
-interface PollOption {
-  id: string;
+// --- Types ---
+interface QuestionData {
+  questionUid: string;
   text: string;
-  votes: number;
+  type: 'single_choice' | 'multiple_choice' | 'slider' | 'text';
+  options?: string[];
+  min?: number;
+  max?: number;
+  isRequired: boolean;
 }
 
-interface PollData {
+type PollData = {
   pollUid: string;
   title: string;
-  description?: string;
-  options: PollOption[];
-  deadline?: string | null;
-  totalVotes: number;
-  status: string; // e.g., '受付中', '終了'
-}
+  description: string;
+  questions: QuestionData[];
+  deadline: string | null;
+  hasVoted: boolean;
+};
 
-// Define a fetcher function for SWR
-const fetcher = async (url: string) => {
+type SubmitResponse = {
+  message: string;
+};
+
+type ErrorResponse = {
+  message?: string;
+};
+
+type AnswersState = {
+  [questionUid: string]: string | string[] | number;
+};
+
+const fetcher = async (url: string): Promise<PollData> => {
   const res = await fetch(url);
   if (!res.ok) {
-    const error = new Error('An error occurred while fetching the data.');
-    // Attach extra info to the error object.
-    // error.info = await res.json(); // Uncomment if API returns error details in JSON
-    error.message = `Error: ${res.status}`;
-    throw error;
+    throw new Error('Failed to fetch data');
   }
   return res.json() as Promise<PollData>;
 };
 
-const PollDetailPage = () => {
+const PollPage = () => {
+  const { isHeaderHidden } = useStickyHeader();
   const router = useRouter();
   const { pollUid } = router.query;
-  const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null);
-  const [isVoting, setIsVoting] = useState(false);
-  const [voterId, setVoterId] = useState<string | null>(null);
-  const [hasVoted, setHasVoted] = useState(false);
+  const toast = useToast();
 
-  // ラッパー関数：すべてのreturnを統一的にラップ
-  const renderWithLayout = (content: React.ReactNode) => (
-    <SectionWrapper>
-      <GalleryMeta
-        title="アンケート | Haruhate"
-        description="アンケートに回答しよう"
-        ogUrl={`/gallery/poll/${typeof pollUid === 'string' ? pollUid : '[pollUid]'}`}
-        category="ギャラリー"
-      />
-      {content}
-    </SectionWrapper>
+  const [answers, setAnswers] = useState<AnswersState>({});
+  const [voterId, setVoterId] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isPageReady, setIsPageReady] = useState(false);
+
+  const { data: poll, error } = useSWR<PollData>(
+    pollUid && typeof pollUid === 'string' && voterId
+      ? `/api/poll/${pollUid}?voterId=${voterId}`
+      : null,
+    fetcher
   );
 
-  // Manage voter ID and check if already voted
   useEffect(() => {
-    if (!pollUid || typeof pollUid !== 'string') return;
-
-    // 1. Get or create voter ID
-    let currentVoterId = Cookies.get('voterId');
-    if (!currentVoterId) {
-      currentVoterId = nanoid();
-      Cookies.set('voterId', currentVoterId, { expires: 365 }); // Expires in 1 year
+    let id = Cookies.get('voterId');
+    if (!id) {
+      id = nanoid();
+      Cookies.set('voterId', id, { expires: 365 });
     }
-    setVoterId(currentVoterId);
+    setVoterId(id);
+  }, []);
 
-    // 2. Check if this poll has been voted on by this voter
-    const votedPollsCookie = Cookies.get('votedPolls');
-    if (votedPollsCookie) {
-      try {
-        const votedPolls = JSON.parse(votedPollsCookie) as string[];
-        if (votedPolls.includes(pollUid)) {
-          setHasVoted(true);
-        }
-      } catch (e) {
-        console.error('Failed to parse votedPolls cookie:', e);
+  useEffect(() => {
+    if (!poll || !router.isReady) return;
+
+    const isDeadlinePassed =
+      poll.deadline && new Date() > new Date(poll.deadline);
+
+    if (isDeadlinePassed || poll.hasVoted) {
+      const resultsUrl = `/gallery/poll/${poll.pollUid}/results`;
+      void router.push(resultsUrl);
+    } else {
+      // No redirect needed, the page is ready to be displayed.
+      setIsPageReady(true);
+    }
+  }, [poll, router]);
+
+  const handleAnswerChange = (
+    questionUid: string,
+    value: string | string[] | number
+  ) => {
+    setAnswers((prev) => ({ ...prev, [questionUid]: value }));
+  };
+
+  const handleSubmit = async () => {
+    if (!voterId) {
+      toast({ title: 'Voter ID not found.', status: 'error' });
+      return;
+    }
+
+    // Validation
+    for (const q of poll?.questions || []) {
+      if (q.isRequired && !answers[q.questionUid]) {
+        toast({
+          title: `「${String(q.text)}」は必須回答です。`,
+          status: 'warning',
+          isClosable: true,
+        });
+        return;
       }
     }
-  }, [pollUid]);
 
-  // Use SWR for data fetching
-  const {
-    data: pollData,
-    error,
-    isLoading,
-    mutate, // mutate function to manually trigger revalidation
-  } = useSWR<PollData, Error>( // Explicitly type the error as Error
-    typeof pollUid === 'string' ? `/api/poll/${pollUid}` : null, // Fetch only if pollUid is a string
-    fetcher,
-    {
-      refreshInterval: 5000, // Poll every 5 seconds for real-time updates
-      revalidateOnFocus: true, // Revalidate when window gains focus
-    }
-  );
-
-  // Handle voting
-  const handleVote = async () => {
-    if (
-      !pollUid ||
-      typeof pollUid !== 'string' ||
-      !selectedOptionId ||
-      !voterId ||
-      isVoting ||
-      hasVoted
-    )
-      return;
-
-    setIsVoting(true);
+    setIsLoading(true);
     try {
-      const response = await fetch(`/api/poll/${pollUid}/vote`, {
+      const response = await fetch(`/api/poll/${String(pollUid)}/submit`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ optionId: selectedOptionId, voterId }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          voterId,
+          answers: Object.entries(answers).map(([questionUid, answer]) => ({
+            questionUid,
+            answer,
+          })),
+        }),
       });
 
+      const data = (await response.json()) as SubmitResponse | ErrorResponse;
+
       if (!response.ok) {
-        const errorData = (await response.json()) as { message?: string };
-        throw new Error(errorData.message || `Error: ${response.status}`);
-      }
-
-      // After successful vote, trigger SWR revalidation
-      await mutate();
-      setHasVoted(true);
-
-      // Mark this poll as voted in cookies
-      const votedPollsCookie = Cookies.get('votedPolls');
-      let votedPolls: string[] = [];
-      if (votedPollsCookie) {
-        try {
-          votedPolls = JSON.parse(votedPollsCookie) as string[];
-        } catch (e) {
-          console.error('Failed to parse votedPolls cookie:', e);
+        // 409 (Conflict) for duplicate submission
+        if (response.status === 409) {
+          const errorData = data as ErrorResponse;
+          toast({
+            title: errorData.message || '既にこのアンケートには回答済みです。',
+            status: 'warning',
+            isClosable: true,
+          });
+          void router.push(`/gallery/poll/${String(pollUid)}/results`);
+          return; // Stop execution here
         }
+        // For other errors (like 403 Forbidden for deadline)
+        const errorData = data as ErrorResponse;
+        throw new Error(errorData.message || '回答の送信に失敗しました。');
       }
-      if (!votedPolls.includes(pollUid)) {
-        votedPolls.push(pollUid);
-        Cookies.set('votedPolls', JSON.stringify(votedPolls), {
-          expires: 365,
+
+      toast({ title: '回答を送信しました！', status: 'success' });
+      void router.push(`/gallery/poll/${String(pollUid)}/results`);
+    } catch (err) {
+      if (err instanceof Error) {
+        toast({
+          title: err.message,
+          status: 'error',
+          isClosable: true,
+        });
+      } else {
+        toast({
+          title: '予期せぬエラーが発生しました。',
+          status: 'error',
+          isClosable: true,
         });
       }
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : '不明なエラーが発生しました。';
-      console.error('Failed to submit vote:', errorMessage);
-      alert(`投票に失敗しました: ${errorMessage}`);
+      console.error(err);
     } finally {
-      setIsVoting(false);
+      setIsLoading(false);
     }
   };
 
-  if (isLoading) {
-    return renderWithLayout(
-      <VStack py={8} align="center">
-        <Spinner size="xl" />
-        <Text mt={4}>読み込み中...</Text>
-      </VStack>
-    );
-  }
-
-  if (error) {
-    return renderWithLayout(
-      <Alert status="error" mx="auto" maxW="container.md">
-        <AlertIcon />
-        アンケートデータの取得に失敗しました: {error.message}
-      </Alert>
-    );
-  }
-
-  if (!pollData) {
-    return renderWithLayout(
-      <Alert status="info" mx="auto" maxW="container.md">
-        <AlertIcon />
-        アンケートが見つかりませんでした。
-      </Alert>
-    );
-  }
-
-  const isVotingOpen =
-    pollData.status === '受付中' &&
-    (!pollData.deadline || new Date(pollData.deadline) > new Date());
-
-  return renderWithLayout(
-    <VStack gap={6} align="stretch" maxW="container.md" mx="auto" py={8}>
-      <Heading as="h1" size="xl">
-        {pollData.title}
-      </Heading>
-      {pollData.description && <Text>{pollData.description}</Text>}
-      {pollData.deadline && (
-        <Text fontSize="sm" color="gray.500">
-          締め切り: {new Date(pollData.deadline).toLocaleString()}
-        </Text>
-      )}
-      {/* Voting Section */}
-      {isVotingOpen && !hasVoted ? (
-        <Box>
-          <Heading as="h2" size="md" mb={4}>
-            投票する
-          </Heading>
+  const renderQuestion = (q: QuestionData) => {
+    switch (q.type) {
+      case 'single_choice':
+        return (
           <RadioGroup
-            onChange={setSelectedOptionId}
-            value={selectedOptionId || ''}
+            onChange={(value) => handleAnswerChange(q.questionUid, value)}
+            value={answers[q.questionUid] as string}
           >
-            <Stack direction="column" gap={3}>
-              {pollData.options.map((option) => (
-                <Radio key={option.id} value={option.id}>
-                  {option.text}
+            <Stack>
+              {q.options?.map((opt) => (
+                <Radio key={opt} value={opt}>
+                  {opt}
                 </Radio>
               ))}
             </Stack>
           </RadioGroup>
-          <Button
-            mt={4}
-            colorScheme="blue"
-            onClick={() => {
-              void handleVote();
-            }}
-            isLoading={isVoting}
-            isDisabled={!selectedOptionId}
-          >
-            投票する
-          </Button>
-        </Box>
-      ) : (
-        <Text fontSize="lg" color="gray.600">
-          {hasVoted ? '投票済みです。' : '投票期間は終了しました。'}
-        </Text>
-      )}
-      {/* Results Section - Show only if voted or voting is closed */}
-      {(hasVoted || !isVotingOpen) && (
-        <Box>
-          <Heading as="h2" size="md" mb={4}>
-            投票結果
-          </Heading>
-          {pollData.totalVotes === 0 ? (
-            <Text>まだ投票はありません。</Text>
-          ) : (
-            <VStack gap={4} align="stretch">
-              {pollData.options.map((option) => {
-                const percentage =
-                  pollData.totalVotes > 0
-                    ? (option.votes / pollData.totalVotes) * 100
-                    : 0;
-                return (
-                  <Box key={option.id}>
-                    <Text fontWeight="bold">{option.text}</Text>
-                    <Progress
-                      value={percentage}
-                      size="lg"
-                      colorScheme="teal"
-                      hasStripe
-                      isAnimated
-                    />
-                    <Text fontSize="sm" color="gray.600">
-                      {option.votes} 票 ({percentage.toFixed(1)}%)
-                    </Text>
-                  </Box>
-                );
-              })}
-              <Text fontWeight="bold" mt={4}>
-                合計投票数: {pollData.totalVotes} 票
-              </Text>
-            </VStack>
-          )}
-        </Box>
-      )}
-      {/* Share URL Section */}
-      {pollUid && (
-        <Box mt={6}>
-          <Heading as="h2" size="md" mb={2}>
-            ↓このアンケートを共有する
-          </Heading>
-          <LinkCopyButton
-            href={
-              typeof pollUid === 'string'
-                ? `${window.location.origin}/gallery/poll/${pollUid}`
-                : ''
+        );
+      case 'multiple_choice':
+        return (
+          <CheckboxGroup
+            onChange={(value) =>
+              handleAnswerChange(q.questionUid, value as string[])
             }
+            value={(answers[q.questionUid] as string[]) || []}
+          >
+            <Stack>
+              {q.options?.map((opt) => (
+                <Checkbox key={opt} value={opt}>
+                  {opt}
+                </Checkbox>
+              ))}
+            </Stack>
+          </CheckboxGroup>
+        );
+      case 'slider':
+        return (
+          <Slider
+            min={q.min}
+            max={q.max}
+            onChange={(value) => handleAnswerChange(q.questionUid, value)}
+            value={(answers[q.questionUid] as number) ?? q.min}
+          >
+            <SliderTrack>
+              <SliderFilledTrack />
+            </SliderTrack>
+            <SliderThumb />
+            <Text textAlign="center" mt={10}>
+              {String(answers[q.questionUid] ?? q.min)}
+            </Text>
+          </Slider>
+        );
+      case 'text':
+        return (
+          <Textarea
+            onChange={(e) => handleAnswerChange(q.questionUid, e.target.value)}
+            value={(answers[q.questionUid] as string) ?? ''}
+            placeholder="回答を入力..."
           />
-        </Box>
-      )}
-    </VStack>
+        );
+      default:
+        return null;
+    }
+  };
+
+  if (error)
+    return (
+      <>
+        <GalleryMeta
+          title={`アンケート | Haruhate`}
+          description="アンケートに答えましょう"
+          ogUrl={`/gallery/poll/${poll?.pollUid || ''}`}
+        />
+        <SecondHeader isHeaderHidden={isHeaderHidden} title="Gallery" />
+        <SectionWrapper>
+          <Alert status="error">
+            <AlertIcon />
+            アンケートの読み込みに失敗しました。
+          </Alert>
+        </SectionWrapper>
+      </>
+    );
+  if (!poll || !isPageReady)
+    return (
+      <>
+        <GalleryMeta
+          title={`アンケート | Haruhate`}
+          description={'アンケートに答えましょう'}
+          ogUrl={`/gallery/poll`}
+        />
+        <SecondHeader isHeaderHidden={isHeaderHidden} title="Gallery" />
+        <LoadingSpinner />
+      </>
+    );
+  return (
+    <>
+      <GalleryMeta
+        title={`${poll.title} | Haruhate`}
+        description={poll.description}
+        ogUrl={`/gallery/poll/${poll.pollUid}`}
+      />
+      <SecondHeader isHeaderHidden={isHeaderHidden} title="Gallery" />
+
+      <SectionWrapper>
+        <VStack spacing={8} align="stretch">
+          <Box textAlign="center">
+            <Heading as="h1">{poll.title}</Heading>
+            {poll.description && <Text mt={2}>{poll.description}</Text>}
+          </Box>
+
+          <VStack spacing={6} align="stretch">
+            {poll.questions.map((q) => (
+              <FormControl
+                key={q.questionUid}
+                isRequired={q.isRequired}
+                bg="white"
+                borderRadius="md"
+                border="0.5px solid"
+                p={4}
+              >
+                <FormLabel>{q.text}</FormLabel>
+                {renderQuestion(q)}
+              </FormControl>
+            ))}
+          </VStack>
+
+          <Button
+            colorScheme="blue"
+            onClick={() => void handleSubmit()}
+            isLoading={isLoading}
+            size="lg"
+          >
+            回答を送信する
+          </Button>
+          <Box pt={4}>
+            <BackButton href="/gallery/poll">アンケート一覧に戻る</BackButton>
+          </Box>
+        </VStack>
+      </SectionWrapper>
+    </>
   );
 };
 
-export default PollDetailPage;
+export default PollPage;

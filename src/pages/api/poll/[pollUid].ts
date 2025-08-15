@@ -1,44 +1,45 @@
 import { Client } from '@notionhq/client';
+import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 const notion = new Client({ auth: process.env.NOTION_TOKEN });
-const pollsDatabaseId = process.env.NOTION_POLLS_DATABASE_ID;
+const pollsDatabaseId = process.env.NOTION_POLLS_DATABASE_ID!;
+const questionsDatabaseId = process.env.NOTION_QUESTIONS_DATABASE_ID!;
+const answersDatabaseId = process.env.NOTION_ANSWERS_DATABASE_ID!;
 
-// Define the expected structure of a poll page property value from Notion
-interface NotionRichTextProperty {
-  type: 'rich_text';
-  rich_text: Array<{ type: 'text'; text: { content: string } }>;
+// Type definitions for Notion properties
+type NotionProperty<T extends string, N> = { type: T } & { [key in T]: N };
+type NotionTitle = NotionProperty<'title', { text: { content: string } }[]>;
+type NotionRichText = NotionProperty<
+  'rich_text',
+  { text: { content: string } }[]
+>;
+type NotionSelect = NotionProperty<'select', { name: string } | null>;
+type NotionDate = NotionProperty<'date', { start: string } | null>;
+type NotionNumber = NotionProperty<'number', number | null>;
+type NotionCheckbox = NotionProperty<'checkbox', boolean>;
+
+// Frontend data structures
+interface QuestionData {
+  questionUid: string;
+  text: string;
+  type: string;
+  options?: string[];
+  min?: number;
+  max?: number;
+  isRequired: boolean;
+  order: number;
 }
 
-interface NotionTitleProperty {
-  type: 'title';
-  title: Array<{ type: 'text'; text: { content: string } }>;
-}
-
-interface NotionDateProperty {
-  type: 'date';
-  date: { start: string; end: string | null } | null;
-}
-
-interface NotionNumberProperty {
-  type: 'number';
-  number: number | null;
-}
-
-interface NotionStatusProperty {
-  type: 'status';
-  status: { id: string; name: string; color: string } | null;
-}
-
-// Define the structure of the data to return to the frontend
-interface PollData {
+interface PollDataV2 {
   pollUid: string;
   title: string;
-  description?: string;
-  options: Array<{ id: string; text: string; votes: number }>;
-  deadline?: string | null;
-  totalVotes: number;
+  description: string;
+  visibility: string;
+  deadline: string | null;
   status: string;
+  questions: QuestionData[];
+  hasVoted: boolean;
 }
 
 export default async function handler(
@@ -50,96 +51,89 @@ export default async function handler(
     return res.status(405).json({ message: 'Method Not Allowed' });
   }
 
-  const { pollUid } = req.query;
-
+  const { pollUid, voterId } = req.query;
   if (!pollUid || typeof pollUid !== 'string') {
     return res.status(400).json({ message: 'Poll UID is required.' });
   }
 
   try {
-    // Search for the page with the matching PollUID
-    const response = await notion.databases.query({
-      database_id: pollsDatabaseId!, // Use non-null assertion
-      filter: {
-        property: 'PollUID',
-        rich_text: {
-          equals: pollUid,
-        },
-      },
+    // 1. Find the poll in the 'Polls' database
+    const pollResponse = await notion.databases.query({
+      database_id: pollsDatabaseId,
+      filter: { property: 'PollUID', rich_text: { equals: pollUid } },
     });
 
-    const pollPage = response.results[0]; // Removed direct cast
-
-    if (!pollPage) {
+    if (pollResponse.results.length === 0) {
       return res.status(404).json({ message: 'Poll not found.' });
     }
+    const pollPage = pollResponse.results[0] as PageObjectResponse;
 
-    // Ensure the result is a PageObjectResponse to access properties
-    if (!('properties' in pollPage)) {
-      return res
-        .status(500)
-        .json({ message: 'Invalid page object received from Notion.' });
-    }
-
-    // Extract and format data from the Notion page properties
-    // Access properties dynamically and assert their types
-    const pollUidProperty = pollPage.properties['PollUID'] as
-      | NotionRichTextProperty
-      | undefined;
-    const titleProperty = pollPage.properties['Title'] as
-      | NotionTitleProperty
-      | undefined;
-    const descriptionProperty = pollPage.properties['Description'] as
-      | NotionRichTextProperty
-      | undefined;
-    const optionsProperty = pollPage.properties['Options'] as
-      | NotionRichTextProperty
-      | undefined;
-    const deadlineProperty = pollPage.properties['Deadline'] as
-      | NotionDateProperty
-      | undefined;
-    const totalVotesProperty = pollPage.properties['TotalVotes'] as
-      | NotionNumberProperty
-      | undefined;
-    const statusProperty = pollPage.properties['Status'] as
-      | NotionStatusProperty
-      | undefined;
-
-    const title = titleProperty?.title[0]?.text.content || 'Untitled Poll';
-    const description = descriptionProperty?.rich_text[0]?.text.content || '';
-    const optionsJson = optionsProperty?.rich_text[0]?.text.content;
-    const deadline = deadlineProperty?.date?.start || null;
-    const totalVotes = totalVotesProperty?.number || 0;
-    const status = statusProperty?.status?.name || '不明';
-
-    let options: Array<{ id: string; text: string; votes: number }> = [];
-    if (optionsJson) {
-      try {
-        options = JSON.parse(optionsJson) as Array<{
-          id: string;
-          text: string;
-          votes: number;
-        }>;
-      } catch (parseError) {
-        console.error('Failed to parse options JSON:', parseError);
-        // Handle parsing error, maybe return an empty options array or an error response
+    // 2. Check if the user has already voted (if voterId is provided)
+    let hasVoted = false;
+    if (voterId && typeof voterId === 'string') {
+      const answerResponse = await notion.databases.query({
+        database_id: answersDatabaseId,
+        filter: {
+          and: [
+            { property: 'VoterID', rich_text: { equals: voterId } },
+            { property: 'PollRef', relation: { contains: pollPage.id } },
+          ],
+        },
+        page_size: 1,
+      });
+      if (answerResponse.results.length > 0) {
+        hasVoted = true;
       }
     }
 
-    // Ensure pollUid is a string before using it
-    const finalPollUid = pollUidProperty?.rich_text[0]?.text.content || '';
+    // 3. Find related questions in the 'Questions' database
+    const questionsResponse = await notion.databases.query({
+      database_id: questionsDatabaseId,
+      filter: { property: 'PollRef', relation: { contains: pollPage.id } },
+      sorts: [{ property: 'Order', direction: 'ascending' }],
+    });
 
-    const formattedPollData: PollData = {
-      pollUid: finalPollUid,
-      title,
-      description,
-      options,
-      deadline,
-      totalVotes,
-      status,
+    // 3. Format poll and question data
+    const pollProps = pollPage.properties;
+    const formattedPoll: Omit<PollDataV2, 'questions'> = {
+      pollUid: (pollProps.PollUID as NotionRichText).rich_text[0].text.content,
+      title: (pollProps.Title as NotionTitle).title[0].text.content,
+      description:
+        (pollProps.Description as NotionRichText).rich_text[0]?.text.content ||
+        '',
+      visibility:
+        (pollProps.Visibility as NotionSelect).select?.name || '限定公開',
+      deadline: (pollProps.Deadline as NotionDate).date?.start || null,
+      status: (pollProps.Status as NotionSelect).select?.name || '不明',
+      hasVoted,
     };
 
-    res.status(200).json(formattedPollData);
+    const formattedQuestions = (
+      questionsResponse.results as PageObjectResponse[]
+    ).map((q): QuestionData => {
+      const qProps = q.properties;
+      const optionsJson =
+        (qProps.Options as NotionRichText).rich_text[0]?.text.content || '[]';
+      return {
+        questionUid: (qProps.QuestionUID as NotionRichText).rich_text[0].text
+          .content,
+        text: (qProps.Text as NotionTitle).title[0].text.content,
+        type: (qProps.Type as NotionSelect).select?.name || 'text',
+        options: JSON.parse(optionsJson),
+        min: (qProps.Min as NotionNumber).number ?? undefined,
+        max: (qProps.Max as NotionNumber).number ?? undefined,
+        isRequired: (qProps.IsRequired as NotionCheckbox).checkbox,
+        order: (qProps.Order as NotionNumber).number || 0,
+      };
+    });
+
+    const responseData: PollDataV2 = {
+      ...formattedPoll,
+      questions: formattedQuestions,
+      hasVoted,
+    };
+
+    res.status(200).json(responseData);
   } catch (error) {
     console.error('Notion API Error:', error);
     res.status(500).json({
