@@ -333,7 +333,7 @@ const PollPage = () => {
           >
             回答を送信する
           </Button>
-          <Box pt={4}>
+          <Box pt={16}>
             <BackButton href="/gallery/poll">アンケート一覧に戻る</BackButton>
           </Box>
         </VStack>

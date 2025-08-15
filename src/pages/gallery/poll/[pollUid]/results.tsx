@@ -320,7 +320,7 @@ const PollResultsPage = () => {
               </Box>
             ))}
           </VStack>
-          <Box pt={8}>
+          <Box pt={16}>
             <BackButton href="/gallery/poll">アンケート一覧に戻る</BackButton>
           </Box>
         </VStack>

@@ -91,15 +91,20 @@ export default async function handler(
     const questions = (questionsResponse.results as PageObjectResponse[]).map(
       (q) => {
         const qProps = q.properties;
+        const optionsContent =
+          (qProps.Options as NotionRichText).rich_text[0]?.text.content || '[]';
+        let options: string[] = [];
+        try {
+          options = JSON.parse(optionsContent);
+        } catch {
+          options = [];
+        }
         return {
           questionUid: (qProps.QuestionUID as NotionRichText).rich_text[0].text
             .content,
           text: (qProps.Text as NotionTitle).title[0].text.content,
           type: (qProps.Type as NotionSelect).select?.name || 'text',
-          options: JSON.parse(
-            (qProps.Options as NotionRichText).rich_text[0]?.text.content ||
-              '[]'
-          ),
+          options,
         };
       }
     );
@@ -160,10 +165,16 @@ export default async function handler(
       const answerContent = (props.Answer as NotionTitle).title[0]?.text
         ?.content;
       if (answerContent) {
-        const parsedAnswer: unknown = JSON.parse(answerContent);
-        answersByQuestion[questionUid].push(
-          parsedAnswer as string | number | string[]
-        );
+        try {
+          const parsedAnswer: unknown = JSON.parse(answerContent);
+          answersByQuestion[questionUid].push(
+            parsedAnswer as string | number | string[]
+          );
+        } catch {
+          // Optionally log the error, but skip this answer
+          // console.error('Failed to parse answerContent:', answerContent);
+          continue;
+        }
       }
     }
 

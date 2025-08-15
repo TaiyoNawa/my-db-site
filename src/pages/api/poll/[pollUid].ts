@@ -114,12 +114,23 @@ export default async function handler(
       const qProps = q.properties;
       const optionsJson =
         (qProps.Options as NotionRichText).rich_text[0]?.text.content || '[]';
+      let options: string[] = [];
+      try {
+        options = JSON.parse(optionsJson);
+      } catch (e) {
+        console.warn(
+          `Failed to parse optionsJson for question ${q.id}:`,
+          optionsJson,
+          e
+        );
+        options = [];
+      }
       return {
         questionUid: (qProps.QuestionUID as NotionRichText).rich_text[0].text
           .content,
         text: (qProps.Text as NotionTitle).title[0].text.content,
         type: (qProps.Type as NotionSelect).select?.name || 'text',
-        options: JSON.parse(optionsJson),
+        options,
         min: (qProps.Min as NotionNumber).number ?? undefined,
         max: (qProps.Max as NotionNumber).number ?? undefined,
         isRequired: (qProps.IsRequired as NotionCheckbox).checkbox,
