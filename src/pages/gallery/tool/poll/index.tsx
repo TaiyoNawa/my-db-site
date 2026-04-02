@@ -21,7 +21,7 @@ import { SectionWrapper } from '@/components/SectionWrapper';
 import { SecondHeader } from '@/components/header/SecondHeader';
 import { GalleryMeta } from '@/components/meta/GalleryMeta';
 
-import { PollCard } from '@/features/gallery/poll/PollCard';
+import { PollCard } from '@/features/gallery/tool/poll/PollCard';
 
 interface PollListItem {
   pollUid: string;
