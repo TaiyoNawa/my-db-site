@@ -71,7 +71,7 @@ export const Footer: FC = () => {
             mb={6}
           />
           <Text fontSize="sm" textAlign="center">
-            © {new Date().getFullYear()} TaiyoNawa. All rights reserved.
+            © {new Date().getFullYear()} Haruhate. All rights reserved.
           </Text>
         </Box>
       </Box>
@@ -83,10 +83,6 @@ const footerLinks: FooterLink[] = [
   {
     label: '記事',
     href: '/article',
-    children: [
-      { label: 'ランキング', href: '#' },
-      { label: 'リンク', href: '/article/link' },
-    ],
   },
   {
     label: 'ギャラリー',
@@ -94,7 +90,8 @@ const footerLinks: FooterLink[] = [
     children: [
       { label: 'マンガ', href: '/gallery/manga' },
       { label: 'ゲーム', href: '/gallery/game' },
-      { label: 'アンケート', href: '/gallery/poll' },
+      { label: '便利ツール', href: '/gallery/tool' },
+      { label: 'リンク集', href: '/gallery/link' },
     ],
   },
   {

@@ -74,11 +74,13 @@ export const Header: FC = () => {
             </Flex>
           </Flex>
 
+          {/* ログイン機構は未実装のため非表示（将来実装時に display を戻す） */}
           <Stack
             flex={{ base: 1, md: 0 }}
             justify={'flex-end'}
             direction={'row'}
             spacing={6}
+            display="none"
           >
             <Button
               as={'a'}
@@ -294,17 +296,7 @@ const NAV_ITEMS: Array<NavItem> = [
   {
     label: '記事',
     href: '/article',
-    children: [
-      {
-        label: 'ランキング',
-        href: '#',
-      },
-      {
-        label: 'リンク',
-        subLabel: 'リンクを集めた記事',
-        href: '/article/link',
-      },
-    ],
+    // ランキングは廃止、リンク集はギャラリーへ移動したため子項目なし
   },
   {
     label: 'ギャラリー',
@@ -312,18 +304,23 @@ const NAV_ITEMS: Array<NavItem> = [
     children: [
       {
         label: 'マンガ',
-        subLabel: 'Find your favorite story',
+        subLabel: '人気なマンガを紹介',
         href: '/gallery/manga',
       },
       {
         label: 'ゲーム',
-        subLabel: 'Find your favorite game',
+        subLabel: 'お気に入りのゲームを見つけよう',
         href: '/gallery/game',
       },
       {
-        label: 'アンケート',
-        subLabel: 'Make or participate in a poll',
-        href: '/gallery/poll',
+        label: '便利ツール',
+        subLabel: '日常で使える便利なツール',
+        href: '/gallery/tool',
+      },
+      {
+        label: 'リンク集',
+        subLabel: 'リンクを集めたページ',
+        href: '/gallery/link',
       },
     ],
   },

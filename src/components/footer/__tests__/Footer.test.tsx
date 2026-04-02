@@ -15,14 +15,15 @@ describe('Footer コンポーネント', () => {
     expect(screen.getByText('お問い合わせ・要望')).toBeInTheDocument();
   });
 
-  it('著作権テキストが表示される', () => {
+  it('著作権テキストが Haruhate 名義で表示される', () => {
     render(<Footer />);
+    // コピーライト表記を Haruhate に変更済み
     expect(
-      screen.getByText(/© 2025 TaiyoNawa. All rights reserved./i)
+      screen.getByText(/Haruhate\. All rights reserved\./i)
     ).toBeInTheDocument();
   });
 
-  it('リンクが正しく表示されている', () => {
+  it('主要リンクが正しいhrefを持つ', () => {
     render(<Footer />);
     expect(screen.getByRole('link', { name: '記事' })).toHaveAttribute(
       'href',
@@ -39,13 +40,27 @@ describe('Footer コンポーネント', () => {
     expect(
       screen.getByRole('link', { name: 'お問い合わせ・要望' })
     ).toHaveAttribute('href', '#');
-    expect(screen.getByRole('link', { name: 'ランキング' })).toHaveAttribute(
+  });
+
+  it('ギャラリー配下のリンクが正しい', () => {
+    render(<Footer />);
+    expect(screen.getByRole('link', { name: 'マンガ' })).toHaveAttribute(
       'href',
-      '#'
+      '/gallery/manga'
     );
-    expect(screen.getByRole('link', { name: 'リンク' })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: 'ゲーム' })).toHaveAttribute(
       'href',
-      '/article/link'
+      '/gallery/game'
+    );
+    // 便利ツール（アンケート移動先）
+    expect(screen.getByRole('link', { name: '便利ツール' })).toHaveAttribute(
+      'href',
+      '/gallery/tool'
+    );
+    // リンク集はギャラリー配下に移動済み
+    expect(screen.getByRole('link', { name: 'リンク集' })).toHaveAttribute(
+      'href',
+      '/gallery/link'
     );
   });
 });
