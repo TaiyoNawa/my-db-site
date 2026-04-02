@@ -1,7 +1,8 @@
 //src/utils/generateURL.ts
 /**
  * 環境に応じたベースURLを取得する関数
- * ブラウザ環境では現在のドメインを使用し、サーバー環境では環境変数または'http://localhost:3000'を使用
+ * OGタグのクローラーはSSR時のHTMLを参照するため、絶対URLが必須。
+ * 優先順位: NEXT_PUBLIC_SITE_URL（固定本番URL）> NEXT_PUBLIC_VERCEL_URL（デプロイ自動生成）> localhost
  */
 export const getBaseUrl = (): string => {
   // ブラウザ環境では location.origin を使用
@@ -9,10 +10,16 @@ export const getBaseUrl = (): string => {
     return window.location.origin;
   }
 
-  // サーバー環境(テスト・本番環境)
+  // 本番の固定URL（Vercelの環境変数で明示的に指定する）
+  // URLを変更する場合はこの環境変数だけ更新すればよい
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+  if (siteUrl) {
+    return siteUrl;
+  }
+
+  // NEXT_PUBLIC_VERCEL_URLはvercel側で自動で設定される環境変数。デプロイごとに異なる
+  // 例： https://your-branch-name.vercel.app
   const vercelUrl = process.env.NEXT_PUBLIC_VERCEL_URL;
-  //NEXT_PUBLIC_VERCEL_URLはvercel側で自動で設定される環境変数。デプロイごとに異なる
-  //例： https://your-branch-name.vercel.app
   if (vercelUrl) {
     return `https://${vercelUrl}`;
   }
