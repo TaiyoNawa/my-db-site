@@ -74,13 +74,13 @@ export const Header: FC = () => {
             </Flex>
           </Flex>
 
-          {/* ログイン機構は未実装のため非表示（将来実装時に display を戻す） */}
+          {/*  TODO：ログイン機構は未実装のため非表示（将来実装時は visibility を削除するだけでレイアウトが戻る！！） */}
           <Stack
             flex={{ base: 1, md: 0 }}
             justify={'flex-end'}
             direction={'row'}
             spacing={6}
-            display="none"
+            visibility="hidden"
           >
             <Button
               as={'a'}

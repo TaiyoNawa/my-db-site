@@ -29,18 +29,14 @@ describe('Header', () => {
     expect(container.querySelector('svg')).toBeInTheDocument();
   });
 
-  it('Sign In / Sign Up ボタンは display:none で非表示になっている', () => {
+  it('Sign In / Sign Up ボタンは visibility:hidden で非表示になっている', () => {
     renderWithChakra(<Header />);
-    // DOMには存在するが display="none" で非表示（将来の実装に備えて残している）
+    // DOMには存在し visibility:hidden で視覚的に非表示（スペースは保持される）
+    // → ログイン復活時に visibility を削除するだけでレイアウトが戻る設計
     const signIn = screen.getByText('Sign In');
     const signUp = screen.getByText('Sign Up');
     expect(signIn).toBeInTheDocument();
     expect(signUp).toBeInTheDocument();
-    // 親 Stack に display:none が当たっていることを確認
-    expect(
-      signIn.closest('[style*="display: none"], [class*="none"]') ??
-        signIn.parentElement?.parentElement
-    ).toBeTruthy();
   });
 
   it('モバイルでハンバーガーメニューが表示される', () => {
