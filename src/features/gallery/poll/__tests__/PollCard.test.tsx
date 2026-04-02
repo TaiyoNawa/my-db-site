@@ -8,7 +8,7 @@ const testProps1 = {
   eyeCatch: '/article.webp',
   title: 'あなたの好きな色は？',
   description: '好きな色についてのアンケートです。',
-  url: '/gallery/poll/test-poll-1',
+  url: '/gallery/tool/poll/test-poll-1',
   numberOfQuestions: 3,
   deadline: '2025-08-20T12:00:00Z',
   isVotingOpen: true,
@@ -20,7 +20,7 @@ const testProps2 = {
     'あなたの好きな色は？あなたの好きな色は？あなたの好きな色は？あなたの好きな色は？あなたの好きな色は？あなたの好きな色は？',
   description:
     '好きな色についてのアンケートです。このアンケートは色の好みを調査するために作成されました。回答は匿名で行われ、統計的な分析に使用されます。',
-  url: '/gallery/poll/test-poll-2',
+  url: '/gallery/tool/poll/test-poll-2',
   numberOfQuestions: 5,
   deadline: null,
   isVotingOpen: false,
