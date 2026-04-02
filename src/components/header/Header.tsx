@@ -330,17 +330,17 @@ const NAV_ITEMS: Array<NavItem> = [
     children: [
       {
         label: 'ミュージック',
-        subLabel: 'An exclusive list to listen',
+        subLabel: 'by Spotify',
         href: '/search/music',
       },
       {
         label: 'マンガ・アニメ',
-        subLabel: 'Find your favorite manga/anime',
+        subLabel: 'by AniList',
         href: '/search/manganime',
       },
       {
         label: '画像',
-        subLabel: 'Find your favorite image',
+        subLabel: 'by Unsplash',
         href: '/search/image',
       },
     ],
