@@ -8,7 +8,7 @@ type LoadingSpinnerProps = BoxProps & {
 };
 
 export const LoadingSpinner: FC<LoadingSpinnerProps> = ({
-  spinnerColor = 'blue.500',
+  spinnerColor = 'pink.400',
   size = 'xl',
   ...props
 }) => {

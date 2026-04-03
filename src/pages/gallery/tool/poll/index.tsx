@@ -73,7 +73,7 @@ export default function PollsListPage() {
               href="/gallery/tool/poll/create"
               style={{ textDecoration: 'none' }}
             >
-              <Button colorScheme="blue">新しいアンケートを作成</Button>
+              <Button colorScheme="pink">新しいアンケートを作成</Button>
             </Link>
           </Box>
 

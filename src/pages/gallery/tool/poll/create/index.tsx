@@ -269,6 +269,9 @@ const CreatePollPageV2 = () => {
                   value={opt}
                   onChange={(e) => handleOptionChange(q.id, i, e.target.value)}
                   placeholder={`選択肢 ${i + 1}`}
+                  bg="white"
+                  borderColor="gray.400"
+                  _hover={{ borderColor: 'gray.500' }}
                 />
                 {q.options.length > 2 && (
                   <IconButton
@@ -305,6 +308,9 @@ const CreatePollPageV2 = () => {
                     parseInt(e.target.value, 10)
                   )
                 }
+                bg="white"
+                borderColor="gray.400"
+                _hover={{ borderColor: 'gray.500' }}
               />
             </FormControl>
             <FormControl>
@@ -319,6 +325,9 @@ const CreatePollPageV2 = () => {
                     parseInt(e.target.value, 10)
                   )
                 }
+                bg="white"
+                borderColor="gray.400"
+                _hover={{ borderColor: 'gray.500' }}
               />
             </FormControl>
           </HStack>
@@ -357,13 +366,16 @@ const CreatePollPageV2 = () => {
           <VStack w="100%" align="stretch" gap={4}>
             <FormControl isRequired>
               <FormLabel>アンケートタイトル</FormLabel>
-              <Input value={title} onChange={(e) => setTitle(e.target.value)} />
+              <Input value={title} onChange={(e) => setTitle(e.target.value)} bg="white" borderColor="gray.400" _hover={{ borderColor: 'gray.500' }} />
             </FormControl>
             <FormControl>
               <FormLabel>詳しい説明 (任意)</FormLabel>
               <Textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
+                bg="white"
+                borderColor="gray.400"
+                _hover={{ borderColor: 'gray.500' }}
               />
             </FormControl>
             <FormControl>
@@ -417,6 +429,9 @@ const CreatePollPageV2 = () => {
                 <Input
                   mt={2}
                   type="datetime-local"
+                  bg="white"
+                  borderColor="gray.400"
+                  _hover={{ borderColor: 'gray.500' }}
                   value={
                     deadline
                       ? new Date(
@@ -501,6 +516,9 @@ const CreatePollPageV2 = () => {
                       onChange={(e) =>
                         handleQuestionChange(q.id, 'text', e.target.value)
                       }
+                      bg="white"
+                      borderColor="gray.400"
+                      _hover={{ borderColor: 'gray.500' }}
                     />
                   </FormControl>
                   <FormControl>
@@ -514,6 +532,9 @@ const CreatePollPageV2 = () => {
                           e.target.value as QuestionType
                         )
                       }
+                      bg="white"
+                      borderColor="gray.400"
+                      _hover={{ borderColor: 'gray.500' }}
                     >
                       <option value="single_choice">単一選択</option>
                       <option value="multiple_choice">複数選択</option>
@@ -551,7 +572,7 @@ const CreatePollPageV2 = () => {
           {!pollUrl ? (
             <Button
               type="submit"
-              colorScheme="blue"
+              colorScheme="pink"
               size="lg"
               isLoading={isLoading}
             >
@@ -575,7 +596,9 @@ const CreatePollPageV2 = () => {
           )}
         </VStack>
         <Box pt={16}>
-          <BackButton href="/gallery/tool/poll">アンケート一覧に戻る</BackButton>
+          <BackButton href="/gallery/tool/poll" colorScheme="pink">
+            アンケート一覧に戻る
+          </BackButton>
         </Box>
       </SectionWrapper>
     </>
