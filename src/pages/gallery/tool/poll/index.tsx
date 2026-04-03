@@ -18,6 +18,7 @@ import { useStickyHeader } from '@/hooks/useStickyHeader';
 
 import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { SectionWrapper } from '@/components/SectionWrapper';
+import { SortButton } from '@/components/button/SortButton';
 import { SecondHeader } from '@/components/header/SecondHeader';
 import { GalleryMeta } from '@/components/meta/GalleryMeta';
 
@@ -78,18 +79,12 @@ export default function PollsListPage() {
           </Box>
 
           <ButtonGroup>
-            <Button
-              colorScheme={sortBy === 'newest' ? 'green' : 'gray'}
-              onClick={() => setSortBy('newest')}
-            >
+            <SortButton isActive={sortBy === 'newest'} onClick={() => setSortBy('newest')}>
               新着順
-            </Button>
-            <Button
-              colorScheme={sortBy === 'popular' ? 'green' : 'gray'}
-              onClick={() => setSortBy('popular')}
-            >
+            </SortButton>
+            <SortButton isActive={sortBy === 'popular'} onClick={() => setSortBy('popular')}>
               人気順
-            </Button>
+            </SortButton>
           </ButtonGroup>
 
           {isLoading && <LoadingSpinner />}

@@ -12,7 +12,7 @@ export const ResetButton: FC<ResetButtonProps> = ({ onClick, ...rest }) => {
       size="sm"
       onClick={onClick}
       leftIcon={<FaArrowsRotate />}
-      colorScheme="blue"
+      colorScheme="pink"
       variant="solid"
       minW="80px"
       {...rest}

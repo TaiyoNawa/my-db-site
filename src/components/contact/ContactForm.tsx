@@ -79,9 +79,6 @@ export const ContactForm: FC = () => {
         >
           <Input
             placeholder="山田 太郎"
-            bg="white"
-            borderColor="gray.400"
-            _hover={{ borderColor: 'gray.500' }}
             {...register('name')}
           />
         </ContactFormField>
@@ -93,9 +90,6 @@ export const ContactForm: FC = () => {
           <Input
             type="email"
             placeholder="example@email.com"
-            bg="white"
-            borderColor="gray.400"
-            _hover={{ borderColor: 'gray.500' }}
             {...register('email')}
           />
         </ContactFormField>
@@ -105,12 +99,7 @@ export const ContactForm: FC = () => {
           isRequired
           errorMessage={errors.category?.message}
         >
-          <Select
-            bg="white"
-            borderColor="gray.400"
-            _hover={{ borderColor: 'gray.500' }}
-            {...register('category')}
-          >
+          <Select {...register('category')}>
             {CONTACT_CATEGORIES.map((cat) => (
               <option key={cat} value={cat}>
                 {cat}
@@ -127,9 +116,6 @@ export const ContactForm: FC = () => {
           <Textarea
             placeholder="お問い合わせ内容をご記入ください。（1000文字以内）"
             rows={6}
-            bg="white"
-            borderColor="gray.400"
-            _hover={{ borderColor: 'gray.500' }}
             {...register('content')}
           />
         </ContactFormField>

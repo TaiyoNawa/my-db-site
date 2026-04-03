@@ -92,7 +92,7 @@ export default function Posts() {
           )}
           {!isLoading && hasMore && (
             <Flex justifyContent="center" mt={6}>
-              <Button onClick={handleLoadMore} colorScheme="blue">
+              <Button onClick={handleLoadMore} colorScheme="pink">
                 さらに読み込む
               </Button>
             </Flex>

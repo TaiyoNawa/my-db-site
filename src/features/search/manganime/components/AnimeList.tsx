@@ -185,7 +185,7 @@ export const AnimeList: FC<AnimeListProps> = ({ keyword = '', onReset }) => {
 
       {!loading && isLoadMoreVisible && animes.length > 0 && (
         <Flex justifyContent="center" mt={6}>
-          <Button onClick={handleLoadMore} colorScheme="blue">
+          <Button onClick={handleLoadMore} colorScheme="pink">
             さらに読み込む
           </Button>
         </Flex>

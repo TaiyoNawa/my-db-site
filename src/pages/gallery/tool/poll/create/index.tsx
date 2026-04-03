@@ -1,7 +1,7 @@
 'use client';
 // pages/gallery/tool/poll/create/index.tsx
 // /gallery/poll/create から /gallery/tool/poll/create に移動済み
-import { AddIcon, DeleteIcon } from '@chakra-ui/icons';
+import { AddIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
@@ -9,7 +9,6 @@ import {
   FormLabel,
   Heading,
   HStack,
-  IconButton,
   Input,
   Radio,
   RadioGroup,
@@ -30,6 +29,7 @@ import { useStickyHeader } from '@/hooks/useStickyHeader';
 
 import { SectionWrapper } from '@/components/SectionWrapper';
 import { BackButton } from '@/components/button/BackButton';
+import { DeleteButton } from '@/components/button/DeleteButton';
 import { LinkCopyButton } from '@/components/button/LinkCopyButton';
 import { SecondHeader } from '@/components/header/SecondHeader';
 import { GalleryMeta } from '@/components/meta/GalleryMeta';
@@ -270,13 +270,10 @@ const CreatePollPageV2 = () => {
                   onChange={(e) => handleOptionChange(q.id, i, e.target.value)}
                   placeholder={`選択肢 ${i + 1}`}
                   bg="white"
-                  borderColor="gray.400"
-                  _hover={{ borderColor: 'gray.500' }}
                 />
                 {q.options.length > 2 && (
-                  <IconButton
+                  <DeleteButton
                     aria-label="選択肢を削除"
-                    icon={<DeleteIcon />}
                     onClick={() => handleRemoveOption(q.id, i)}
                   />
                 )}
@@ -284,9 +281,12 @@ const CreatePollPageV2 = () => {
             ))}
             {q.options.length < 10 && (
               <Button
+                colorScheme="pink"
                 size="sm"
+                variant="outline"
                 onClick={() => handleAddOption(q.id)}
                 leftIcon={<AddIcon />}
+                _hover={{ bg: 'pink.100' }}
               >
                 選択肢を追加
               </Button>
@@ -309,8 +309,6 @@ const CreatePollPageV2 = () => {
                   )
                 }
                 bg="white"
-                borderColor="gray.400"
-                _hover={{ borderColor: 'gray.500' }}
               />
             </FormControl>
             <FormControl>
@@ -326,8 +324,6 @@ const CreatePollPageV2 = () => {
                   )
                 }
                 bg="white"
-                borderColor="gray.400"
-                _hover={{ borderColor: 'gray.500' }}
               />
             </FormControl>
           </HStack>
@@ -366,7 +362,11 @@ const CreatePollPageV2 = () => {
           <VStack w="100%" align="stretch" gap={4}>
             <FormControl isRequired>
               <FormLabel>アンケートタイトル</FormLabel>
-              <Input value={title} onChange={(e) => setTitle(e.target.value)} bg="white" borderColor="gray.400" _hover={{ borderColor: 'gray.500' }} />
+              <Input
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                bg="white"
+              />
             </FormControl>
             <FormControl>
               <FormLabel>詳しい説明 (任意)</FormLabel>
@@ -374,8 +374,6 @@ const CreatePollPageV2 = () => {
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 bg="white"
-                borderColor="gray.400"
-                _hover={{ borderColor: 'gray.500' }}
               />
             </FormControl>
             <FormControl>
@@ -383,6 +381,7 @@ const CreatePollPageV2 = () => {
               <RadioGroup
                 onChange={(v: '全体公開' | '限定公開') => setVisibility(v)}
                 value={visibility}
+                colorScheme="pink"
               >
                 <Stack direction={{ base: 'column', md: 'row' }} spacing={4}>
                   <Radio value="全体公開">全体公開</Radio>
@@ -416,6 +415,7 @@ const CreatePollPageV2 = () => {
                   }
                 }}
                 value={deadlinePreset}
+                colorScheme="pink"
               >
                 <Stack direction={{ base: 'column', md: 'row' }} spacing={4}>
                   <Radio value="none">なし</Radio>
@@ -430,8 +430,6 @@ const CreatePollPageV2 = () => {
                   mt={2}
                   type="datetime-local"
                   bg="white"
-                  borderColor="gray.400"
-                  _hover={{ borderColor: 'gray.500' }}
                   value={
                     deadline
                       ? new Date(
@@ -467,7 +465,7 @@ const CreatePollPageV2 = () => {
                     }
                     border="2px solid"
                     borderColor={
-                      selectedImage === img ? 'blue.500' : 'gray.200'
+                      selectedImage === img ? 'pink.400' : 'gray.200'
                     }
                     borderRadius="md"
                     overflow="hidden"
@@ -495,14 +493,15 @@ const CreatePollPageV2 = () => {
                 key={q.id}
                 p={4}
                 borderWidth="1px"
+                borderColor="gray.300"
                 borderRadius="md"
+                bg="pink.50"
                 w="100%"
               >
                 <HStack mb={4}>
                   <Text fontWeight="bold">質問 {index + 1}</Text>
-                  <IconButton
+                  <DeleteButton
                     aria-label="質問を削除"
-                    icon={<DeleteIcon />}
                     size="sm"
                     onClick={() => handleRemoveQuestion(q.id)}
                     ml="auto"
@@ -516,9 +515,6 @@ const CreatePollPageV2 = () => {
                       onChange={(e) =>
                         handleQuestionChange(q.id, 'text', e.target.value)
                       }
-                      bg="white"
-                      borderColor="gray.400"
-                      _hover={{ borderColor: 'gray.500' }}
                     />
                   </FormControl>
                   <FormControl>
@@ -533,8 +529,6 @@ const CreatePollPageV2 = () => {
                         )
                       }
                       bg="white"
-                      borderColor="gray.400"
-                      _hover={{ borderColor: 'gray.500' }}
                     >
                       <option value="single_choice">単一選択</option>
                       <option value="multiple_choice">複数選択</option>
@@ -549,6 +543,7 @@ const CreatePollPageV2 = () => {
                     </FormLabel>
                     <Switch
                       id={`isRequired-${q.id}`}
+                      colorScheme="pink"
                       isChecked={q.isRequired}
                       onChange={(e) =>
                         handleQuestionChange(
@@ -564,15 +559,20 @@ const CreatePollPageV2 = () => {
             ))}
           </VStack>
 
-          <Button onClick={handleAddQuestion} leftIcon={<AddIcon />}>
+          <Button
+            colorScheme="pink"
+            variant="outline"
+            onClick={handleAddQuestion}
+            leftIcon={<AddIcon />}
+          >
             質問を追加
           </Button>
 
           {/* Submission */}
           {!pollUrl ? (
             <Button
-              type="submit"
               colorScheme="pink"
+              type="submit"
               size="lg"
               isLoading={isLoading}
             >

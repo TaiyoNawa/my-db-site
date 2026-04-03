@@ -51,7 +51,7 @@ export const ClearModal: FC<ClearModalProps> = ({
         </ModalBody>
 
         <ModalFooter justifyContent="center">
-          <Button colorScheme="teal" onClick={onRetry}>
+          <Button colorScheme="pink" onClick={onRetry}>
             もう一度プレイ
           </Button>
         </ModalFooter>

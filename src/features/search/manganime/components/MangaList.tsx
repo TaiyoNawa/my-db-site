@@ -186,7 +186,7 @@ export const MangaList: FC<MangaListProps> = ({ keyword = '', onReset }) => {
 
       {!loading && isLoadMoreVisible && mangas.length > 0 && (
         <Flex justifyContent="center" mt={6}>
-          <Button onClick={handleLoadMore} colorScheme="blue">
+          <Button onClick={handleLoadMore} colorScheme="pink">
             さらに読み込む
           </Button>
         </Flex>

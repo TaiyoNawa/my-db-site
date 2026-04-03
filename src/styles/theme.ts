@@ -57,6 +57,42 @@ export const theme = extendTheme({
       '80': '#f4f4f4',
     },
   },
+  components: {
+    Input: {
+      variants: {
+        outline: {
+          field: {
+            bg: 'white',
+          },
+        },
+      },
+      defaultProps: {
+        focusBorderColor: 'pink.400',
+      },
+    },
+    Select: {
+      variants: {
+        outline: {
+          field: {
+            bg: 'white',
+          },
+        },
+      },
+      defaultProps: {
+        focusBorderColor: 'pink.400',
+      },
+    },
+    Textarea: {
+      variants: {
+        outline: {
+          bg: 'white',
+        },
+      },
+      defaultProps: {
+        focusBorderColor: 'pink.400',
+      },
+    },
+  },
   zIndices: {
     docked: 100,
     dropdown: 200,

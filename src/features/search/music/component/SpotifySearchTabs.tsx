@@ -34,8 +34,8 @@ export const SpotifySearchTabs = () => {
           bgColor="white"
           _selected={{
             borderBottom: '1px',
-            color: 'blue.600',
-            bg: 'gray.100',
+            color: 'pink.600',
+            bg: 'pink.50',
           }}
         >
           楽曲
@@ -47,8 +47,8 @@ export const SpotifySearchTabs = () => {
           bgColor="white"
           _selected={{
             borderBottom: '1px',
-            color: 'blue.600',
-            bg: 'gray.100',
+            color: 'pink.600',
+            bg: 'pink.50',
           }}
         >
           プレイリスト
@@ -60,8 +60,8 @@ export const SpotifySearchTabs = () => {
           bgColor="white"
           _selected={{
             borderBottom: '1px',
-            color: 'blue.600',
-            bg: 'gray.100',
+            color: 'pink.600',
+            bg: 'pink.50',
           }}
         >
           アーティスト

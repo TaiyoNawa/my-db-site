@@ -24,6 +24,7 @@ export const LinkCopyButton: FC<Props> = ({ href, ...rest }) => {
       backgroundColor={'white'}
       _hover={{ backgroundColor: hasCopied ? 'white' : 'gray.80' }}
       {...rest}
+      borderColor="pink"
     >
       {hasCopied ? 'Copied!' : <LinkIcon fontSize="sm" />}
     </Button>

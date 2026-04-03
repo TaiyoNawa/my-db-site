@@ -59,7 +59,7 @@ export const SpotifyArtistList: FC<SpotifyArtistListProps> = ({
     void fetchArtists();
   }, [keyword]);
 
-  if (loading) return <Spinner color="teal.500" />;
+  if (loading) return <Spinner color="pink.400" />;
   if (!keyword.trim() || isReset) {
     return (
       <Box textAlign="center" py={{ base: '8%', sm: 10, md: 24 }} px={4}>

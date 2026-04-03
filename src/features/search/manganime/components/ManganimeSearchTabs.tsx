@@ -29,8 +29,8 @@ export const ManganimeSearchTabs = () => {
           bgColor="white"
           _selected={{
             borderBottom: '1px',
-            color: 'blue.600',
-            bg: 'gray.100',
+            color: 'pink.600',
+            bg: 'pink.50',
           }}
         >
           マンガ
@@ -42,8 +42,8 @@ export const ManganimeSearchTabs = () => {
           bgColor="white"
           _selected={{
             borderBottom: '1px',
-            color: 'blue.600',
-            bg: 'gray.100',
+            color: 'pink.600',
+            bg: 'pink.50',
           }}
         >
           アニメ

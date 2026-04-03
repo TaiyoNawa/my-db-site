@@ -9,18 +9,15 @@ const Default = {
   parameters: {
     docs: {
       description: {
-        component:
-          '前のページに戻る、もしくは指定したパスに遷移するボタンコンポーネント',
+        component: '前のページに戻る、もしくは指定したパスに遷移するボタンコンポーネント',
       },
     },
     nextjs: {
       appDirectory: true,
       router: {
-        pathname: '/gallery/poll/[pollUid]',
-        asPath: '/gallery/poll/some-poll-id',
-        query: {
-          pollUid: 'some-poll-id',
-        },
+        pathname: '/gallery/tool/poll/[pollUid]',
+        asPath: '/gallery/tool/poll/some-poll-id',
+        query: { pollUid: 'some-poll-id' },
       },
     },
   },
@@ -28,12 +25,12 @@ const Default = {
 
 export default Default;
 
-export const DefaultButton: StoryFn<typeof BackButton> = () => <BackButton />;
+export const Default_: StoryFn<typeof BackButton> = () => <BackButton />;
 
 export const WithCustomText: StoryFn<typeof BackButton> = () => (
   <BackButton>カスタムテキスト</BackButton>
 );
 
 export const WithHref: StoryFn<typeof BackButton> = () => (
-  <BackButton href="/gallery/poll">一覧に戻る</BackButton>
+  <BackButton href="/gallery/tool/poll">アンケート一覧に戻る</BackButton>
 );

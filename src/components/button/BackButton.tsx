@@ -27,8 +27,9 @@ export const BackButton: FC<BackButtonProps> = ({
     <Button
       leftIcon={<ArrowBackIcon />}
       onClick={handleClick}
-      variant="outline"
-      colorScheme="blue"
+      bg="gray.200"
+      color="black"
+      _hover={{ bg: 'gray.300' }}
       {...props}
     >
       {children || '戻る'}

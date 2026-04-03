@@ -148,7 +148,7 @@ export const RightLeftGame: React.FC = () => {
           ) : (
             <Button
               w={{ base: '120px', sm: '260px' }}
-              colorScheme="teal"
+              colorScheme="pink"
               onClick={resetGame}
             >
               もう一度プレイ
