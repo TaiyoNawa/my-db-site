@@ -347,6 +347,6 @@ const NAV_ITEMS: Array<NavItem> = [
   },
   {
     label: 'お問い合わせ・要望',
-    href: '#',
+    href: '/contact',
   },
 ];

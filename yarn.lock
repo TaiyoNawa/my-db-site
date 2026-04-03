@@ -2044,6 +2044,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@hookform/resolvers@npm:^5.2.2":
+  version: 5.2.2
+  resolution: "@hookform/resolvers@npm:5.2.2"
+  dependencies:
+    "@standard-schema/utils": "npm:^0.3.0"
+  peerDependencies:
+    react-hook-form: ^7.55.0
+  checksum: 10c0/0692cd61dcc2a70cbb27b88a37f733c39e97f555c036ba04a81bd42b0467461cfb6bafacb46c16f173672f9c8a216bd7928a2330d4e49c700d130622bf1defaf
+  languageName: node
+  linkType: hard
+
 "@humanwhocodes/config-array@npm:^0.13.0":
   version: 0.13.0
   resolution: "@humanwhocodes/config-array@npm:0.13.0"
@@ -3660,6 +3671,15 @@ __metadata:
   dependencies:
     undici-types: "npm:~6.19.2"
   checksum: 10c0/67a909119ba66309e125e6be3acdf00abbd4b73ab95b6deeb8b5f6f7b058a4aae1eaee6205167ebeb70317a45d04beadb3347aa93411b49946522ac5208dd723
+  languageName: node
+  linkType: hard
+
+"@types/nodemailer@npm:^7.0.11":
+  version: 7.0.11
+  resolution: "@types/nodemailer@npm:7.0.11"
+  dependencies:
+    "@types/node": "npm:*"
+  checksum: 10c0/dc6472c26600e763c38721b0691fc3014eb868d20b97eb48cfbc4fe9a7a09f66c0ccd8d647033a4be91051cc3c7bdca73c006db2f7a9e8bdd1ce65bb5ec2599c
   languageName: node
   linkType: hard
 
@@ -7579,6 +7599,7 @@ __metadata:
     "@chromatic-com/storybook": "npm:^3.2.6"
     "@emotion/react": "npm:^11.11.4"
     "@emotion/styled": "npm:^11.11.5"
+    "@hookform/resolvers": "npm:^5.2.2"
     "@next/third-parties": "npm:^15.3.2"
     "@notionhq/client": "npm:^2.3.0"
     "@storybook/addon-a11y": "npm:^8.6.12"
@@ -7600,6 +7621,7 @@ __metadata:
     "@testing-library/react": "npm:latest"
     "@types/js-cookie": "npm:^3.0.6"
     "@types/node": "npm:^20"
+    "@types/nodemailer": "npm:^7.0.11"
     "@types/react": "npm:^18"
     "@types/react-dom": "npm:^18"
     "@typescript-eslint/eslint-plugin": "npm:^8.11.0"
@@ -7621,9 +7643,11 @@ __metadata:
     nanoid: "npm:^5.1.5"
     next: "npm:14.2.4"
     next-seo: "npm:^6.7.1"
+    nodemailer: "npm:^8.0.4"
     notion-to-md: "npm:^3.1.8"
     react: "npm:^18"
     react-dom: "npm:^18"
+    react-hook-form: "npm:^7.72.1"
     react-icons: "npm:^5.3.0"
     react-markdown: "npm:^10.1.0"
     react-masonry-css: "npm:^1.0.16"
@@ -7637,6 +7661,7 @@ __metadata:
     typescript: "npm:^5"
     vitest: "npm:^2.1.4"
     yarn: "npm:^1.22.22"
+    zod: "npm:^4.3.6"
   languageName: unknown
   linkType: soft
 
@@ -9978,6 +10003,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"nodemailer@npm:^8.0.4":
+  version: 8.0.4
+  resolution: "nodemailer@npm:8.0.4"
+  checksum: 10c0/5fb6fa72645b541c18b84b861de46f4740449e1d7c987b4d9ef715d815d613f93262225bc319e217df6215d6f123efadb9a412dcf937fe0a41cbecf279dfb2a0
+  languageName: node
+  linkType: hard
+
 "nopt@npm:^8.0.0":
   version: 8.1.0
   resolution: "nopt@npm:8.1.0"
@@ -10881,6 +10913,15 @@ __metadata:
     "@types/react":
       optional: true
   checksum: 10c0/5a3e92fb0025042ab613c54b8ff0aa6c3a45a4d4785c51c024758b02ff83a89295b458ba609c48d11f1c6bbcab6a6b032c5c17d1f3d168a2835cbbec3dea6a46
+  languageName: node
+  linkType: hard
+
+"react-hook-form@npm:^7.72.1":
+  version: 7.72.1
+  resolution: "react-hook-form@npm:7.72.1"
+  peerDependencies:
+    react: ^16.8.0 || ^17 || ^18 || ^19
+  checksum: 10c0/b96fb9c10893fd5b31151c412fe3dd475a207e2ca7e7d41f0b3d98c05e3d6e556b9c2edfb568820fcbf598f257871a87b91c9909cc6e07a7ab7bf6b36e22035a
   languageName: node
   linkType: hard
 
@@ -13657,6 +13698,13 @@ __metadata:
   version: 1.2.1
   resolution: "yocto-queue@npm:1.2.1"
   checksum: 10c0/5762caa3d0b421f4bdb7a1926b2ae2189fc6e4a14469258f183600028eb16db3e9e0306f46e8ebf5a52ff4b81a881f22637afefbef5399d6ad440824e9b27f9f
+  languageName: node
+  linkType: hard
+
+"zod@npm:^4.3.6":
+  version: 4.3.6
+  resolution: "zod@npm:4.3.6"
+  checksum: 10c0/860d25a81ab41d33aa25f8d0d07b091a04acb426e605f396227a796e9e800c44723ed96d0f53a512b57be3d1520f45bf69c0cb3b378a232a00787a2609625307
   languageName: node
   linkType: hard
 

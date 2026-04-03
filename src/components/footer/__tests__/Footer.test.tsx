@@ -37,9 +37,10 @@ describe('Footer コンポーネント', () => {
       'href',
       '/search'
     );
+    // お問い合わせページを /contact に設定済み
     expect(
       screen.getByRole('link', { name: 'お問い合わせ・要望' })
-    ).toHaveAttribute('href', '#');
+    ).toHaveAttribute('href', '/contact');
   });
 
   it('ギャラリー配下のリンクが正しい', () => {
