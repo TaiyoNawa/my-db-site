@@ -87,7 +87,16 @@ export default function PollsListPage() {
             </SortButton>
           </ButtonGroup>
 
-          {isLoading && <LoadingSpinner />}
+          {isLoading && (
+            <LoadingSpinner
+              position="relative"
+              top="unset"
+              left="unset"
+              transform="none"
+              h="400px"
+              w="100%"
+            />
+          )}
           {error && <Text>アンケートの読み込みに失敗しました。</Text>}
 
           <SimpleGrid

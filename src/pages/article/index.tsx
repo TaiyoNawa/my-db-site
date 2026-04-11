@@ -88,7 +88,15 @@ export default function Posts() {
             mb={{ base: '44px', md: '64px', lg: '80px' }}
           />
           {isLoading && (
-            <LoadingSpinner h="400px" w="100%" pb={{ base: '12', md: '24' }} />
+            <LoadingSpinner
+              position="relative"
+              top="unset"
+              left="unset"
+              transform="none"
+              h="400px"
+              w="100%"
+              pb={{ base: '12', md: '24' }}
+            />
           )}
           {!isLoading && hasMore && (
             <Flex justifyContent="center" mt={6}>
