@@ -1,7 +1,7 @@
 'use client';
 // pages/gallery/tool/poll/create/index.tsx
 // /gallery/poll/create から /gallery/tool/poll/create に移動済み
-import { AddIcon } from '@chakra-ui/icons';
+import { AddIcon, DragHandleIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
@@ -22,6 +22,21 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { Image } from '@chakra-ui/react';
+import {
+  DndContext,
+  DragEndEvent,
+  PointerSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  SortableContext,
+  arrayMove,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import { nanoid } from 'nanoid';
 import { useState } from 'react';
 
@@ -54,6 +69,145 @@ type ErrorResponse = {
   message?: string;
 };
 
+// --- 選択肢のソータブルアイテム ---
+type SortableOptionItemProps = {
+  id: string;
+  opt: string;
+  index: number;
+  qId: string;
+  canDelete: boolean;
+  onChange: (qId: string, i: number, val: string) => void;
+  onDelete: (qId: string, i: number) => void;
+};
+
+const SortableOptionItem = ({
+  id,
+  opt,
+  index,
+  qId,
+  canDelete,
+  onChange,
+  onDelete,
+}: SortableOptionItemProps) => {
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id });
+  const style = { transform: CSS.Transform.toString(transform), transition };
+
+  return (
+    <HStack ref={setNodeRef} style={style}>
+      {/* ドラッグハンドル: クリックイベントが Input に伝わらないよう別要素に分離 */}
+      <Box
+        cursor="grab"
+        flexShrink={0}
+        {...attributes}
+        {...listeners}
+      >
+        <DragHandleIcon color="gray.400" />
+      </Box>
+      <Input
+        value={opt}
+        onChange={(e) => onChange(qId, index, e.target.value)}
+        placeholder={`選択肢 ${index + 1}`}
+        bg="white"
+      />
+      {canDelete && (
+        <DeleteButton
+          aria-label="選択肢を削除"
+          onClick={() => onDelete(qId, index)}
+        />
+      )}
+    </HStack>
+  );
+};
+
+// --- 質問ブロックのソータブルアイテム ---
+type SortableQuestionItemProps = {
+  q: Question;
+  index: number;
+  onRemove: (id: string) => void;
+  onChange: (
+    id: string,
+    field: keyof Question,
+    value: string | number | boolean | string[]
+  ) => void;
+  renderInputs: (q: Question) => React.ReactNode;
+};
+
+const SortableQuestionItem = ({
+  q,
+  index,
+  onRemove,
+  onChange,
+  renderInputs,
+}: SortableQuestionItemProps) => {
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id: q.id });
+  const style = { transform: CSS.Transform.toString(transform), transition };
+
+  return (
+    <Box
+      ref={setNodeRef}
+      style={style}
+      p={4}
+      borderWidth="1px"
+      borderColor="gray.300"
+      borderRadius="md"
+      bg="pink.50"
+      w="100%"
+    >
+      <HStack mb={4}>
+        {/* ドラッグハンドル */}
+        <Box cursor="grab" flexShrink={0} {...attributes} {...listeners}>
+          <DragHandleIcon color="gray.400" />
+        </Box>
+        <Text fontWeight="bold">質問 {index + 1}</Text>
+        <DeleteButton
+          aria-label="質問を削除"
+          size="sm"
+          onClick={() => onRemove(q.id)}
+          ml="auto"
+        />
+      </HStack>
+      <VStack align="stretch" gap={3}>
+        <FormControl isRequired>
+          <FormLabel>質問文</FormLabel>
+          <Input
+            value={q.text}
+            onChange={(e) => onChange(q.id, 'text', e.target.value)}
+          />
+        </FormControl>
+        <FormControl>
+          <FormLabel>質問形式</FormLabel>
+          <Select
+            value={q.type}
+            onChange={(e) =>
+              onChange(q.id, 'type', e.target.value as QuestionType)
+            }
+            bg="white"
+          >
+            <option value="single_choice">単一選択</option>
+            <option value="multiple_choice">複数選択</option>
+            <option value="slider">スライダー</option>
+            <option value="text">自由記述</option>
+          </Select>
+        </FormControl>
+        {renderInputs(q)}
+        <FormControl display="flex" alignItems="center">
+          <FormLabel htmlFor={`isRequired-${q.id}`} mb="0">
+            必須回答にする
+          </FormLabel>
+          <Switch
+            id={`isRequired-${q.id}`}
+            colorScheme="pink"
+            isChecked={q.isRequired}
+            onChange={(e) => onChange(q.id, 'isRequired', e.target.checked)}
+          />
+        </FormControl>
+      </VStack>
+    </Box>
+  );
+};
+
 const CreatePollPageV2 = () => {
   const toast = useToast();
   const { isHeaderHidden } = useStickyHeader();
@@ -84,6 +238,13 @@ const CreatePollPageV2 = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [pollUrl, setPollUrl] = useState('');
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+  // DnD センサー: 8px動かしてからDnD起動（クリックとの誤爆防止）
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: { distance: 8 },
+    })
+  );
 
   const pollImages = [
     'pollImage01.png',
@@ -151,6 +312,32 @@ const CreatePollPageV2 = () => {
           return { ...q, options: newOptions };
         }
         return q;
+      })
+    );
+  };
+
+  // --- DnD Handlers ---
+  const handleQuestionDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    setQuestions((prev) => {
+      const oldIndex = prev.findIndex((q) => q.id === active.id);
+      const newIndex = prev.findIndex((q) => q.id === over.id);
+      return arrayMove(prev, oldIndex, newIndex);
+    });
+  };
+
+  const handleOptionDragEnd = (qId: string, event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    setQuestions((prev) =>
+      prev.map((q) => {
+        if (q.id !== qId) return q;
+        // IDはインデックスベースで生成するため、現在の並び順から旧/新インデックスを求める
+        const optionIds = q.options.map((_, i) => `${q.id}-opt-${i}`);
+        const oldIndex = optionIds.indexOf(active.id as string);
+        const newIndex = optionIds.indexOf(over.id as string);
+        return { ...q, options: arrayMove(q.options, oldIndex, newIndex) };
       })
     );
   };
@@ -260,25 +447,35 @@ const CreatePollPageV2 = () => {
   const renderQuestionInputs = (q: Question) => {
     switch (q.type) {
       case 'single_choice':
-      case 'multiple_choice':
+      case 'multiple_choice': {
+        // IDをインデックスベースで生成。ドラッグ後に再採番されるが、
+        // handleOptionDragEnd 内でも同じロジックで生成するため整合性が保たれる
+        const optionIds = q.options.map((_, i) => `${q.id}-opt-${i}`);
         return (
           <VStack align="stretch" mt={2}>
-            {q.options.map((opt, i) => (
-              <HStack key={i}>
-                <Input
-                  value={opt}
-                  onChange={(e) => handleOptionChange(q.id, i, e.target.value)}
-                  placeholder={`選択肢 ${i + 1}`}
-                  bg="white"
-                />
-                {q.options.length > 2 && (
-                  <DeleteButton
-                    aria-label="選択肢を削除"
-                    onClick={() => handleRemoveOption(q.id, i)}
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={(event) => handleOptionDragEnd(q.id, event)}
+            >
+              <SortableContext
+                items={optionIds}
+                strategy={verticalListSortingStrategy}
+              >
+                {q.options.map((opt, i) => (
+                  <SortableOptionItem
+                    key={optionIds[i]}
+                    id={optionIds[i]}
+                    opt={opt}
+                    index={i}
+                    qId={q.id}
+                    canDelete={q.options.length > 2}
+                    onChange={handleOptionChange}
+                    onDelete={handleRemoveOption}
                   />
-                )}
-              </HStack>
-            ))}
+                ))}
+              </SortableContext>
+            </DndContext>
             {q.options.length < 10 && (
               <Button
                 colorScheme="pink"
@@ -293,6 +490,7 @@ const CreatePollPageV2 = () => {
             )}
           </VStack>
         );
+      }
       case 'slider':
         return (
           <HStack mt={2} spacing={4}>
@@ -488,75 +686,27 @@ const CreatePollPageV2 = () => {
 
           {/* Questions */}
           <VStack w="100%" align="stretch" gap={6}>
-            {questions.map((q, index) => (
-              <Box
-                key={q.id}
-                p={4}
-                borderWidth="1px"
-                borderColor="gray.300"
-                borderRadius="md"
-                bg="pink.50"
-                w="100%"
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleQuestionDragEnd}
+            >
+              <SortableContext
+                items={questions.map((q) => q.id)}
+                strategy={verticalListSortingStrategy}
               >
-                <HStack mb={4}>
-                  <Text fontWeight="bold">質問 {index + 1}</Text>
-                  <DeleteButton
-                    aria-label="質問を削除"
-                    size="sm"
-                    onClick={() => handleRemoveQuestion(q.id)}
-                    ml="auto"
+                {questions.map((q, index) => (
+                  <SortableQuestionItem
+                    key={q.id}
+                    q={q}
+                    index={index}
+                    onRemove={handleRemoveQuestion}
+                    onChange={handleQuestionChange}
+                    renderInputs={renderQuestionInputs}
                   />
-                </HStack>
-                <VStack align="stretch" gap={3}>
-                  <FormControl isRequired>
-                    <FormLabel>質問文</FormLabel>
-                    <Input
-                      value={q.text}
-                      onChange={(e) =>
-                        handleQuestionChange(q.id, 'text', e.target.value)
-                      }
-                    />
-                  </FormControl>
-                  <FormControl>
-                    <FormLabel>質問形式</FormLabel>
-                    <Select
-                      value={q.type}
-                      onChange={(e) =>
-                        handleQuestionChange(
-                          q.id,
-                          'type',
-                          e.target.value as QuestionType
-                        )
-                      }
-                      bg="white"
-                    >
-                      <option value="single_choice">単一選択</option>
-                      <option value="multiple_choice">複数選択</option>
-                      <option value="slider">スライダー</option>
-                      <option value="text">自由記述</option>
-                    </Select>
-                  </FormControl>
-                  {renderQuestionInputs(q)}
-                  <FormControl display="flex" alignItems="center">
-                    <FormLabel htmlFor={`isRequired-${q.id}`} mb="0">
-                      必須回答にする
-                    </FormLabel>
-                    <Switch
-                      id={`isRequired-${q.id}`}
-                      colorScheme="pink"
-                      isChecked={q.isRequired}
-                      onChange={(e) =>
-                        handleQuestionChange(
-                          q.id,
-                          'isRequired',
-                          e.target.checked
-                        )
-                      }
-                    />
-                  </FormControl>
-                </VStack>
-              </Box>
-            ))}
+                ))}
+              </SortableContext>
+            </DndContext>
           </VStack>
 
           <Button
