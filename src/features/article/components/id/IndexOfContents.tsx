@@ -1,5 +1,5 @@
 //features/article/components/id/IndexOfContents.tsx
-import { Box, Link, Text } from '@chakra-ui/react';
+import { Box, Link, Text, ListItem, List, ListIcon } from '@chakra-ui/react';
 
 type Heading = {
   text: string;
@@ -26,17 +26,28 @@ export const IndexOfContent = ({ headings }: Props) => {
       <Text fontWeight="bold" mb={2} fontSize={{ base: 'lg', md: 'xl' }}>
         目次
       </Text>
-      {headings.map((heading) => (
-        <Box key={heading.id} mb={1} pl={2}>
-          <Link
-            href={`#${heading.id}`}
-            color="blue.600"
+      <List spacing={1}>
+        {headings.map((heading) => (
+          <ListItem
+            key={heading.id}
+            display="flex"
+            alignItems="center"
             fontSize={{ base: 'sm', md: 'md' }}
           >
-            {heading.text}
-          </Link>
-        </Box>
-      ))}
+            {/* ListIconで丸を表示（colorで色も変えられます） */}
+            <ListIcon
+              as={Box}
+              borderRadius="full"
+              boxSize="3px"
+              bg="blue.600"
+            />
+
+            <Link href={`#${heading.id}`} color="blue.600">
+              {heading.text}
+            </Link>
+          </ListItem>
+        ))}
+      </List>
     </Box>
   );
 };
