@@ -77,10 +77,7 @@ export const ContactForm: FC = () => {
           isRequired
           errorMessage={errors.name?.message}
         >
-          <Input
-            placeholder="山田 太郎"
-            {...register('name')}
-          />
+          <Input placeholder="山田 太郎" {...register('name')} />
         </ContactFormField>
 
         <ContactFormField

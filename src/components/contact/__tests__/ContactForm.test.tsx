@@ -30,7 +30,9 @@ describe('ContactForm コンポーネント', () => {
     render(<ContactForm />);
     // 必須フィールドのラベルには Chakra UI が aria-hidden の「*」スパンを付加するため
     // exact: false で部分一致させる
-    expect(screen.getByText('お名前(匿名可)', { exact: false })).toBeInTheDocument();
+    expect(
+      screen.getByText('お名前(匿名可)', { exact: false })
+    ).toBeInTheDocument();
     expect(screen.getByText('メールアドレス(任意)')).toBeInTheDocument();
     expect(screen.getByText('種別', { exact: false })).toBeInTheDocument();
     expect(screen.getByText('内容', { exact: false })).toBeInTheDocument();
@@ -45,7 +47,9 @@ describe('ContactForm コンポーネント', () => {
 
   it('種別セレクトボックスにカテゴリが表示される', () => {
     render(<ContactForm />);
-    expect(screen.getByRole('option', { name: 'お問い合わせ' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('option', { name: 'お問い合わせ' })
+    ).toBeInTheDocument();
     expect(screen.getByRole('option', { name: '要望' })).toBeInTheDocument();
     expect(screen.getByRole('option', { name: '報告' })).toBeInTheDocument();
     expect(screen.getByRole('option', { name: 'その他' })).toBeInTheDocument();
@@ -55,12 +59,16 @@ describe('ContactForm コンポーネント', () => {
   it('名前未入力で送信するとバリデーションエラーが表示される', async () => {
     const { container } = render(<ContactForm />);
     fireEvent.change(
-      screen.getByPlaceholderText('お問い合わせ内容をご記入ください。（1000文字以内）'),
+      screen.getByPlaceholderText(
+        'お問い合わせ内容をご記入ください。（1000文字以内）'
+      ),
       { target: { value: 'テスト内容' } }
     );
     submitForm(container);
     await waitFor(() => {
-      expect(screen.getByText('お名前を入力してください。')).toBeInTheDocument();
+      expect(
+        screen.getByText('お名前を入力してください。')
+      ).toBeInTheDocument();
     });
   });
 
@@ -86,7 +94,9 @@ describe('ContactForm コンポーネント', () => {
       target: { value: 'invalid-email' },
     });
     fireEvent.change(
-      screen.getByPlaceholderText('お問い合わせ内容をご記入ください。（1000文字以内）'),
+      screen.getByPlaceholderText(
+        'お問い合わせ内容をご記入ください。（1000文字以内）'
+      ),
       { target: { value: 'テスト内容' } }
     );
     submitForm(container);
@@ -101,7 +111,8 @@ describe('ContactForm コンポーネント', () => {
   it('送信成功時に /contact/thanks へ遷移する', async () => {
     vi.spyOn(global, 'fetch').mockResolvedValueOnce({
       ok: true,
-      json: async () => ({ success: true, message: '受け付けました。' }),
+      json: () =>
+        Promise.resolve({ success: true, message: '受け付けました。' }),
     } as Response);
 
     const { container } = render(<ContactForm />);
@@ -109,7 +120,9 @@ describe('ContactForm コンポーネント', () => {
       target: { value: 'テスト太郎' },
     });
     fireEvent.change(
-      screen.getByPlaceholderText('お問い合わせ内容をご記入ください。（1000文字以内）'),
+      screen.getByPlaceholderText(
+        'お問い合わせ内容をご記入ください。（1000文字以内）'
+      ),
       { target: { value: 'テスト内容' } }
     );
     submitForm(container);
@@ -123,16 +136,21 @@ describe('ContactForm コンポーネント', () => {
   it('APIエラー時にalertが表示される', async () => {
     vi.spyOn(global, 'fetch').mockResolvedValueOnce({
       ok: false,
-      json: async () => ({ success: false, message: '送信に失敗しました。' }),
+      json: () =>
+        Promise.resolve({ success: false, message: '送信に失敗しました。' }),
     } as Response);
-    const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => undefined);
+    const alertSpy = vi
+      .spyOn(window, 'alert')
+      .mockImplementation(() => undefined);
 
     const { container } = render(<ContactForm />);
     fireEvent.change(screen.getByPlaceholderText('山田 太郎'), {
       target: { value: 'テスト太郎' },
     });
     fireEvent.change(
-      screen.getByPlaceholderText('お問い合わせ内容をご記入ください。（1000文字以内）'),
+      screen.getByPlaceholderText(
+        'お問い合わせ内容をご記入ください。（1000文字以内）'
+      ),
       { target: { value: 'テスト内容' } }
     );
     submitForm(container);

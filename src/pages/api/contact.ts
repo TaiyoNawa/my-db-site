@@ -1,12 +1,13 @@
 // src/pages/api/contact.ts
 // お問い合わせフォームのAPIエンドポイント
 // フロー: バリデーション → Notion保存 → SendGrid通知
-import type { NextApiRequest, NextApiResponse } from 'next';
 import { ZodError } from 'zod';
 
 import { sendContactNotificationEmail } from '@/lib/contact/email';
 import { saveContactToNotion } from '@/lib/contact/notion';
 import { contactSchema } from '@/lib/contact/validation';
+
+import type { NextApiRequest, NextApiResponse } from 'next';
 
 type ApiResponse = {
   success: boolean;
@@ -21,7 +22,13 @@ export default async function handler(
   res: NextApiResponse<ApiResponse>
 ) {
   if (req.method !== 'POST') {
-    return res.status(405).json({ success: false, message: 'Method Not Allowed', error: 'METHOD_NOT_ALLOWED' });
+    return res
+      .status(405)
+      .json({
+        success: false,
+        message: 'Method Not Allowed',
+        error: 'METHOD_NOT_ALLOWED',
+      });
   }
 
   // サーバー側でも再バリデーション（フロントをバイパスされた場合の対策）
@@ -37,7 +44,13 @@ export default async function handler(
         details: error.flatten().fieldErrors,
       });
     }
-    return res.status(400).json({ success: false, message: '不正なリクエストです。', error: 'BAD_REQUEST' });
+    return res
+      .status(400)
+      .json({
+        success: false,
+        message: '不正なリクエストです。',
+        error: 'BAD_REQUEST',
+      });
   }
 
   // Notionへ保存
