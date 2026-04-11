@@ -58,14 +58,14 @@ export default function Home() {
             fontWeight="bold"
             textShadow="2px 2px 8px rgba(0,0,0,0.7)"
           >
-            Welcome to Our World
+            Welcome to Haruhate.
           </Text>
           <Text
             fontSize={['md', 'xl']}
             mt={4}
             textShadow="1px 1px 5px rgba(0,0,0,0.6)"
           >
-            Discover beauty in everyday moments
+            日常の楽しみを見つけてください。
           </Text>
           <Icon
             as={ChevronDownIcon}
@@ -81,7 +81,7 @@ export default function Home() {
       <SectionWrapper>
         <VStack spacing={8} mt={8}>
           <Text fontSize="2xl" fontWeight="semibold">
-            Explore Our Features
+            冒険を始めましょう。
           </Text>
           <HomeCardList items={items} />
         </VStack>
@@ -107,6 +107,31 @@ const items = [
   {
     eyeCatch:
       'https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bW9udGFnfGVufDB8fDB8fHw%3D',
+    title: '記事',
+    description: '私たちの記事を読んでください。',
+    url: '/article',
+  },
+  {
+    eyeCatch:
+      'https://images.unsplash.com/photo-1723608026017-4ec4a7fb0c36?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    title: 'ギャラリー',
+    description: '自作のゲームやツールなどを公開しています。',
+    url: '/gallery',
+  },
+  {
+    eyeCatch:
+      'https://images.unsplash.com/photo-1486916856992-e4db22c8df33?q=80&w=3174&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    title: '検索',
+    description: 'お気に入りのコンテンツを見つけてください。',
+    url: '/search',
+  },
+];
+/* 英語版
+const items = [
+  //レイアウト的に、各アイテムでカテゴリーの有無は統一した方が良い
+  {
+    eyeCatch:
+      'https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bW9udGFnfGVufDB8fDB8fHw%3D',
     title: 'Article',
     description: 'Read our latest articles.',
     url: '/article',
@@ -125,4 +150,4 @@ const items = [
     description: 'Find your favorite content.',
     url: '/search',
   },
-];
+]; */
