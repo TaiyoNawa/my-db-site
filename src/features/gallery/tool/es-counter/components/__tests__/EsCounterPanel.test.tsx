@@ -81,7 +81,8 @@ describe('EsCounterPanel', () => {
         panel={{ ...defaultPanel, title: '自己PR' }}
       />
     );
-    const titleInput = screen.getByTestId('panel-title-input') as HTMLInputElement;
+    const titleInput =
+      screen.getByTestId<HTMLInputElement>('panel-title-input');
     expect(titleInput.value).toBe('自己PR');
   });
 

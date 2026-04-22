@@ -95,7 +95,7 @@ export default async function handler(
           (qProps.Options as NotionRichText).rich_text[0]?.text.content || '[]';
         let options: string[] = [];
         try {
-          options = JSON.parse(optionsContent);
+          options = JSON.parse(optionsContent) as string[];
         } catch {
           options = [];
         }

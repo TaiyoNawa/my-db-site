@@ -116,7 +116,7 @@ export default async function handler(
         (qProps.Options as NotionRichText).rich_text[0]?.text.content || '[]';
       let options: string[] = [];
       try {
-        options = JSON.parse(optionsJson);
+        options = JSON.parse(optionsJson) as string[];
       } catch (e) {
         console.warn(
           `Failed to parse optionsJson for question ${q.id}:`,

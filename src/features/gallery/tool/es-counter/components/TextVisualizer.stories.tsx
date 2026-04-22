@@ -2,8 +2,8 @@
 import { StoryFn } from '@storybook/react';
 import React from 'react';
 
-import { DEFAULT_SETTINGS } from '../utils/presets';
 import { TextVisualizer } from './TextVisualizer';
+import { DEFAULT_SETTINGS } from '../utils/presets';
 
 const Default = {
   title: 'features/gallery/tool/es-counter/TextVisualizer',

@@ -96,12 +96,7 @@ const SortableOptionItem = ({
   return (
     <HStack ref={setNodeRef} style={style}>
       {/* ドラッグハンドル: クリックイベントが Input に伝わらないよう別要素に分離 */}
-      <Box
-        cursor="grab"
-        flexShrink={0}
-        {...attributes}
-        {...listeners}
-      >
+      <Box cursor="grab" flexShrink={0} {...attributes} {...listeners}>
         <DragHandleIcon color="gray.400" />
       </Box>
       <Input
@@ -180,9 +175,7 @@ const SortableQuestionItem = ({
           <FormLabel>質問形式</FormLabel>
           <Select
             value={q.type}
-            onChange={(e) =>
-              onChange(q.id, 'type', e.target.value as QuestionType)
-            }
+            onChange={(e) => onChange(q.id, 'type', e.target.value)}
             bg="white"
           >
             <option value="single_choice">単一選択</option>

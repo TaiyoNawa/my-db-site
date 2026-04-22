@@ -99,7 +99,7 @@ const PollResultsPage = () => {
     setVoterId(Cookies.get('voterId') || null);
   }, []);
 
-  const { data, error } = useSWR<ResultsData>(
+  const { data, error } = useSWR<ResultsData, Error>(
     pollUid && typeof pollUid === 'string'
       ? `/api/poll/${pollUid}/results?voterId=${voterId || ''}`
       : null,
@@ -324,7 +324,9 @@ const PollResultsPage = () => {
             ))}
           </VStack>
           <Box pt={16}>
-            <BackButton href="/gallery/tool/poll">アンケート一覧に戻る</BackButton>
+            <BackButton href="/gallery/tool/poll">
+              アンケート一覧に戻る
+            </BackButton>
           </Box>
         </VStack>
       </SectionWrapper>

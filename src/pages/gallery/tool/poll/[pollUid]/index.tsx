@@ -172,9 +172,8 @@ const PollPage = () => {
       if (!response.ok) {
         // 409 (Conflict) for duplicate submission
         if (response.status === 409) {
-          const errorData = data as ErrorResponse;
           toast({
-            title: errorData.message || '既にこのアンケートには回答済みです。',
+            title: data.message || '既にこのアンケートには回答済みです。',
             status: 'warning',
             isClosable: true,
           });
@@ -182,8 +181,7 @@ const PollPage = () => {
           return; // Stop execution here
         }
         // For other errors (like 403 Forbidden for deadline)
-        const errorData = data as ErrorResponse;
-        throw new Error(errorData.message || '回答の送信に失敗しました。');
+        throw new Error(data.message || '回答の送信に失敗しました。');
       }
 
       toast({ title: '回答を送信しました！', status: 'success' });
@@ -263,7 +261,7 @@ const PollPage = () => {
         return (
           <Textarea
             onChange={(e) => handleAnswerChange(q.questionUid, e.target.value)}
-            value={(answers[q.questionUid] as string) ?? ''}
+            value={answers[q.questionUid] ?? ''}
             placeholder="回答を入力..."
           />
         );
@@ -342,7 +340,9 @@ const PollPage = () => {
             回答を送信する
           </Button>
           <Box pt={16}>
-            <BackButton href="/gallery/tool/poll">アンケート一覧に戻る</BackButton>
+            <BackButton href="/gallery/tool/poll">
+              アンケート一覧に戻る
+            </BackButton>
           </Box>
         </VStack>
       </SectionWrapper>
