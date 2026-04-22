@@ -82,9 +82,9 @@ export const OverLimit: StoryFn<typeof EsCounterPanel> = (args) => (
 OverLimit.args = {
   panel: {
     ...defaultPanel,
-    title: '自己PR（200文字制限）',
+    title: '自己PR（100文字制限）',
     text: '私はチームワークを大切にしています。学生時代に所属していたサークルでは副代表を務め、メンバー間の意見調整や企画立案を担当しました。この経験から、異なる意見を持つ人々をまとめ、共通の目標に向かって進む力を養いました。貴社においても、この経験を活かしてチームに貢献したいと思います。',
-    settings: { ...DEFAULT_SETTINGS, maxLength: 200 },
+    settings: { ...DEFAULT_SETTINGS, maxLength: 100 },
     isPreviewVisible: true,
   },
 };
