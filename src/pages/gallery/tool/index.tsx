@@ -38,7 +38,14 @@ const items = [
     eyeCatch:
       'https://images.unsplash.com/photo-1585432959322-4db03962b004?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     title: 'アンケート',
-    description: 'アンケートを回答/作成できます',
+    description: 'アンケートを回答/作成できます。',
     url: '/gallery/tool/poll',
+  },
+  {
+    eyeCatch:
+      'https://images.unsplash.com/photo-1455390582262-044cdead277a?q=80&w=2073&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    title: 'ES文字数カウンター',
+    description: 'エントリーシート(ES)に特化した文字数カウントツール。',
+    url: '/gallery/tool/es-counter',
   },
 ];
