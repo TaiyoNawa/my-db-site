@@ -76,3 +76,54 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
    ```
 
 これにより、`main`ブランチと`develop`ブランチを分けて運用し、最終的に`main`ブランチにマージするフローが確立されます。
+
+---
+
+## Claude Code によるAI支援開発
+
+このプロジェクトはClaude Codeを使ったスペック駆動開発に対応しています。
+
+### ディレクトリ構成
+
+```
+.claude/
+  settings.json              # スキルの自動使用を許可する設定
+  commands/
+    add-feature.md           # /add-feature スラッシュコマンド
+  skills/
+    steering/                # タスク計画・進捗管理スキル
+      SKILL.md
+      templates/             # requirements / design / tasklist テンプレート
+  agents/
+    implementation-validator.md  # 実装品質を検証するサブエージェント
+CLAUDE.md                    # プロジェクト固有のAI指示（常時読み込み）
+docs/
+  ideas/                     # 機能アイデアのメモ置き場
+.steering/                   # 作業単位の計画・タスクリスト（自動生成）
+```
+
+### 開発フロー
+
+```
+1. docs/ideas/ にアイデアメモを書く（自由書き）
+
+2. /add-feature [機能名] を実行
+   ↓ 自動で以下を実行：
+   - .steering/[日付]-[機能名]/ にタスクリストを生成
+   - tasklist.md に従って実装を進める
+   - implementation-validator で品質検証
+   - yarn test / yarn lint / yarn build でチェック
+   - tasklist.md に振り返りを記録
+```
+
+### スラッシュコマンド
+
+| コマンド | 説明 |
+|----------|------|
+| `/add-feature [機能名]` | 新機能を計画から実装まで全自動で追加する |
+
+### 設計原則
+
+- `steering` スキルが `tasklist.md` の進捗を管理する（未完了タスクのスキップ禁止）
+- `implementation-validator` サブエージェントが独立したコンテキストで品質検証を行う
+- `yarn build` で型チェックとビルドを兼ねる（`typecheck` スクリプトは存在しない）
