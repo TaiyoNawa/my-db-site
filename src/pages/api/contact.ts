@@ -1,11 +1,11 @@
 // src/pages/api/contact.ts
 // お問い合わせフォームのAPIエンドポイント
-// フロー: バリデーション → Notion保存 → SendGrid通知
+// フロー: バリデーション → Notion保存 → Gmail SMTP通知
 import { ZodError } from 'zod';
 
 import { sendContactNotificationEmail } from '@/lib/contact/email';
 import { saveContactToNotion } from '@/lib/contact/notion';
-import { contactSchema } from '@/lib/contact/validation';
+import { contactSchema, type ContactFormValues } from '@/lib/contact/validation';
 
 import type { NextApiRequest, NextApiResponse } from 'next';
 
@@ -22,17 +22,15 @@ export default async function handler(
   res: NextApiResponse<ApiResponse>
 ) {
   if (req.method !== 'POST') {
-    return res
-      .status(405)
-      .json({
-        success: false,
-        message: 'Method Not Allowed',
-        error: 'METHOD_NOT_ALLOWED',
-      });
+    return res.status(405).json({
+      success: false,
+      message: 'Method Not Allowed',
+      error: 'METHOD_NOT_ALLOWED',
+    });
   }
 
   // サーバー側でも再バリデーション（フロントをバイパスされた場合の対策）
-  let payload;
+  let payload: ContactFormValues;
   try {
     payload = contactSchema.parse(req.body);
   } catch (error) {
@@ -44,13 +42,11 @@ export default async function handler(
         details: error.flatten().fieldErrors,
       });
     }
-    return res
-      .status(400)
-      .json({
-        success: false,
-        message: '不正なリクエストです。',
-        error: 'BAD_REQUEST',
-      });
+    return res.status(400).json({
+      success: false,
+      message: '不正なリクエストです。',
+      error: 'BAD_REQUEST',
+    });
   }
 
   // Notionへ保存
@@ -66,7 +62,7 @@ export default async function handler(
     });
   }
 
-  // SendGridで管理者に通知（失敗してもユーザーにはエラーを返さない）
+  // Gmail SMTPで管理者に通知（失敗してもユーザーにはエラーを返さない）
   try {
     await sendContactNotificationEmail(payload);
   } catch (error) {
