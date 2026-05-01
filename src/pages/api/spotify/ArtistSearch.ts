@@ -43,7 +43,11 @@ export default async function handler(
       headers: { Authorization: `Bearer ${token}` },
     });
 
-    if (!searchRes.ok) throw new Error('Artist search failed');
+    if (!searchRes.ok) {
+      const errBody = await searchRes.text();
+      console.error('[spotify/ArtistSearch] 検索失敗:', searchRes.status, errBody);
+      throw new Error('Artist search failed');
+    }
 
     const data = (await searchRes.json()) as SpotifyArtistResponseItem;
     const artists: Artist[] = (data.artists?.items || [])

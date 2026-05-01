@@ -48,7 +48,11 @@ export default async function handler(
       },
     }); //fetch()でSpotify APIにリクエストを送信する。引数にはURLとヘッダー情報を指定する
 
-    if (!searchRes.ok) throw new Error('検索失敗'); //エラー処理
+    if (!searchRes.ok) {
+      const errBody = await searchRes.text();
+      console.error('[spotify/TrackSearch] 検索失敗:', searchRes.status, errBody);
+      throw new Error('検索失敗');
+    }
 
     const data = (await searchRes.json()) as SpotifyTrackResponseItem; //レスポンスをJSON形式で取得する
     const tracks: Track[] = (data.tracks?.items || [])

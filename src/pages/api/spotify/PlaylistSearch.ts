@@ -38,7 +38,11 @@ export default async function handler(
       },
     });
 
-    if (!searchRes.ok) throw new Error('検索失敗'); //エラー処理
+    if (!searchRes.ok) {
+      const errBody = await searchRes.text();
+      console.error('[spotify/PlaylistSearch] 検索失敗:', searchRes.status, errBody);
+      throw new Error('検索失敗');
+    }
 
     const data = (await searchRes.json()) as SpotifyPlaylistResponseItem; //レスポンス
     const playlists: Playlist[] = (data.playlists?.items || [])
