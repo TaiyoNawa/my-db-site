@@ -48,4 +48,11 @@ const items = [
     description: 'エントリーシート(ES)に特化した文字数カウントツール。',
     url: '/gallery/tool/es-counter',
   },
+  {
+    eyeCatch:
+      'https://images.unsplash.com/photo-1510915361894-db8b60106cb1?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    title: 'Chord Runner',
+    description: 'ギターのコードチェンジ練習ツール。BPMに合わせてコード進行をループ練習できます。',
+    url: '/gallery/tool/chord-runner',
+  },
 ];
