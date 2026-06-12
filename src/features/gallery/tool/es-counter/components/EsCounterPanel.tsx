@@ -185,11 +185,7 @@ export const EsCounterPanel: FC<Props> = ({
           </Flex>
 
           {/* 右側: 移動・削除ボタン */}
-          <ButtonGroup
-            size="sm"
-            spacing={1}
-            justifyContent="center"
-          >
+          <ButtonGroup size="sm" spacing={1} justifyContent="center">
             <Tooltip label="前と入れ替え">
               <IconButton
                 aria-label="前と入れ替え"
@@ -210,9 +206,9 @@ export const EsCounterPanel: FC<Props> = ({
                 colorScheme="gray"
               />
             </Tooltip>
-            <Tooltip label="パネルを削除">
+            <Tooltip label="リセット or 削除">
               <IconButton
-                aria-label="パネルを削除"
+                aria-label="リセット or 削除"
                 icon={<RiDeleteBin6Line />}
                 onClick={() => setIsDeleteConfirmOpen(true)}
                 isDisabled={!canDelete}
@@ -227,10 +223,14 @@ export const EsCounterPanel: FC<Props> = ({
       {/* パネル削除確認ダイアログ */}
       <ConfirmDialog
         isOpen={isDeleteConfirmOpen}
-        title="パネルを削除"
-        body={`${panel.title ? `「${panel.title}」` : 'このパネル'}を削除しますか？入力済みのテキストも失われます。`}
+        title="リセット or 削除"
+        body={`このパネルをリセットまたは削除しますか？入力済みのテキストは失われます。`}
         confirmLabel="削除する"
         onConfirm={onDelete}
+        onReset={() => {
+          onTitleChange('');
+          onTextChange('');
+        }}
         onClose={() => setIsDeleteConfirmOpen(false)}
       />
     </Box>

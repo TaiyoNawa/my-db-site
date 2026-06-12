@@ -54,6 +54,7 @@ interface EsCounterStore {
   applySettingsToAll: (settings: CountSettings) => void;
   movePanel: (id: string, direction: 'left' | 'right') => void;
   clearAll: () => void;
+  resetAll: () => void;
 }
 
 export function useEsCounterStore(): EsCounterStore {
@@ -139,6 +140,10 @@ export function useEsCounterStore(): EsCounterStore {
     setPanels([createPanel()]);
   }, []);
 
+  const resetAll = useCallback(() => {
+    setPanels((prev) => prev.map((p) => ({ ...p, title: '', text: '' })));
+  }, []);
+
   return {
     panels,
     initialized,
@@ -154,5 +159,6 @@ export function useEsCounterStore(): EsCounterStore {
     applySettingsToAll,
     movePanel,
     clearAll,
+    resetAll,
   };
 }

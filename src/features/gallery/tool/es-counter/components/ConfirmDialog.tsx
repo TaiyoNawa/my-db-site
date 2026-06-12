@@ -16,6 +16,9 @@ type Props = {
   body: string;
   confirmLabel?: string;
   onConfirm: () => void;
+  /** パネルなどをリセットする操作（オプション）。渡すとリセットボタンを表示します */
+  onReset?: () => void;
+  resetLabel?: string;
   onClose: () => void;
 };
 
@@ -25,13 +28,19 @@ export const ConfirmDialog: FC<Props> = ({
   body,
   confirmLabel = '削除',
   onConfirm,
+  onReset,
+  resetLabel = 'リセット',
   onClose,
 }) => {
   // AlertDialog はキャンセルボタンに ref が必要
   const cancelRef = useRef<HTMLButtonElement>(null);
 
   return (
-    <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
+    <AlertDialog
+      isOpen={isOpen}
+      leastDestructiveRef={cancelRef}
+      onClose={onClose}
+    >
       <AlertDialogOverlay>
         <AlertDialogContent>
           <AlertDialogHeader fontSize="lg" fontWeight="bold">
@@ -39,9 +48,21 @@ export const ConfirmDialog: FC<Props> = ({
           </AlertDialogHeader>
           <AlertDialogBody>{body}</AlertDialogBody>
           <AlertDialogFooter>
-            <Button ref={cancelRef} onClick={onClose} variant="ghost">
+            <Button ref={cancelRef} onClick={onClose} colorScheme="gray">
               キャンセル
             </Button>
+            {onReset && (
+              <Button
+                colorScheme="yellow"
+                onClick={() => {
+                  onReset();
+                  onClose();
+                }}
+                ml={3}
+              >
+                {resetLabel}
+              </Button>
+            )}
             <Button
               colorScheme="red"
               onClick={() => {

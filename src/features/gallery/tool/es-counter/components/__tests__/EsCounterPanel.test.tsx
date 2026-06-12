@@ -93,13 +93,13 @@ describe('EsCounterPanel', () => {
 
   it('canDelete=false のとき削除ボタンが無効になる', () => {
     render(<EsCounterPanel {...defaultProps} canDelete={false} />);
-    const deleteBtn = screen.getByLabelText('パネルを削除');
+    const deleteBtn = screen.getByLabelText('リセット or 削除');
     expect(deleteBtn).toBeDisabled();
   });
 
   it('canDelete=true のとき削除ボタンが有効になる', () => {
     render(<EsCounterPanel {...defaultProps} canDelete={true} />);
-    const deleteBtn = screen.getByLabelText('パネルを削除');
+    const deleteBtn = screen.getByLabelText('リセット or 削除');
     expect(deleteBtn).not.toBeDisabled();
   });
 });

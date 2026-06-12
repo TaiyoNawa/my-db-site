@@ -39,6 +39,7 @@ export default function EsCounterPage() {
     applySettingsToAll,
     movePanel,
     clearAll,
+    resetAll,
   } = useEsCounterStore();
 
   const [isGlobalSettingsOpen, setIsGlobalSettingsOpen] = useState(false);
@@ -220,10 +221,11 @@ export default function EsCounterPage() {
       {/* 全消去確認ダイアログ */}
       <ConfirmDialog
         isOpen={isClearConfirmOpen}
-        title="全て消去"
-        body="全てのパネルと入力テキストを削除します。この操作は取り消せません。"
+        title="全リセット or 全削除"
+        body="全てのパネルをリセットまたは削除しますか？入力済みのテキストは失われます。"
         confirmLabel="全て消去する"
         onConfirm={clearAll}
+        onReset={resetAll}
         onClose={() => setIsClearConfirmOpen(false)}
       />
     </>
