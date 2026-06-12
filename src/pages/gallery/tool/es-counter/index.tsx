@@ -195,7 +195,7 @@ export default function EsCounterPage() {
                     settings={globalSettings}
                     onChange={setGlobalSettings}
                   />
-                  <Flex mt={3} gap={2} justify="flex-end">
+                  <Flex my={3} gap={2} justify="flex-end">
                     <Button
                       size="sm"
                       colorScheme="gray"
