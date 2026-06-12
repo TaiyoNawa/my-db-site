@@ -221,7 +221,7 @@ export default function EsCounterPage() {
       {/* 全消去確認ダイアログ */}
       <ConfirmDialog
         isOpen={isClearConfirmOpen}
-        title="全リセット or 全削除"
+        title="全リセット / 全削除"
         body="全てのパネルをリセットまたは削除しますか？入力済みのテキストは失われます。"
         confirmLabel="全て消去する"
         onConfirm={clearAll}

@@ -206,9 +206,9 @@ export const EsCounterPanel: FC<Props> = ({
                 colorScheme="gray"
               />
             </Tooltip>
-            <Tooltip label="リセット or 削除">
+            <Tooltip label="リセット / 削除">
               <IconButton
-                aria-label="リセット or 削除"
+                aria-label="リセット / 削除"
                 icon={<RiDeleteBin6Line />}
                 onClick={() => setIsDeleteConfirmOpen(true)}
                 isDisabled={!canDelete}
@@ -223,7 +223,7 @@ export const EsCounterPanel: FC<Props> = ({
       {/* パネル削除確認ダイアログ */}
       <ConfirmDialog
         isOpen={isDeleteConfirmOpen}
-        title="リセット or 削除"
+        title="リセット / 削除"
         body={`このパネルをリセットまたは削除しますか？入力済みのテキストは失われます。`}
         confirmLabel="削除する"
         onConfirm={onDelete}

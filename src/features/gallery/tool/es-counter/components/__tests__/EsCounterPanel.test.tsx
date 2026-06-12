@@ -1,7 +1,8 @@
 // src/features/gallery/tool/es-counter/components/__tests__/EsCounterPanel.test.tsx
+import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 
-import { render, screen } from '@/test/test-utils';
+import { render, screen, waitFor } from '@/test/test-utils';
 
 import { DEFAULT_SETTINGS } from '../../utils/presets';
 import { EsCounterPanel } from '../EsCounterPanel';
@@ -93,13 +94,48 @@ describe('EsCounterPanel', () => {
 
   it('canDelete=false のとき削除ボタンが無効になる', () => {
     render(<EsCounterPanel {...defaultProps} canDelete={false} />);
-    const deleteBtn = screen.getByLabelText('リセット or 削除');
+    const deleteBtn = screen.getByLabelText('リセット / 削除');
     expect(deleteBtn).toBeDisabled();
   });
 
   it('canDelete=true のとき削除ボタンが有効になる', () => {
     render(<EsCounterPanel {...defaultProps} canDelete={true} />);
-    const deleteBtn = screen.getByLabelText('リセット or 削除');
+    const deleteBtn = screen.getByLabelText('リセット / 削除');
     expect(deleteBtn).not.toBeDisabled();
+  });
+
+  it('削除ダイアログでリセットを選ぶとタイトルと本文がクリアされて閉じる', async () => {
+    const user = userEvent.setup();
+    const onTextChange = vi.fn();
+    const onTitleChange = vi.fn();
+
+    render(
+      <EsCounterPanel
+        {...defaultProps}
+        canDelete={true}
+        panel={{ ...defaultPanel, title: '自己PR', text: '入力済みテキスト' }}
+        onTextChange={onTextChange}
+        onTitleChange={onTitleChange}
+      />
+    );
+
+    await user.click(screen.getByLabelText('リセット / 削除'));
+
+    expect(
+      screen.getByRole('button', { name: 'リセット' })
+    ).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: 'リセット' }));
+
+    expect(onTitleChange).toHaveBeenCalledWith('');
+    expect(onTextChange).toHaveBeenCalledWith('');
+
+    await waitFor(() => {
+      expect(
+        screen.queryByText(
+          'このパネルをリセットまたは削除しますか？入力済みのテキストは失われます。'
+        )
+      ).not.toBeInTheDocument();
+    });
   });
 });
