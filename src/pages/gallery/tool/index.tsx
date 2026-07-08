@@ -48,4 +48,11 @@ const items = [
     description: 'エントリーシート(ES)に特化した文字数カウントツール。',
     url: '/gallery/tool/es-counter',
   },
+  {
+    eyeCatch:
+      'https://images.unsplash.com/photo-1611746872915-64382b5c76da?q=80&w=2070&auto=format&fit=crop',
+    title: 'トーク画面メーカー',
+    description: 'チャット風のトーク画面を作成してPNG画像として保存できます。',
+    url: '/gallery/tool/talk-maker',
+  },
 ];
