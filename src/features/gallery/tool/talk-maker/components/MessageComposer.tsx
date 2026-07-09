@@ -107,24 +107,6 @@ export const MessageComposer: FC<Props> = ({
         </Button>
       </ButtonGroup>
 
-      {/* グループかつ相手として送るときだけメンバーを選ぶ */}
-      {isGroup && sender === 'other' && (
-        <Select
-          size="sm"
-          w="110px"
-          flexShrink={0}
-          value={activeMemberId}
-          onChange={(e) => setMemberId(e.target.value)}
-          aria-label="送信メンバー"
-        >
-          {members.map((m) => (
-            <option key={m.id} value={m.id}>
-              {m.name}
-            </option>
-          ))}
-        </Select>
-      )}
-
       <Textarea
         size="sm"
         // Shift+Enter の改行入力が見切れないよう、行数に高さを追従させる（最大4行）
@@ -164,6 +146,24 @@ export const MessageComposer: FC<Props> = ({
         onClick={handleSend}
         flexShrink={0}
       />
+
+      {/* グループかつ相手として送るときだけメンバーを選ぶ（折り返して2行目に表示） */}
+      {isGroup && sender === 'other' && (
+        <Select
+          size="sm"
+          w="140px"
+          flexShrink={0}
+          value={activeMemberId}
+          onChange={(e) => setMemberId(e.target.value)}
+          aria-label="送信メンバー"
+        >
+          {members.map((m) => (
+            <option key={m.id} value={m.id}>
+              {m.name}
+            </option>
+          ))}
+        </Select>
+      )}
     </Flex>
   );
 };
