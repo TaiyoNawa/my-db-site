@@ -124,6 +124,11 @@ export function createMember(override?: Partial<TalkMember>): TalkMember {
   };
 }
 
+/** 特殊メッセージ挿入時のデフォルト文言（挿入後に吹き出しタップで編集できる） */
+export const DEFAULT_DATE_TEXT = '今日';
+export const DEFAULT_SYSTEM_TEXT = 'メンバーがグループに参加しました。';
+export const DEFAULT_CALL_DURATION = '0:22';
+
 export const DEFAULT_SETTINGS: TalkSettings = {
   partnerName: '相手の名前',
   partnerIcon: '🐱',

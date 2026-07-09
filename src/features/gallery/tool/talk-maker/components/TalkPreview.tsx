@@ -5,7 +5,12 @@ import { IoCallOutline, IoChevronBack, IoMenuOutline } from 'react-icons/io5';
 
 import { TalkMessage, TalkSettings } from '../types';
 import { MessageBubble } from './MessageBubble';
+import { SystemMessage } from './SystemMessage';
 import { getFont, getTheme } from '../utils/presets';
+
+/** 中央表示（日付・システム）のメッセージか */
+const isCenteredMessage = (m: TalkMessage) =>
+  m.kind === 'date' || m.kind === 'system';
 
 type Props = {
   messages: TalkMessage[];
@@ -131,10 +136,31 @@ export const TalkPreview = forwardRef<HTMLDivElement, Props>(
             </Text>
           ) : (
             messages.map((message, index) => {
+              if (isCenteredMessage(message)) {
+                return (
+                  <SystemMessage
+                    key={message.id}
+                    message={message}
+                    showTime={settings.showTime}
+                    selectionMode={selectionMode}
+                    isSelected={selectedIds?.has(message.id) ?? false}
+                    onToggleSelect={
+                      onToggleSelect
+                        ? () => onToggleSelect(message.id)
+                        : undefined
+                    }
+                    onUpdate={(patch) => onUpdateMessage(message.id, patch)}
+                    onDelete={() => onRemoveMessage(message.id)}
+                  />
+                );
+              }
+              const prev = messages[index - 1];
+              // 日付・システムを挟んだら連投扱いをリセットしてアイコンを出し直す
               const isGroupStart =
                 index === 0 ||
-                messages[index - 1].sender !== message.sender ||
-                messages[index - 1].memberId !== message.memberId;
+                isCenteredMessage(prev) ||
+                prev.sender !== message.sender ||
+                prev.memberId !== message.memberId;
               return (
                 <MessageBubble
                   key={message.id}

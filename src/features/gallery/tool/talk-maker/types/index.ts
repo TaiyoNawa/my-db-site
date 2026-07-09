@@ -11,6 +11,14 @@ export interface TalkMember {
   iconImage?: string;
 }
 
+/**
+ * メッセージの種類。未指定は通常テキスト（imageUrl があれば画像）として扱い、
+ * v2以前の保存データと後方互換を保つ。
+ */
+export type MessageKind = 'text' | 'image' | 'call' | 'system' | 'date';
+
+export type CallStatus = 'completed' | 'missed' | 'canceled';
+
 export interface TalkMessage {
   id: string;
   sender: Sender;
@@ -19,6 +27,11 @@ export interface TalkMessage {
   text: string;
   /** 画像メッセージ（dataURL）。指定時はバブルの代わりに画像を表示 */
   imageUrl?: string;
+  kind?: MessageKind;
+  /** kind === 'call' のときの通話結果 */
+  callStatus?: CallStatus;
+  /** kind === 'call' かつ completed のときの通話時間（例: "0:22"） */
+  callDuration?: string;
   /** "HH:MM" 形式の表示用時刻 */
   time: string;
   /** 既読かどうか（自分のメッセージにのみ表示される） */

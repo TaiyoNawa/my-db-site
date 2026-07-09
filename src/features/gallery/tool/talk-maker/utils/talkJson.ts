@@ -112,14 +112,15 @@ export function parseTalkJson(
 
 /**
  * トークをJSON文字列に変換する。
- * 画像メッセージは dataURL が巨大になるため対象外（スキップ）とする。
+ * 画像（dataURLが巨大）と特殊メッセージ（通話・日付・システム）は
+ * インポート形式で表現できないため対象外（スキップ）とする。
  */
 export function serializeTalk(
   messages: TalkMessage[],
   members: TalkMember[]
 ): string {
   const items = messages
-    .filter((m) => !m.imageUrl)
+    .filter((m) => !m.imageUrl && (!m.kind || m.kind === 'text'))
     .map((m) => {
       const member = members.find((mem) => mem.id === m.memberId);
       return {

@@ -4,14 +4,20 @@ import {
   ButtonGroup,
   Flex,
   IconButton,
+  Menu,
+  MenuButton,
+  MenuDivider,
+  MenuItem,
+  MenuList,
   Select,
   Textarea,
   useToast,
 } from '@chakra-ui/react';
 import { ChangeEvent, FC, KeyboardEvent, useRef, useState } from 'react';
+import { AiOutlinePlus } from 'react-icons/ai';
 import { IoImageOutline, IoSend } from 'react-icons/io5';
 
-import { Sender, TalkMember } from '../types';
+import { CallStatus, Sender, TalkMember } from '../types';
 import {
   MESSAGE_IMAGE_MAX_SIZE,
   downscaleImage,
@@ -22,12 +28,18 @@ type Props = {
   members: TalkMember[];
   onSend: (sender: Sender, text: string, memberId?: string) => void;
   onSendImage: (sender: Sender, imageUrl: string, memberId?: string) => void;
+  onSendCall: (sender: Sender, status: CallStatus, memberId?: string) => void;
+  onAddDate: () => void;
+  onAddSystem: () => void;
 };
 
 export const MessageComposer: FC<Props> = ({
   members,
   onSend,
   onSendImage,
+  onSendCall,
+  onAddDate,
+  onAddSystem,
 }) => {
   const [sender, setSender] = useState<Sender>('me');
   const [memberId, setMemberId] = useState<string | undefined>(undefined);
@@ -120,6 +132,41 @@ export const MessageComposer: FC<Props> = ({
         flex={1}
         minW="120px"
       />
+
+      {/* 特殊メッセージ（通話・日付・システム）の挿入メニュー */}
+      <Menu placement="top-start">
+        <MenuButton
+          as={IconButton}
+          aria-label="特殊メッセージを追加"
+          icon={<AiOutlinePlus />}
+          size="sm"
+          variant="ghost"
+          colorScheme="teal"
+          flexShrink={0}
+        />
+        <MenuList fontSize="sm">
+          <MenuItem
+            onClick={() => onSendCall(sender, 'completed', activeMemberId)}
+          >
+            通話（通話時間）
+          </MenuItem>
+          <MenuItem
+            onClick={() => onSendCall(sender, 'missed', activeMemberId)}
+          >
+            通話（不在着信）
+          </MenuItem>
+          <MenuItem
+            onClick={() => onSendCall(sender, 'canceled', activeMemberId)}
+          >
+            通話（キャンセル）
+          </MenuItem>
+          <MenuDivider />
+          <MenuItem onClick={onAddDate}>日付ラベル（「今日」など）</MenuItem>
+          <MenuItem onClick={onAddSystem}>
+            システムメッセージ（入室・退会など）
+          </MenuItem>
+        </MenuList>
+      </Menu>
 
       <input
         ref={fileInputRef}

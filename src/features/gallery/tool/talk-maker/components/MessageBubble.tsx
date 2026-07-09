@@ -20,11 +20,13 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { FC, ReactNode, memo, useState } from 'react';
-import { IoCheckmarkCircle } from 'react-icons/io5';
+import { IoCall, IoCheckmarkCircle } from 'react-icons/io5';
+import { MdCallEnd, MdPhoneMissed } from 'react-icons/md';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 
 import {
   BackgroundTheme,
+  CallStatus,
   TalkMember,
   TalkMessage,
   TalkSettings,
@@ -64,6 +66,8 @@ const MessageBubbleBase: FC<Props> = ({
 }) => {
   const isMe = message.sender === 'me';
   const isImage = Boolean(message.imageUrl);
+  const isCall = message.kind === 'call';
+  const callStatus: CallStatus = message.callStatus ?? 'completed';
   const bubbleBg = isMe ? theme.myBubbleBg : theme.otherBubbleBg;
   const bubbleColor = isMe ? theme.myBubbleColor : theme.otherBubbleColor;
 
@@ -112,6 +116,19 @@ const MessageBubbleBase: FC<Props> = ({
       borderRadius="12px"
       objectFit="cover"
     />
+  ) : isCall ? (
+    <VStack spacing={1} px={3} py={1}>
+      {callStatus === 'completed' && <IoCall size={22} />}
+      {callStatus === 'missed' && <MdPhoneMissed size={22} />}
+      {callStatus === 'canceled' && <MdCallEnd size={22} />}
+      <Text fontSize="xs" lineHeight="1.2">
+        {callStatus === 'completed'
+          ? (message.callDuration ?? '0:00')
+          : callStatus === 'missed'
+            ? '不在着信'
+            : 'キャンセル'}
+      </Text>
+    </VStack>
   ) : (
     message.text
   );
@@ -244,7 +261,7 @@ const MessageBubbleBase: FC<Props> = ({
               <PopoverArrow />
               <PopoverBody>
                 <VStack spacing={3} align="stretch">
-                  {!isImage && (
+                  {!isImage && !isCall && (
                     <FormControl>
                       <FormLabel fontSize="xs" mb={1}>
                         メッセージ
@@ -256,6 +273,44 @@ const MessageBubbleBase: FC<Props> = ({
                         onChange={(e) => onUpdate({ text: e.target.value })}
                       />
                     </FormControl>
+                  )}
+
+                  {isCall && (
+                    <Flex gap={2}>
+                      <FormControl>
+                        <FormLabel fontSize="xs" mb={1}>
+                          通話の結果
+                        </FormLabel>
+                        <Select
+                          size="sm"
+                          value={callStatus}
+                          onChange={(e) =>
+                            onUpdate({
+                              callStatus: e.target.value as CallStatus,
+                            })
+                          }
+                        >
+                          <option value="completed">通話時間</option>
+                          <option value="missed">不在着信</option>
+                          <option value="canceled">キャンセル</option>
+                        </Select>
+                      </FormControl>
+                      {callStatus === 'completed' && (
+                        <FormControl>
+                          <FormLabel fontSize="xs" mb={1}>
+                            通話時間
+                          </FormLabel>
+                          <Input
+                            size="sm"
+                            value={message.callDuration ?? ''}
+                            placeholder="0:22"
+                            onChange={(e) =>
+                              onUpdate({ callDuration: e.target.value })
+                            }
+                          />
+                        </FormControl>
+                      )}
+                    </Flex>
                   )}
 
                   <Flex gap={2}>

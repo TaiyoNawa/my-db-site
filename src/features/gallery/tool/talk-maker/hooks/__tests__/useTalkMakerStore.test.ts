@@ -175,6 +175,40 @@ describe('useTalkMakerStore', () => {
     });
   });
 
+  it('通話メッセージを追加できる（completedはデフォルト時間付き）', async () => {
+    const { result } = renderHook(() => useTalkMakerStore());
+    await waitFor(() => expect(result.current.initialized).toBe(true));
+
+    act(() => result.current.addCallMessage('me', 'completed'));
+    act(() => result.current.addCallMessage('other', 'missed'));
+
+    expect(result.current.messages[0]).toMatchObject({
+      kind: 'call',
+      callStatus: 'completed',
+      callDuration: '0:22',
+    });
+    expect(result.current.messages[1]).toMatchObject({
+      kind: 'call',
+      callStatus: 'missed',
+    });
+    expect(result.current.messages[1].callDuration).toBeUndefined();
+  });
+
+  it('日付ラベル・システムメッセージを追加できる', async () => {
+    const { result } = renderHook(() => useTalkMakerStore());
+    await waitFor(() => expect(result.current.initialized).toBe(true));
+
+    act(() => result.current.addDateMessage());
+    act(() => result.current.addSystemMessage());
+
+    expect(result.current.messages[0]).toMatchObject({
+      kind: 'date',
+      text: '今日',
+    });
+    expect(result.current.messages[1].kind).toBe('system');
+    expect(result.current.messages[1].text).toContain('参加しました');
+  });
+
   it('メッセージを一括更新・一括削除できる', async () => {
     const { result } = renderHook(() => useTalkMakerStore());
     await waitFor(() => expect(result.current.initialized).toBe(true));

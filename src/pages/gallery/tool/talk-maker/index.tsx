@@ -46,6 +46,9 @@ export default function TalkMakerPage() {
     initialized,
     addMessage,
     addImageMessage,
+    addCallMessage,
+    addDateMessage,
+    addSystemMessage,
     updateMessage,
     updateMessages,
     removeMessage,
@@ -218,6 +221,9 @@ export default function TalkMakerPage() {
                       members={settings.members}
                       onSend={addMessage}
                       onSendImage={addImageMessage}
+                      onSendCall={addCallMessage}
+                      onAddDate={addDateMessage}
+                      onAddSystem={addSystemMessage}
                     />
                     <Text
                       fontSize="xs"

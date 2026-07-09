@@ -2,8 +2,20 @@
 import { nanoid } from 'nanoid';
 import { useCallback, useEffect, useState } from 'react';
 
-import { Sender, TalkMember, TalkMessage, TalkSettings } from '../types';
-import { DEFAULT_SETTINGS, createMember } from '../utils/presets';
+import {
+  CallStatus,
+  Sender,
+  TalkMember,
+  TalkMessage,
+  TalkSettings,
+} from '../types';
+import {
+  DEFAULT_CALL_DURATION,
+  DEFAULT_DATE_TEXT,
+  DEFAULT_SETTINGS,
+  DEFAULT_SYSTEM_TEXT,
+  createMember,
+} from '../utils/presets';
 import { getCurrentTime } from '../utils/time';
 
 const STORAGE_KEY = 'talk-maker-state';
@@ -63,6 +75,15 @@ interface TalkMakerStore {
     imageUrl: string,
     memberId?: string
   ) => void;
+  addCallMessage: (
+    sender: Sender,
+    status: CallStatus,
+    memberId?: string
+  ) => void;
+  /** 中央表示の日付ラベル（「今日」など）を追加する */
+  addDateMessage: () => void;
+  /** 中央表示のシステムメッセージ（入室・退会など）を追加する */
+  addSystemMessage: () => void;
   updateMessage: (id: string, patch: Partial<Omit<TalkMessage, 'id'>>) => void;
   /** 選択モード用: 複数メッセージへ同じ変更を一括適用する */
   updateMessages: (
@@ -140,6 +161,55 @@ export function useTalkMakerStore(): TalkMakerStore {
     },
     []
   );
+
+  const addCallMessage = useCallback(
+    (sender: Sender, status: CallStatus, memberId?: string) => {
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: nanoid(),
+          sender,
+          memberId: sender === 'other' ? memberId : undefined,
+          text: '',
+          kind: 'call',
+          callStatus: status,
+          callDuration:
+            status === 'completed' ? DEFAULT_CALL_DURATION : undefined,
+          time: getCurrentTime(),
+          read: true,
+        },
+      ]);
+    },
+    []
+  );
+
+  const addDateMessage = useCallback(() => {
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: nanoid(),
+        sender: 'other',
+        text: DEFAULT_DATE_TEXT,
+        kind: 'date',
+        time: getCurrentTime(),
+        read: true,
+      },
+    ]);
+  }, []);
+
+  const addSystemMessage = useCallback(() => {
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: nanoid(),
+        sender: 'other',
+        text: DEFAULT_SYSTEM_TEXT,
+        kind: 'system',
+        time: getCurrentTime(),
+        read: true,
+      },
+    ]);
+  }, []);
 
   const updateMessage = useCallback(
     (id: string, patch: Partial<Omit<TalkMessage, 'id'>>) => {
@@ -235,6 +305,9 @@ export function useTalkMakerStore(): TalkMakerStore {
     initialized,
     addMessage,
     addImageMessage,
+    addCallMessage,
+    addDateMessage,
+    addSystemMessage,
     updateMessage,
     updateMessages,
     removeMessage,
