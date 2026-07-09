@@ -120,10 +120,7 @@ const MessageBubbleBase: FC<Props> = ({
       objectFit="cover"
     />
   ) : isCall ? (
-    <Flex
-      align={callStatus === 'completed' ? 'flex-start' : 'center'}
-      gap="10px"
-    >
+    <Flex align="center" gap="10px">
       <Flex
         w="28px"
         h="28px"
@@ -139,7 +136,7 @@ const MessageBubbleBase: FC<Props> = ({
       {callStatus === 'completed' ? (
         // 通話成立時は「通話メッセージ + その下に小さく通話時間」の2段構成
         <VStack align="flex-start" spacing="1px">
-          <Text fontSize="sm" whiteSpace="pre-wrap">
+          <Text fontSize="12px" whiteSpace="pre-wrap">
             {message.text || DEFAULT_CALL_COMPLETED_TEXT}
           </Text>
           <Text fontSize="xs" opacity={0.65}>
