@@ -181,6 +181,7 @@ describe('useTalkMakerStore', () => {
 
     act(() => result.current.addCallMessage('me', 'completed'));
     act(() => result.current.addCallMessage('other', 'missed'));
+    act(() => result.current.addCallMessage('other', 'noAnswer'));
 
     expect(result.current.messages[0]).toMatchObject({
       kind: 'call',
@@ -192,6 +193,11 @@ describe('useTalkMakerStore', () => {
       callStatus: 'missed',
     });
     expect(result.current.messages[1].callDuration).toBeUndefined();
+    expect(result.current.messages[2]).toMatchObject({
+      kind: 'call',
+      callStatus: 'noAnswer',
+    });
+    expect(result.current.messages[2].callDuration).toBeUndefined();
   });
 
   it('日付ラベル・システムメッセージを追加できる', async () => {

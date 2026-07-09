@@ -3,6 +3,7 @@ import { nanoid } from 'nanoid';
 
 import {
   BackgroundTheme,
+  CallStatus,
   FontId,
   FontOption,
   TalkMember,
@@ -128,6 +129,16 @@ export function createMember(override?: Partial<TalkMember>): TalkMember {
 export const DEFAULT_DATE_TEXT = '今日';
 export const DEFAULT_SYSTEM_TEXT = 'メンバーがグループに参加しました。';
 export const DEFAULT_CALL_DURATION = '0:22';
+
+/**
+ * 通話結果ごとの表示ラベル。completed のみ通話時間を別枠で表示するため、
+ * ここでは「不在着信」等の非完了ステータスのラベルとして使う。
+ */
+export const CALL_STATUS_LABELS: Record<Exclude<CallStatus, 'completed'>, string> = {
+  missed: '不在着信',
+  canceled: 'キャンセル',
+  noAnswer: '応答なし',
+};
 
 export const DEFAULT_SETTINGS: TalkSettings = {
   partnerName: '相手の名前',

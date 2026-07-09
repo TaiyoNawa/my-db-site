@@ -17,7 +17,7 @@ export interface TalkMember {
  */
 export type MessageKind = 'text' | 'image' | 'call' | 'system' | 'date';
 
-export type CallStatus = 'completed' | 'missed' | 'canceled';
+export type CallStatus = 'completed' | 'missed' | 'canceled' | 'noAnswer';
 
 export interface TalkMessage {
   id: string;

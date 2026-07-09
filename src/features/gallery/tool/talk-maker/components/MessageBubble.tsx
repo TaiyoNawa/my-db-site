@@ -21,7 +21,6 @@ import {
 } from '@chakra-ui/react';
 import { FC, ReactNode, memo, useState } from 'react';
 import { IoCall, IoCheckmarkCircle } from 'react-icons/io5';
-import { MdCallEnd, MdPhoneMissed } from 'react-icons/md';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 
 import {
@@ -31,6 +30,7 @@ import {
   TalkMessage,
   TalkSettings,
 } from '../types';
+import { CALL_STATUS_LABELS } from '../utils/presets';
 import { normalizeTime } from '../utils/time';
 
 type Props = {
@@ -116,19 +116,20 @@ const MessageBubbleBase: FC<Props> = ({
       borderRadius="12px"
       objectFit="cover"
     />
-  ) : isCall ? (
+  ) : isCall ? callStatus === 'completed' ? (
+    // 通話成立時は電話アイコンの下に通話時間を表示する（既存UIを維持）
     <VStack spacing={1} px={3} py={1}>
-      {callStatus === 'completed' && <IoCall size={22} />}
-      {callStatus === 'missed' && <MdPhoneMissed size={22} />}
-      {callStatus === 'canceled' && <MdCallEnd size={22} />}
+      <IoCall size={22} />
       <Text fontSize="xs" lineHeight="1.2">
-        {callStatus === 'completed'
-          ? (message.callDuration ?? '0:00')
-          : callStatus === 'missed'
-            ? '不在着信'
-            : 'キャンセル'}
+        {message.callDuration ?? '0:00'}
       </Text>
     </VStack>
+  ) : (
+    // 不在着信・キャンセル・応答なしはアイコンを統一し、横並びでラベルを表示する
+    <Flex align="center" gap={2}>
+      <IoCall size={18} />
+      <Text fontSize="sm">{CALL_STATUS_LABELS[callStatus]}</Text>
+    </Flex>
   ) : (
     message.text
   );
@@ -293,6 +294,7 @@ const MessageBubbleBase: FC<Props> = ({
                           <option value="completed">通話時間</option>
                           <option value="missed">不在着信</option>
                           <option value="canceled">キャンセル</option>
+                          <option value="noAnswer">応答なし</option>
                         </Select>
                       </FormControl>
                       {callStatus === 'completed' && (

@@ -150,6 +150,41 @@ describe('MessageBubble', () => {
     ).not.toBeInTheDocument();
   });
 
+  it('通話成立時は電話アイコンと通話時間を表示する', () => {
+    render(
+      <MessageBubble
+        {...defaultProps}
+        message={{
+          ...baseMessage,
+          text: '',
+          kind: 'call',
+          callStatus: 'completed',
+          callDuration: '1:23',
+        }}
+      />
+    );
+    expect(screen.getByText('1:23')).toBeInTheDocument();
+  });
+
+  it.each([
+    ['missed', '不在着信'],
+    ['canceled', 'キャンセル'],
+    ['noAnswer', '応答なし'],
+  ] as const)('通話ステータス %s は「%s」と表示される', (status, label) => {
+    render(
+      <MessageBubble
+        {...defaultProps}
+        message={{
+          ...baseMessage,
+          text: '',
+          kind: 'call',
+          callStatus: status,
+        }}
+      />
+    );
+    expect(screen.getByText(label)).toBeInTheDocument();
+  });
+
   it('編集ポップオーバーから送信者を切り替えられる', async () => {
     const user = userEvent.setup();
     const onUpdate = vi.fn();
