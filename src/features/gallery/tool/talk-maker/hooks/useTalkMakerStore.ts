@@ -2,8 +2,8 @@
 import { nanoid } from 'nanoid';
 import { useCallback, useEffect, useState } from 'react';
 
-import { Sender, TalkMessage, TalkSettings } from '../types';
-import { DEFAULT_SETTINGS } from '../utils/presets';
+import { Sender, TalkMember, TalkMessage, TalkSettings } from '../types';
+import { DEFAULT_SETTINGS, createMember } from '../utils/presets';
 import { getCurrentTime } from '../utils/time';
 
 const STORAGE_KEY = 'talk-maker-state';
@@ -24,9 +24,21 @@ function loadFromStorage(): StoredState {
     if (!raw) return defaultState();
     const parsed = JSON.parse(raw) as Partial<StoredState>;
     // 保存形式が変わっても壊れないよう、欠けたフィールドはデフォルトで補う
+    const settings: TalkSettings = { ...DEFAULT_SETTINGS, ...parsed.settings };
+    // v1形式（membersなし）からのマイグレーション: 相手情報から先頭メンバーを生成。
+    // DEFAULT_SETTINGS のスプレッドで members が埋まるため、保存データ側を直接確認する
+    const storedMembers = parsed.settings?.members;
+    if (!Array.isArray(storedMembers) || storedMembers.length === 0) {
+      settings.members = [
+        createMember({
+          name: settings.partnerName,
+          icon: settings.partnerIcon,
+        }),
+      ];
+    }
     return {
       messages: Array.isArray(parsed.messages) ? parsed.messages : [],
-      settings: { ...DEFAULT_SETTINGS, ...parsed.settings },
+      settings,
     };
   } catch {
     return defaultState();
@@ -37,7 +49,7 @@ function saveToStorage(state: StoredState): void {
   try {
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   } catch {
-    // ストレージ容量超過などを無視
+    // ストレージ容量超過などを無視（画像を多く登録した場合は永続化されない）
   }
 }
 
@@ -45,11 +57,31 @@ interface TalkMakerStore {
   messages: TalkMessage[];
   settings: TalkSettings;
   initialized: boolean;
-  addMessage: (sender: Sender, text: string) => void;
+  addMessage: (sender: Sender, text: string, memberId?: string) => void;
+  addImageMessage: (
+    sender: Sender,
+    imageUrl: string,
+    memberId?: string
+  ) => void;
   updateMessage: (id: string, patch: Partial<Omit<TalkMessage, 'id'>>) => void;
+  /** 選択モード用: 複数メッセージへ同じ変更を一括適用する */
+  updateMessages: (
+    ids: string[],
+    patch: Partial<Omit<TalkMessage, 'id'>>
+  ) => void;
   removeMessage: (id: string) => void;
+  removeMessages: (ids: string[]) => void;
+  /** JSONインポート: replace は全置き換え、append は末尾に追記 */
+  importMessages: (
+    messages: TalkMessage[],
+    members: TalkMember[],
+    mode: 'replace' | 'append'
+  ) => void;
   clearAll: () => void;
   updateSettings: (patch: Partial<TalkSettings>) => void;
+  addMember: () => void;
+  updateMember: (id: string, patch: Partial<Omit<TalkMember, 'id'>>) => void;
+  removeMember: (id: string) => void;
 }
 
 export function useTalkMakerStore(): TalkMakerStore {
@@ -72,20 +104,42 @@ export function useTalkMakerStore(): TalkMakerStore {
     saveToStorage({ messages, settings });
   }, [messages, settings, initialized]);
 
-  const addMessage = useCallback((sender: Sender, text: string) => {
-    const trimmed = text.trim();
-    if (!trimmed) return;
-    setMessages((prev) => [
-      ...prev,
-      {
-        id: nanoid(),
-        sender,
-        text: trimmed,
-        time: getCurrentTime(),
-        read: true,
-      },
-    ]);
-  }, []);
+  const addMessage = useCallback(
+    (sender: Sender, text: string, memberId?: string) => {
+      const trimmed = text.trim();
+      if (!trimmed) return;
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: nanoid(),
+          sender,
+          memberId: sender === 'other' ? memberId : undefined,
+          text: trimmed,
+          time: getCurrentTime(),
+          read: true,
+        },
+      ]);
+    },
+    []
+  );
+
+  const addImageMessage = useCallback(
+    (sender: Sender, imageUrl: string, memberId?: string) => {
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: nanoid(),
+          sender,
+          memberId: sender === 'other' ? memberId : undefined,
+          text: '',
+          imageUrl,
+          time: getCurrentTime(),
+          read: true,
+        },
+      ]);
+    },
+    []
+  );
 
   const updateMessage = useCallback(
     (id: string, patch: Partial<Omit<TalkMessage, 'id'>>) => {
@@ -96,9 +150,39 @@ export function useTalkMakerStore(): TalkMakerStore {
     []
   );
 
+  const updateMessages = useCallback(
+    (ids: string[], patch: Partial<Omit<TalkMessage, 'id'>>) => {
+      const idSet = new Set(ids);
+      setMessages((prev) =>
+        prev.map((m) => (idSet.has(m.id) ? { ...m, ...patch } : m))
+      );
+    },
+    []
+  );
+
   const removeMessage = useCallback((id: string) => {
     setMessages((prev) => prev.filter((m) => m.id !== id));
   }, []);
+
+  const removeMessages = useCallback((ids: string[]) => {
+    const idSet = new Set(ids);
+    setMessages((prev) => prev.filter((m) => !idSet.has(m.id)));
+  }, []);
+
+  const importMessages = useCallback(
+    (
+      imported: TalkMessage[],
+      members: TalkMember[],
+      mode: 'replace' | 'append'
+    ) => {
+      setMessages((prev) =>
+        mode === 'replace' ? imported : [...prev, ...imported]
+      );
+      // インポートで自動生成されたメンバーを設定にも反映する
+      setSettings((prev) => ({ ...prev, members }));
+    },
+    []
+  );
 
   const clearAll = useCallback(() => {
     setMessages([]);
@@ -108,14 +192,58 @@ export function useTalkMakerStore(): TalkMakerStore {
     setSettings((prev) => ({ ...prev, ...patch }));
   }, []);
 
+  const addMember = useCallback(() => {
+    setSettings((prev) => ({
+      ...prev,
+      members: [
+        ...prev.members,
+        createMember({ name: `メンバー${prev.members.length + 1}` }),
+      ],
+    }));
+  }, []);
+
+  const updateMember = useCallback(
+    (id: string, patch: Partial<Omit<TalkMember, 'id'>>) => {
+      setSettings((prev) => ({
+        ...prev,
+        members: prev.members.map((m) =>
+          m.id === id ? { ...m, ...patch } : m
+        ),
+      }));
+    },
+    []
+  );
+
+  const removeMember = useCallback((id: string) => {
+    setSettings((prev) => {
+      // 最低1人は維持する
+      if (prev.members.length <= 1) return prev;
+      return {
+        ...prev,
+        members: prev.members.filter((m) => m.id !== id),
+      };
+    });
+    // 削除したメンバーのメッセージは先頭メンバー扱いに戻す
+    setMessages((prev) =>
+      prev.map((m) => (m.memberId === id ? { ...m, memberId: undefined } : m))
+    );
+  }, []);
+
   return {
     messages,
     settings,
     initialized,
     addMessage,
+    addImageMessage,
     updateMessage,
+    updateMessages,
     removeMessage,
+    removeMessages,
+    importMessages,
     clearAll,
     updateSettings,
+    addMember,
+    updateMember,
+    removeMember,
   };
 }

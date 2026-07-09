@@ -11,6 +11,11 @@ export async function exportTalkImage(node: HTMLElement): Promise<void> {
   const dataUrl = await toPng(node, {
     pixelRatio: 2,
     cacheBust: true,
+    width: node.offsetWidth,
+    height: node.offsetHeight,
+    // 中央寄せ(margin: auto)の計算済みマージンがクローンDOMへ引き継がれ、
+    // 描画が右へずれて見切れるため、キャプチャ時はマージンを打ち消す
+    style: { margin: '0' },
   });
 
   const timestamp = new Date()

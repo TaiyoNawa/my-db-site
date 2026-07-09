@@ -1,5 +1,14 @@
 // src/features/gallery/tool/talk-maker/utils/presets.ts
-import { BackgroundTheme, TalkSettings, ThemeId } from '../types';
+import { nanoid } from 'nanoid';
+
+import {
+  BackgroundTheme,
+  FontId,
+  FontOption,
+  TalkMember,
+  TalkSettings,
+  ThemeId,
+} from '../types';
 
 export const THEMES: BackgroundTheme[] = [
   {
@@ -73,10 +82,54 @@ export const PARTNER_ICON_OPTIONS = [
   '🤖',
 ];
 
+/**
+ * フォントはシステムフォントのみ。外部フォントは html-to-image の
+ * フォント埋め込みが不安定で、PNG出力時に崩れるリスクがあるため使わない。
+ */
+export const FONTS: FontOption[] = [
+  {
+    id: 'gothic',
+    label: 'ゴシック',
+    fontFamily:
+      "-apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', 'Yu Gothic', Meiryo, sans-serif",
+  },
+  {
+    id: 'rounded',
+    label: '丸ゴシック',
+    fontFamily:
+      "'Hiragino Maru Gothic ProN', 'HGMaruGothicMPRO', 'Yu Gothic', Meiryo, sans-serif",
+  },
+  {
+    id: 'serif',
+    label: '明朝',
+    fontFamily: "'Hiragino Mincho ProN', 'Yu Mincho', 'MS PMincho', serif",
+  },
+  {
+    id: 'mono',
+    label: '等幅',
+    fontFamily: "'SF Mono', Menlo, Consolas, 'Osaka-Mono', monospace",
+  },
+];
+
+export function getFont(id: FontId): FontOption {
+  return FONTS.find((f) => f.id === id) ?? FONTS[0];
+}
+
+export function createMember(override?: Partial<TalkMember>): TalkMember {
+  return {
+    id: nanoid(),
+    name: '相手の名前',
+    icon: '🐱',
+    ...override,
+  };
+}
+
 export const DEFAULT_SETTINGS: TalkSettings = {
   partnerName: '相手の名前',
   partnerIcon: '🐱',
   themeId: 'blue',
+  fontId: 'gothic',
   showTime: true,
   showRead: true,
+  members: [createMember()],
 };

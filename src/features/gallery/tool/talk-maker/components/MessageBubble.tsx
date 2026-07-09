@@ -6,6 +6,7 @@ import {
   Flex,
   FormControl,
   FormLabel,
+  Image,
   Input,
   Popover,
   PopoverArrow,
@@ -17,18 +18,32 @@ import {
   Textarea,
   VStack,
 } from '@chakra-ui/react';
-import { FC, memo, useState } from 'react';
+import { FC, ReactNode, memo, useState } from 'react';
+import { IoCheckmarkCircle } from 'react-icons/io5';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 
-import { BackgroundTheme, TalkMessage, TalkSettings } from '../types';
+import {
+  BackgroundTheme,
+  TalkMember,
+  TalkMessage,
+  TalkSettings,
+} from '../types';
 import { normalizeTime } from '../utils/time';
 
 type Props = {
   message: TalkMessage;
   theme: BackgroundTheme;
   settings: TalkSettings;
+  /** 送信メンバー（sender==='other' のとき）。未指定時は settings.partnerIcon を使う */
+  member?: TalkMember;
   /** 同一送信者の連投時は false にしてアイコンを省略する */
   showIcon: boolean;
+  /** グループ時に吹き出しの上へメンバー名を表示する */
+  showName?: boolean;
+  /** 選択モード: タップが編集ではなく選択になる */
+  selectionMode?: boolean;
+  isSelected?: boolean;
+  onToggleSelect?: () => void;
   onUpdate: (patch: Partial<Omit<TalkMessage, 'id'>>) => void;
   onDelete: () => void;
 };
@@ -37,11 +52,17 @@ const MessageBubbleBase: FC<Props> = ({
   message,
   theme,
   settings,
+  member,
   showIcon,
+  showName = false,
+  selectionMode = false,
+  isSelected = false,
+  onToggleSelect,
   onUpdate,
   onDelete,
 }) => {
   const isMe = message.sender === 'me';
+  const isImage = Boolean(message.imageUrl);
   const bubbleBg = isMe ? theme.myBubbleBg : theme.otherBubbleBg;
   const bubbleColor = isMe ? theme.myBubbleColor : theme.otherBubbleColor;
 
@@ -79,6 +100,80 @@ const MessageBubbleBase: FC<Props> = ({
     </VStack>
   );
 
+  const avatarIcon = member?.icon ?? settings.partnerIcon;
+  const avatarImage = member?.iconImage;
+
+  const bubbleBody: ReactNode = isImage ? (
+    <Image
+      src={message.imageUrl}
+      alt="送信画像"
+      maxH="200px"
+      borderRadius="12px"
+      objectFit="cover"
+    />
+  ) : (
+    message.text
+  );
+
+  const bubbleBox = (
+    <Box
+      as="button"
+      type="button"
+      position="relative"
+      maxW="100%"
+      bg={isImage ? 'transparent' : bubbleBg}
+      color={bubbleColor}
+      borderRadius={isImage ? '12px' : '16px'}
+      px={isImage ? 0 : 3}
+      py={isImage ? 0 : 2}
+      fontSize="sm"
+      textAlign="left"
+      whiteSpace="pre-wrap"
+      wordBreak="break-word"
+      boxShadow="sm"
+      cursor="pointer"
+      transition="filter 0.15s, outline-color 0.15s"
+      _hover={{ filter: 'brightness(0.96)' }}
+      outline={selectionMode && isSelected ? '3px solid' : 'none'}
+      outlineColor="teal.400"
+      onClick={selectionMode ? onToggleSelect : undefined}
+      _before={
+        showIcon && !isImage
+          ? {
+              content: '""',
+              position: 'absolute',
+              top: '6px',
+              ...(isMe
+                ? {
+                    right: '-6px',
+                    borderLeft: `10px solid ${bubbleBg}`,
+                  }
+                : {
+                    left: '-6px',
+                    borderRight: `10px solid ${bubbleBg}`,
+                  }),
+              borderBottom: '10px solid transparent',
+            }
+          : undefined
+      }
+    >
+      {bubbleBody}
+      {selectionMode && isSelected && (
+        <Box
+          position="absolute"
+          top="-8px"
+          right="-8px"
+          color="teal.400"
+          bg="white"
+          borderRadius="full"
+          lineHeight={0}
+        >
+          <IoCheckmarkCircle size={20} />
+        </Box>
+      )}
+    </Box>
+  );
+
   return (
     <Flex
       justify={isMe ? 'flex-end' : 'flex-start'}
@@ -99,8 +194,19 @@ const MessageBubbleBase: FC<Props> = ({
               justify="center"
               fontSize="20px"
               boxShadow="sm"
+              overflow="hidden"
             >
-              {settings.partnerIcon}
+              {avatarImage ? (
+                <Image
+                  src={avatarImage}
+                  alt={member?.name ?? 'アイコン'}
+                  w="100%"
+                  h="100%"
+                  objectFit="cover"
+                />
+              ) : (
+                avatarIcon
+              )}
             </Flex>
           )}
         </Box>
@@ -108,125 +214,106 @@ const MessageBubbleBase: FC<Props> = ({
 
       {isMe && meta}
 
-      <Popover isLazy placement={isMe ? 'left' : 'right'}>
-        <PopoverTrigger>
-          <Box
-            as="button"
-            type="button"
-            position="relative"
-            maxW="70%"
-            bg={bubbleBg}
-            color={bubbleColor}
-            borderRadius="16px"
-            px={3}
-            py={2}
-            fontSize="sm"
-            textAlign="left"
-            whiteSpace="pre-wrap"
-            wordBreak="break-word"
-            boxShadow="sm"
-            cursor="pointer"
-            transition="filter 0.15s"
-            _hover={{ filter: 'brightness(0.96)' }}
-            _before={
-              showIcon
-                ? {
-                    content: '""',
-                    position: 'absolute',
-                    top: '6px',
-                    ...(isMe
-                      ? {
-                          right: '-6px',
-                          borderLeft: `10px solid ${bubbleBg}`,
-                        }
-                      : {
-                          left: '-6px',
-                          borderRight: `10px solid ${bubbleBg}`,
-                        }),
-                    borderBottom: '10px solid transparent',
-                  }
-                : undefined
-            }
+      {/* グループ時: 名前ラベル + 吹き出しを縦に積む */}
+      {/* 吹き出し幅の上限はこの列で一元管理する（名前ラベルと揃えるため） */}
+      <Flex direction="column" align={isMe ? 'flex-end' : 'flex-start'} maxW="70%">
+        {showName && !isMe && member && (
+          <Text
+            fontSize="10px"
+            color={theme.metaColor}
+            mb="2px"
+            lineHeight="1.2"
           >
-            {message.text}
-          </Box>
-        </PopoverTrigger>
-        <PopoverContent w="240px">
-          <PopoverArrow />
-          <PopoverBody>
-            <VStack spacing={3} align="stretch">
-              <FormControl>
-                <FormLabel fontSize="xs" mb={1}>
-                  メッセージ
-                </FormLabel>
-                <Textarea
-                  size="sm"
-                  rows={2}
-                  value={message.text}
-                  onChange={(e) => onUpdate({ text: e.target.value })}
-                />
-              </FormControl>
+            {member.name}
+          </Text>
+        )}
+        {selectionMode ? (
+          bubbleBox
+        ) : (
+          <Popover isLazy placement={isMe ? 'left' : 'right'}>
+            <PopoverTrigger>{bubbleBox}</PopoverTrigger>
+            <PopoverContent w="240px">
+              <PopoverArrow />
+              <PopoverBody>
+                <VStack spacing={3} align="stretch">
+                  {!isImage && (
+                    <FormControl>
+                      <FormLabel fontSize="xs" mb={1}>
+                        メッセージ
+                      </FormLabel>
+                      <Textarea
+                        size="sm"
+                        rows={2}
+                        value={message.text}
+                        onChange={(e) => onUpdate({ text: e.target.value })}
+                      />
+                    </FormControl>
+                  )}
 
-              <Flex gap={2}>
-                <FormControl>
-                  <FormLabel fontSize="xs" mb={1}>
-                    時刻
-                  </FormLabel>
-                  <Input
-                    size="sm"
-                    value={timeDraft}
-                    onChange={(e) => setTimeDraft(e.target.value)}
-                    onBlur={commitTime}
-                    placeholder="12:34"
-                  />
-                </FormControl>
-                {/* 既読は自分のメッセージにしか表示されないため、トグルも自分のときのみ出す */}
-                {isMe && (
-                  <FormControl>
-                    <FormLabel fontSize="xs" mb={1}>
-                      既読
-                    </FormLabel>
-                    <Switch
-                      isChecked={message.read}
-                      onChange={(e) => onUpdate({ read: e.target.checked })}
+                  <Flex gap={2}>
+                    <FormControl>
+                      <FormLabel fontSize="xs" mb={1}>
+                        時刻
+                      </FormLabel>
+                      <Input
+                        size="sm"
+                        value={timeDraft}
+                        onChange={(e) => setTimeDraft(e.target.value)}
+                        onBlur={commitTime}
+                        placeholder="12:34"
+                      />
+                    </FormControl>
+                    {/* 既読は自分のメッセージにしか表示されないため、トグルも自分のときのみ出す */}
+                    {isMe && (
+                      <FormControl>
+                        <FormLabel fontSize="xs" mb={1}>
+                          既読
+                        </FormLabel>
+                        <Switch
+                          isChecked={message.read}
+                          onChange={(e) =>
+                            onUpdate({ read: e.target.checked })
+                          }
+                          colorScheme="teal"
+                        />
+                      </FormControl>
+                    )}
+                  </Flex>
+
+                  <ButtonGroup size="xs" isAttached w="100%">
+                    <Button
+                      flex={1}
                       colorScheme="teal"
-                    />
-                  </FormControl>
-                )}
-              </Flex>
+                      variant={isMe ? 'outline' : 'solid'}
+                      onClick={() => onUpdate({ sender: 'other' })}
+                    >
+                      相手
+                    </Button>
+                    <Button
+                      flex={1}
+                      colorScheme="teal"
+                      variant={isMe ? 'solid' : 'outline'}
+                      onClick={() => onUpdate({ sender: 'me' })}
+                    >
+                      自分
+                    </Button>
+                  </ButtonGroup>
 
-              <ButtonGroup size="xs" isAttached w="100%">
-                <Button
-                  flex={1}
-                  colorScheme="teal"
-                  variant={isMe ? 'outline' : 'solid'}
-                  onClick={() => onUpdate({ sender: 'other' })}
-                >
-                  相手
-                </Button>
-                <Button
-                  flex={1}
-                  colorScheme="teal"
-                  variant={isMe ? 'solid' : 'outline'}
-                  onClick={() => onUpdate({ sender: 'me' })}
-                >
-                  自分
-                </Button>
-              </ButtonGroup>
-
-              <Button
-                size="xs"
-                colorScheme="red"
-                variant="ghost"
-                leftIcon={<RiDeleteBin6Line />}
-                onClick={onDelete}
-              >
-                このメッセージを削除
-              </Button>
-            </VStack>
-          </PopoverBody>
-        </PopoverContent>
-      </Popover>
+                  <Button
+                    size="xs"
+                    colorScheme="red"
+                    variant="ghost"
+                    leftIcon={<RiDeleteBin6Line />}
+                    onClick={onDelete}
+                  >
+                    このメッセージを削除
+                  </Button>
+                </VStack>
+              </PopoverBody>
+            </PopoverContent>
+          </Popover>
+        )}
+      </Flex>
 
       {!isMe && meta}
     </Flex>

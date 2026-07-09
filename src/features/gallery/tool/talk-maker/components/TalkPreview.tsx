@@ -1,15 +1,18 @@
 // src/features/gallery/tool/talk-maker/components/TalkPreview.tsx
-import { Box, Flex, Text, VStack } from '@chakra-ui/react';
+import { Box, Flex, Image, Text, VStack } from '@chakra-ui/react';
 import { forwardRef } from 'react';
 import { IoCallOutline, IoChevronBack, IoMenuOutline } from 'react-icons/io5';
 
 import { TalkMessage, TalkSettings } from '../types';
 import { MessageBubble } from './MessageBubble';
-import { getTheme } from '../utils/presets';
+import { getFont, getTheme } from '../utils/presets';
 
 type Props = {
   messages: TalkMessage[];
   settings: TalkSettings;
+  selectionMode?: boolean;
+  selectedIds?: ReadonlySet<string>;
+  onToggleSelect?: (id: string) => void;
   onUpdateMessage: (
     id: string,
     patch: Partial<Omit<TalkMessage, 'id'>>
@@ -24,10 +27,23 @@ type Props = {
  */
 export const TalkPreview = forwardRef<HTMLDivElement, Props>(
   function TalkPreview(
-    { messages, settings, onUpdateMessage, onRemoveMessage },
+    {
+      messages,
+      settings,
+      selectionMode = false,
+      selectedIds,
+      onToggleSelect,
+      onUpdateMessage,
+      onRemoveMessage,
+    },
     ref
   ) {
     const theme = getTheme(settings.themeId);
+    const isGroup = settings.members.length >= 2;
+
+    const resolveMember = (message: TalkMessage) =>
+      settings.members.find((m) => m.id === message.memberId) ??
+      settings.members[0];
 
     return (
       <Box
@@ -38,6 +54,7 @@ export const TalkPreview = forwardRef<HTMLDivElement, Props>(
         borderRadius="2xl"
         overflow="hidden"
         boxShadow="lg"
+        fontFamily={getFont(settings.fontId).fontFamily}
         data-testid="talk-preview"
       >
         {/* チャットヘッダー */}
@@ -59,8 +76,19 @@ export const TalkPreview = forwardRef<HTMLDivElement, Props>(
             justify="center"
             fontSize="18px"
             flexShrink={0}
+            overflow="hidden"
           >
-            {settings.partnerIcon}
+            {settings.partnerIconImage ? (
+              <Image
+                src={settings.partnerIconImage}
+                alt="トークアイコン"
+                w="100%"
+                h="100%"
+                objectFit="cover"
+              />
+            ) : (
+              settings.partnerIcon
+            )}
           </Flex>
           <Text
             fontSize="sm"
@@ -70,6 +98,7 @@ export const TalkPreview = forwardRef<HTMLDivElement, Props>(
             textAlign="left"
           >
             {settings.partnerName}
+            {isGroup && ` (${settings.members.length + 1})`}
           </Text>
           <IoCallOutline size={18} />
           <IoMenuOutline size={20} />
@@ -78,6 +107,13 @@ export const TalkPreview = forwardRef<HTMLDivElement, Props>(
         {/* メッセージエリア */}
         <VStack
           bg={theme.bg}
+          bgImage={
+            settings.backgroundImage
+              ? `url(${settings.backgroundImage})`
+              : undefined
+          }
+          bgSize="cover"
+          bgPosition="center"
           minH="360px"
           py={4}
           spacing="6px"
@@ -94,19 +130,34 @@ export const TalkPreview = forwardRef<HTMLDivElement, Props>(
               下の入力欄からメッセージを追加してみましょう
             </Text>
           ) : (
-            messages.map((message, index) => (
-              <MessageBubble
-                key={message.id}
-                message={message}
-                theme={theme}
-                settings={settings}
-                showIcon={
-                  index === 0 || messages[index - 1].sender !== message.sender
-                }
-                onUpdate={(patch) => onUpdateMessage(message.id, patch)}
-                onDelete={() => onRemoveMessage(message.id)}
-              />
-            ))
+            messages.map((message, index) => {
+              const isGroupStart =
+                index === 0 ||
+                messages[index - 1].sender !== message.sender ||
+                messages[index - 1].memberId !== message.memberId;
+              return (
+                <MessageBubble
+                  key={message.id}
+                  message={message}
+                  theme={theme}
+                  settings={settings}
+                  member={
+                    message.sender === 'other'
+                      ? resolveMember(message)
+                      : undefined
+                  }
+                  showIcon={isGroupStart}
+                  showName={isGroup && isGroupStart}
+                  selectionMode={selectionMode}
+                  isSelected={selectedIds?.has(message.id) ?? false}
+                  onToggleSelect={
+                    onToggleSelect ? () => onToggleSelect(message.id) : undefined
+                  }
+                  onUpdate={(patch) => onUpdateMessage(message.id, patch)}
+                  onDelete={() => onRemoveMessage(message.id)}
+                />
+              );
+            })
           )}
         </VStack>
       </Box>
