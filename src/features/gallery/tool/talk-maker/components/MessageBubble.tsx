@@ -13,6 +13,7 @@ import {
   PopoverBody,
   PopoverContent,
   PopoverTrigger,
+  Select,
   Switch,
   Text,
   Textarea,
@@ -130,12 +131,19 @@ const MessageBubbleBase: FC<Props> = ({
       textAlign="left"
       whiteSpace="pre-wrap"
       wordBreak="break-word"
-      boxShadow="sm"
+      // 選択中はリングを重ねる（outlineはブラウザのフォーカス枠と競合するため使わない）
+      boxShadow={
+        selectionMode && isSelected
+          ? '0 0 0 3px var(--chakra-colors-teal-400)'
+          : 'sm'
+      }
       cursor="pointer"
-      transition="filter 0.15s, outline-color 0.15s"
+      transition="filter 0.15s, box-shadow 0.15s"
       _hover={{ filter: 'brightness(0.96)' }}
-      outline={selectionMode && isSelected ? '3px solid' : 'none'}
-      outlineColor="teal.400"
+      // クリック後にブラウザのフォーカス枠が残ると見た目もPNG出力も汚れるため、
+      // キーボード操作（focus-visible）のときだけ表示する
+      _focus={{ outline: 'none' }}
+      _focusVisible={{ boxShadow: 'outline' }}
       onClick={selectionMode ? onToggleSelect : undefined}
       _before={
         showIcon && !isImage
@@ -279,6 +287,28 @@ const MessageBubbleBase: FC<Props> = ({
                       </FormControl>
                     )}
                   </Flex>
+
+                  {/* グループ時は送信メンバーを変更できる */}
+                  {!isMe && settings.members.length >= 2 && (
+                    <FormControl>
+                      <FormLabel fontSize="xs" mb={1}>
+                        送信メンバー
+                      </FormLabel>
+                      <Select
+                        size="sm"
+                        value={member?.id ?? settings.members[0].id}
+                        onChange={(e) =>
+                          onUpdate({ memberId: e.target.value })
+                        }
+                      >
+                        {settings.members.map((m) => (
+                          <option key={m.id} value={m.id}>
+                            {m.name}
+                          </option>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  )}
 
                   <ButtonGroup size="xs" isAttached w="100%">
                     <Button

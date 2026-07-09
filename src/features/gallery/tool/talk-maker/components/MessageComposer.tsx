@@ -130,7 +130,7 @@ export const MessageComposer: FC<Props> = ({
         // Shift+Enter の改行入力が見切れないよう、行数に高さを追従させる（最大4行）
         rows={Math.min(text.split('\n').length, 4)}
         resize="none"
-        placeholder="メッセージを入力（Enterで追加）"
+        placeholder="メッセージを入力"
         value={text}
         onChange={(e) => setText(e.target.value)}
         onKeyDown={handleKeyDown}
