@@ -30,7 +30,10 @@ import {
   TalkMessage,
   TalkSettings,
 } from '../types';
-import { CALL_STATUS_LABELS } from '../utils/presets';
+import {
+  CALL_STATUS_LABELS,
+  DEFAULT_CALL_COMPLETED_TEXT,
+} from '../utils/presets';
 import { normalizeTime } from '../utils/time';
 
 type Props = {
@@ -117,11 +120,13 @@ const MessageBubbleBase: FC<Props> = ({
       objectFit="cover"
     />
   ) : isCall ? (
-    // 通話系は全ステータス共通で「アイコン(丸い濃色バッジ付き) + ラベル」の横並びにする
-    <Flex align="center" gap={2}>
+    <Flex
+      align={callStatus === 'completed' ? 'flex-start' : 'center'}
+      gap="10px"
+    >
       <Flex
-        w="26px"
-        h="26px"
+        w="28px"
+        h="28px"
         borderRadius="full"
         align="center"
         justify="center"
@@ -129,13 +134,23 @@ const MessageBubbleBase: FC<Props> = ({
         bg="blackAlpha.200"
         flexShrink={0}
       >
-        <IoCall size={14} />
+        <IoCall size={15} />
       </Flex>
-      <Text fontSize="sm" whiteSpace="nowrap">
-        {callStatus === 'completed'
-          ? (message.callDuration ?? '0:00')
-          : CALL_STATUS_LABELS[callStatus]}
-      </Text>
+      {callStatus === 'completed' ? (
+        // 通話成立時は「通話メッセージ + その下に小さく通話時間」の2段構成
+        <VStack align="flex-start" spacing="1px">
+          <Text fontSize="sm" whiteSpace="pre-wrap">
+            {message.text || DEFAULT_CALL_COMPLETED_TEXT}
+          </Text>
+          <Text fontSize="xs" opacity={0.65}>
+            {message.callDuration ?? '0:00'}
+          </Text>
+        </VStack>
+      ) : (
+        <Text fontSize="12px" whiteSpace="nowrap">
+          {CALL_STATUS_LABELS[callStatus]}
+        </Text>
+      )}
     </Flex>
   ) : (
     message.text
@@ -150,8 +165,8 @@ const MessageBubbleBase: FC<Props> = ({
       bg={isImage ? 'transparent' : bubbleBg}
       color={bubbleColor}
       borderRadius={isImage ? '12px' : '16px'}
-      px={isImage ? 0 : 3}
-      // 通話の丸アイコンは行の高さが詰まって見えやすいため、縦方向に少し余裕を持たせる
+      // 通話バブルは丸アイコン分、詰まって見えやすいため上下左右に少し余裕を持たせる
+      px={isImage ? 0 : isCall ? 4 : 3}
       py={isImage ? 0 : isCall ? 3 : 2}
       fontSize="sm"
       textAlign="left"
@@ -250,7 +265,11 @@ const MessageBubbleBase: FC<Props> = ({
 
       {/* グループ時: 名前ラベル + 吹き出しを縦に積む */}
       {/* 吹き出し幅の上限はこの列で一元管理する（名前ラベルと揃えるため） */}
-      <Flex direction="column" align={isMe ? 'flex-end' : 'flex-start'} maxW="70%">
+      <Flex
+        direction="column"
+        align={isMe ? 'flex-end' : 'flex-start'}
+        maxW="70%"
+      >
         {showName && !isMe && member && (
           <Text
             fontSize="10px"
@@ -284,6 +303,20 @@ const MessageBubbleBase: FC<Props> = ({
                     </FormControl>
                   )}
 
+                  {isCall && callStatus === 'completed' && (
+                    <FormControl>
+                      <FormLabel fontSize="xs" mb={1}>
+                        通話メッセージ
+                      </FormLabel>
+                      <Textarea
+                        size="sm"
+                        rows={2}
+                        value={message.text}
+                        onChange={(e) => onUpdate({ text: e.target.value })}
+                      />
+                    </FormControl>
+                  )}
+
                   {isCall && (
                     <Flex gap={2}>
                       <FormControl>
@@ -293,11 +326,16 @@ const MessageBubbleBase: FC<Props> = ({
                         <Select
                           size="sm"
                           value={callStatus}
-                          onChange={(e) =>
+                          onChange={(e) => {
+                            const next = e.target.value as CallStatus;
                             onUpdate({
-                              callStatus: e.target.value as CallStatus,
-                            })
-                          }
+                              callStatus: next,
+                              // completedへ切り替えた際、文言が空だとバブルが寂しいのでデフォルト文を補う
+                              ...(next === 'completed' && !message.text
+                                ? { text: DEFAULT_CALL_COMPLETED_TEXT }
+                                : {}),
+                            });
+                          }}
                         >
                           <option value="completed">通話時間</option>
                           <option value="missed">不在着信</option>
@@ -344,9 +382,7 @@ const MessageBubbleBase: FC<Props> = ({
                         </FormLabel>
                         <Switch
                           isChecked={message.read}
-                          onChange={(e) =>
-                            onUpdate({ read: e.target.checked })
-                          }
+                          onChange={(e) => onUpdate({ read: e.target.checked })}
                           colorScheme="teal"
                         />
                       </FormControl>
@@ -362,9 +398,7 @@ const MessageBubbleBase: FC<Props> = ({
                       <Select
                         size="sm"
                         value={member?.id ?? settings.members[0].id}
-                        onChange={(e) =>
-                          onUpdate({ memberId: e.target.value })
-                        }
+                        onChange={(e) => onUpdate({ memberId: e.target.value })}
                       >
                         {settings.members.map((m) => (
                           <option key={m.id} value={m.id}>

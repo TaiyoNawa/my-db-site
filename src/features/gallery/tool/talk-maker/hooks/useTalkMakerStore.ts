@@ -10,6 +10,7 @@ import {
   TalkSettings,
 } from '../types';
 import {
+  DEFAULT_CALL_COMPLETED_TEXT,
   DEFAULT_CALL_DURATION,
   DEFAULT_DATE_TEXT,
   DEFAULT_SETTINGS,
@@ -170,7 +171,8 @@ export function useTalkMakerStore(): TalkMakerStore {
           id: nanoid(),
           sender,
           memberId: sender === 'other' ? memberId : undefined,
-          text: '',
+          // completed のみ「音声通話が終了しました」のような文言を保持し、編集できるようにする
+          text: status === 'completed' ? DEFAULT_CALL_COMPLETED_TEXT : '',
           kind: 'call',
           callStatus: status,
           callDuration:

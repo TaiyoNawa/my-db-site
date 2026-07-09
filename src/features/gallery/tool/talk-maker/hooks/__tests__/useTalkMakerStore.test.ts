@@ -187,10 +187,12 @@ describe('useTalkMakerStore', () => {
       kind: 'call',
       callStatus: 'completed',
       callDuration: '0:22',
+      text: '音声通話が終了しました',
     });
     expect(result.current.messages[1]).toMatchObject({
       kind: 'call',
       callStatus: 'missed',
+      text: '',
     });
     expect(result.current.messages[1].callDuration).toBeUndefined();
     expect(result.current.messages[2]).toMatchObject({

@@ -129,6 +129,7 @@ export function createMember(override?: Partial<TalkMember>): TalkMember {
 export const DEFAULT_DATE_TEXT = '今日';
 export const DEFAULT_SYSTEM_TEXT = 'メンバーがグループに参加しました。';
 export const DEFAULT_CALL_DURATION = '0:22';
+export const DEFAULT_CALL_COMPLETED_TEXT = '音声通話が終了しました';
 
 /**
  * 通話結果ごとの表示ラベル。completed のみ通話時間を別枠で表示するため、
