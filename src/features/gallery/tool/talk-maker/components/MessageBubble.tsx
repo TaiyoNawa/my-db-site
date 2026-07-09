@@ -116,19 +116,26 @@ const MessageBubbleBase: FC<Props> = ({
       borderRadius="12px"
       objectFit="cover"
     />
-  ) : isCall ? callStatus === 'completed' ? (
-    // 通話成立時は電話アイコンの下に通話時間を表示する（既存UIを維持）
-    <VStack spacing={1} px={3} py={1}>
-      <IoCall size={22} />
-      <Text fontSize="xs" lineHeight="1.2">
-        {message.callDuration ?? '0:00'}
-      </Text>
-    </VStack>
-  ) : (
-    // 不在着信・キャンセル・応答なしはアイコンを統一し、横並びでラベルを表示する
+  ) : isCall ? (
+    // 通話系は全ステータス共通で「アイコン(丸い濃色バッジ付き) + ラベル」の横並びにする
     <Flex align="center" gap={2}>
-      <IoCall size={18} />
-      <Text fontSize="sm">{CALL_STATUS_LABELS[callStatus]}</Text>
+      <Flex
+        w="26px"
+        h="26px"
+        borderRadius="full"
+        align="center"
+        justify="center"
+        // ブランドやテーマの色に関わらず、地の色よりわずかに濃い丸を作れるよう半透明の黒を重ねる
+        bg="blackAlpha.200"
+        flexShrink={0}
+      >
+        <IoCall size={14} />
+      </Flex>
+      <Text fontSize="sm" whiteSpace="nowrap">
+        {callStatus === 'completed'
+          ? (message.callDuration ?? '0:00')
+          : CALL_STATUS_LABELS[callStatus]}
+      </Text>
     </Flex>
   ) : (
     message.text
@@ -144,7 +151,8 @@ const MessageBubbleBase: FC<Props> = ({
       color={bubbleColor}
       borderRadius={isImage ? '12px' : '16px'}
       px={isImage ? 0 : 3}
-      py={isImage ? 0 : 2}
+      // 通話の丸アイコンは行の高さが詰まって見えやすいため、縦方向に少し余裕を持たせる
+      py={isImage ? 0 : isCall ? 3 : 2}
       fontSize="sm"
       textAlign="left"
       whiteSpace="pre-wrap"

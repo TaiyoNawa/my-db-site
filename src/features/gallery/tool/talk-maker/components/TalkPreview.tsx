@@ -1,7 +1,12 @@
 // src/features/gallery/tool/talk-maker/components/TalkPreview.tsx
 import { Box, Flex, Image, Text, VStack } from '@chakra-ui/react';
 import { forwardRef } from 'react';
-import { IoCallOutline, IoChevronBack, IoMenuOutline } from 'react-icons/io5';
+import {
+  IoCallOutline,
+  IoChevronBack,
+  IoMenuOutline,
+  IoSearchOutline,
+} from 'react-icons/io5';
 
 import { TalkMessage, TalkSettings } from '../types';
 import { MessageBubble } from './MessageBubble';
@@ -105,6 +110,7 @@ export const TalkPreview = forwardRef<HTMLDivElement, Props>(
             {settings.partnerName}
             {isGroup && ` (${settings.members.length + 1})`}
           </Text>
+          <IoSearchOutline size={18} />
           <IoCallOutline size={18} />
           <IoMenuOutline size={20} />
         </Flex>
