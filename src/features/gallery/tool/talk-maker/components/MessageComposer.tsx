@@ -101,8 +101,52 @@ export const MessageComposer: FC<Props> = ({
       borderRadius="xl"
       boxShadow="sm"
     >
-      {/* 1行目: 入力欄は必ずこの行の主役として幅を確保する */}
+      {/* 1行目: 入力欄 + 添付 + 送信（この行の主役として入力欄の幅を確保する） */}
       <Flex gap={2} align="flex-end">
+        <Textarea
+          size="sm"
+          // Shift+Enter の改行入力が見切れないよう、行数に高さを追従させる（最大4行）
+          rows={Math.min(text.split('\n').length, 4)}
+          resize="none"
+          placeholder="メッセージを入力"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          onKeyDown={handleKeyDown}
+          borderRadius="lg"
+          flex={1}
+          minW={0}
+        />
+
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          hidden
+          onChange={(e) => void handleImageSelect(e)}
+        />
+        <IconButton
+          aria-label="画像を送信"
+          icon={<IoImageOutline />}
+          size="sm"
+          variant="ghost"
+          colorScheme="teal"
+          onClick={() => fileInputRef.current?.click()}
+          flexShrink={0}
+        />
+
+        <IconButton
+          aria-label="メッセージを追加"
+          icon={<IoSend />}
+          size="sm"
+          colorScheme="teal"
+          isDisabled={!text.trim()}
+          onClick={handleSend}
+          flexShrink={0}
+        />
+      </Flex>
+
+      {/* 2行目: 相手/自分 + （グループ時の）送信メンバー選択 + 特殊メッセージメニュー */}
+      <Flex gap={2} align="center" wrap="wrap">
         <ButtonGroup size="sm" isAttached flexShrink={0}>
           <Button
             colorScheme="teal"
@@ -120,33 +164,24 @@ export const MessageComposer: FC<Props> = ({
           </Button>
         </ButtonGroup>
 
-        <Textarea
-          size="sm"
-          // Shift+Enter の改行入力が見切れないよう、行数に高さを追従させる（最大4行）
-          rows={Math.min(text.split('\n').length, 4)}
-          resize="none"
-          placeholder="メッセージを入力"
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          onKeyDown={handleKeyDown}
-          borderRadius="lg"
-          flex={1}
-          minW={0}
-        />
+        {/* グループかつ相手として送るときだけメンバーを選ぶ */}
+        {isGroup && sender === 'other' && (
+          <Select
+            size="sm"
+            w="140px"
+            flexShrink={0}
+            value={activeMemberId}
+            onChange={(e) => setMemberId(e.target.value)}
+            aria-label="送信メンバー"
+          >
+            {members.map((m) => (
+              <option key={m.id} value={m.id}>
+                {m.name}
+              </option>
+            ))}
+          </Select>
+        )}
 
-        <IconButton
-          aria-label="メッセージを追加"
-          icon={<IoSend />}
-          size="sm"
-          colorScheme="teal"
-          isDisabled={!text.trim()}
-          onClick={handleSend}
-          flexShrink={0}
-        />
-      </Flex>
-
-      {/* 2行目: 添付・特殊メッセージ・（グループ時の）送信メンバー選択 */}
-      <Flex gap={2} align="center" wrap="wrap">
         {/* 特殊メッセージ（通話・日付・システム）の挿入メニュー */}
         <Menu placement="top-start">
           <MenuButton
@@ -186,41 +221,6 @@ export const MessageComposer: FC<Props> = ({
             </MenuItem>
           </MenuList>
         </Menu>
-
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="image/*"
-          hidden
-          onChange={(e) => void handleImageSelect(e)}
-        />
-        <IconButton
-          aria-label="画像を送信"
-          icon={<IoImageOutline />}
-          size="sm"
-          variant="ghost"
-          colorScheme="teal"
-          onClick={() => fileInputRef.current?.click()}
-          flexShrink={0}
-        />
-
-        {/* グループかつ相手として送るときだけメンバーを選ぶ */}
-        {isGroup && sender === 'other' && (
-          <Select
-            size="sm"
-            w="140px"
-            flexShrink={0}
-            value={activeMemberId}
-            onChange={(e) => setMemberId(e.target.value)}
-            aria-label="送信メンバー"
-          >
-            {members.map((m) => (
-              <option key={m.id} value={m.id}>
-                {m.name}
-              </option>
-            ))}
-          </Select>
-        )}
       </Flex>
     </Flex>
   );
