@@ -147,7 +147,9 @@ export default function TalkMakerPage() {
     link.download = 'talk-maker.json';
     link.href = url;
     link.click();
-    URL.revokeObjectURL(url);
+    // click() 直後に revoke するとダウンロードが開始する前にURLが
+    // 無効化され、ブラウザによってはダウンロードが失敗することがあるため遅延する
+    setTimeout(() => URL.revokeObjectURL(url), 0);
   };
 
   const toggleSelect = (id: string) => {

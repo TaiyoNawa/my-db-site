@@ -126,9 +126,11 @@ describe('serializeTalk', () => {
       time: '12:38',
       read: true,
     },
+    { id: '6', sender: 'me', text: '', time: '12:39', read: true },
+    { id: '7', sender: 'me', text: '   ', time: '12:40', read: true },
   ];
 
-  it('メンバー名で書き出し、画像・特殊メッセージはスキップする', () => {
+  it('メンバー名で書き出し、画像・特殊メッセージ・空文字はスキップする', () => {
     const json = serializeTalk(messages, existingMembers);
     const parsed = JSON.parse(json) as Array<{ sender: string; text: string }>;
 

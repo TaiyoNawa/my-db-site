@@ -114,13 +114,20 @@ export function parseTalkJson(
  * トークをJSON文字列に変換する。
  * 画像（dataURLが巨大）と特殊メッセージ（通話・日付・システム）は
  * インポート形式で表現できないため対象外（スキップ）とする。
+ * 空文字（吹き出し編集で本文を消した場合）も、text: z.string().min(1) の
+ * インポート検証に弾かれ再インポートできなくなるためスキップする。
  */
 export function serializeTalk(
   messages: TalkMessage[],
   members: TalkMember[]
 ): string {
   const items = messages
-    .filter((m) => !m.imageUrl && (!m.kind || m.kind === 'text'))
+    .filter(
+      (m) =>
+        !m.imageUrl &&
+        (!m.kind || m.kind === 'text') &&
+        m.text.trim().length > 0
+    )
     .map((m) => {
       const member = members.find((mem) => mem.id === m.memberId);
       return {

@@ -106,17 +106,24 @@ export const ImageCropModal: FC<Props> = ({
   const coverScale = naturalSize
     ? Math.max(viewportW / naturalSize.w, viewportH / naturalSize.h)
     : 1;
-  const dispW = naturalSize ? naturalSize.w * coverScale * zoom : viewportW;
-  const dispH = naturalSize ? naturalSize.h * coverScale * zoom : viewportH;
+  // 指定した zoom における表示サイズを都度計算する（zoom変更時に古いサイズで
+  // クランプしてしまうと、縮小時に枠内へ空白が出てしまうため）
+  const getDispSize = (z: number) => ({
+    w: naturalSize ? naturalSize.w * coverScale * z : viewportW,
+    h: naturalSize ? naturalSize.h * coverScale * z : viewportH,
+  });
+  const { w: dispW, h: dispH } = getDispSize(zoom);
 
-  const clampOffset = (x: number, y: number) => {
-    const maxX = Math.max(0, (dispW - viewportW) / 2);
-    const maxY = Math.max(0, (dispH - viewportH) / 2);
+  const clampOffsetForSize = (x: number, y: number, w: number, h: number) => {
+    const maxX = Math.max(0, (w - viewportW) / 2);
+    const maxY = Math.max(0, (h - viewportH) / 2);
     return {
       x: Math.min(maxX, Math.max(-maxX, x)),
       y: Math.min(maxY, Math.max(-maxY, y)),
     };
   };
+  const clampOffset = (x: number, y: number) =>
+    clampOffsetForSize(x, y, dispW, dispH);
 
   const handlePointerDown = (e: PointerEvent<HTMLDivElement>) => {
     e.currentTarget.setPointerCapture(e.pointerId);
@@ -226,7 +233,12 @@ export const ImageCropModal: FC<Props> = ({
               value={zoom}
               onChange={(v) => {
                 setZoom(v);
-                setOffset((prev) => clampOffset(prev.x, prev.y));
+                // 新しい zoom の表示サイズでクランプする（古いサイズのままだと
+                // 縮小時に枠内へ空白が出てしまう）
+                const next = getDispSize(v);
+                setOffset((prev) =>
+                  clampOffsetForSize(prev.x, prev.y, next.w, next.h)
+                );
               }}
               colorScheme="teal"
             >
