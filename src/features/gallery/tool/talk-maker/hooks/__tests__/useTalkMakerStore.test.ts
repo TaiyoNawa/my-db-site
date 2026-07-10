@@ -141,7 +141,6 @@ describe('useTalkMakerStore', () => {
         messages: [],
         settings: {
           partnerName: '太郎',
-          partnerIcon: '🐶',
           themeId: 'dark',
           showTime: true,
           showRead: true,
@@ -153,10 +152,7 @@ describe('useTalkMakerStore', () => {
     await waitFor(() => expect(result.current.initialized).toBe(true));
 
     expect(result.current.settings.members).toHaveLength(1);
-    expect(result.current.settings.members[0]).toMatchObject({
-      name: '太郎',
-      icon: '🐶',
-    });
+    expect(result.current.settings.members[0].name).toBe('太郎');
     expect(result.current.settings.fontId).toBe('gothic');
   });
 

@@ -66,10 +66,6 @@ export interface BackgroundTheme {
 export interface TalkSettings {
   /** ヘッダーに表示するトーク名（1対1なら相手の名前） */
   partnerName: string;
-  /** トークアイコンの絵文字 */
-  partnerIcon: string;
-  /** トークアイコンの画像（dataURL）。設定時は絵文字より優先 */
-  partnerIconImage?: string;
   themeId: ThemeId;
   /** 背景画像（dataURL）。設定時はテーマ背景色の上に cover 表示 */
   backgroundImage?: string;

@@ -42,12 +42,7 @@ function loadFromStorage(): StoredState {
     // DEFAULT_SETTINGS のスプレッドで members が埋まるため、保存データ側を直接確認する
     const storedMembers = parsed.settings?.members;
     if (!Array.isArray(storedMembers) || storedMembers.length === 0) {
-      settings.members = [
-        createMember({
-          name: settings.partnerName,
-          icon: settings.partnerIcon,
-        }),
-      ];
+      settings.members = [createMember({ name: settings.partnerName })];
     }
     return {
       messages: Array.isArray(parsed.messages) ? parsed.messages : [],

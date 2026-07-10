@@ -1,5 +1,5 @@
 // src/features/gallery/tool/talk-maker/components/TalkPreview.tsx
-import { Box, Flex, Image, Text, VStack } from '@chakra-ui/react';
+import { Box, Flex, Text, VStack } from '@chakra-ui/react';
 import { forwardRef } from 'react';
 import {
   IoCallOutline,
@@ -77,29 +77,6 @@ export const TalkPreview = forwardRef<HTMLDivElement, Props>(
           gap={2}
         >
           <IoChevronBack size={20} />
-          <Flex
-            w="30px"
-            h="30px"
-            borderRadius="full"
-            bg="whiteAlpha.300"
-            align="center"
-            justify="center"
-            fontSize="18px"
-            flexShrink={0}
-            overflow="hidden"
-          >
-            {settings.partnerIconImage ? (
-              <Image
-                src={settings.partnerIconImage}
-                alt="トークアイコン"
-                w="100%"
-                h="100%"
-                objectFit="cover"
-              />
-            ) : (
-              settings.partnerIcon
-            )}
-          </Flex>
           <Text
             fontSize="sm"
             fontWeight="bold"

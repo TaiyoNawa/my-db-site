@@ -69,28 +69,28 @@ describe('MessageBubble', () => {
   });
 
   it('相手のメッセージにはアイコンが表示される', () => {
+    const member = DEFAULT_SETTINGS.members[0];
     render(
       <MessageBubble
         {...defaultProps}
         message={{ ...baseMessage, sender: 'other' }}
+        member={member}
       />
     );
-    expect(
-      screen.getByText(DEFAULT_SETTINGS.partnerIcon)
-    ).toBeInTheDocument();
+    expect(screen.getByText(member.icon)).toBeInTheDocument();
   });
 
   it('showIcon が false のときアイコンを省略する', () => {
+    const member = DEFAULT_SETTINGS.members[0];
     render(
       <MessageBubble
         {...defaultProps}
         message={{ ...baseMessage, sender: 'other' }}
+        member={member}
         showIcon={false}
       />
     );
-    expect(
-      screen.queryByText(DEFAULT_SETTINGS.partnerIcon)
-    ).not.toBeInTheDocument();
+    expect(screen.queryByText(member.icon)).not.toBeInTheDocument();
   });
 
   it('吹き出しをクリックすると編集ポップオーバーが開き、削除できる', async () => {

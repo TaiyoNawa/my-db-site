@@ -67,6 +67,18 @@ export function getTheme(id: ThemeId): BackgroundTheme {
   return THEMES.find((t) => t.id === id) ?? THEMES[0];
 }
 
+/**
+ * アイコン欄は入力文字数を厳密に1文字へ制限せず（IME確定タイミングに
+ * 依存し不安定なため）、ネイティブの maxLength={2} で大まかに絞るだけに留める。
+ * その代わり、絵文字1個を超える文字（「ファ」「ああ」等の2文字）が入っていても
+ * 丸いアイコン枠からはみ出さないよう、表示側でフォントサイズを縮小する。
+ */
+export function getIconFontSize(icon: string, baseSizePx: number): string {
+  const glyphCount = Array.from(icon).length;
+  if (glyphCount <= 1) return `${baseSizePx}px`;
+  return `${Math.round(baseSizePx * 0.6)}px`;
+}
+
 /** 相手アイコンの絵文字候補（自由入力も可能） */
 export const PARTNER_ICON_OPTIONS = [
   '🐱',
@@ -143,7 +155,6 @@ export const CALL_STATUS_LABELS: Record<Exclude<CallStatus, 'completed'>, string
 
 export const DEFAULT_SETTINGS: TalkSettings = {
   partnerName: '相手の名前',
-  partnerIcon: '🐱',
   themeId: 'blue',
   fontId: 'gothic',
   showTime: true,

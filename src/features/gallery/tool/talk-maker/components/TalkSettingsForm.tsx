@@ -13,6 +13,11 @@ import {
   IconButton,
   Image,
   Input,
+  Popover,
+  PopoverArrow,
+  PopoverBody,
+  PopoverContent,
+  PopoverTrigger,
   Select,
   SimpleGrid,
   Switch,
@@ -26,7 +31,12 @@ import { RiDeleteBin6Line } from 'react-icons/ri';
 import { FontId, TalkMember, TalkSettings } from '../types';
 import { CropShape, ImageCropModal } from './ImageCropModal';
 import { readFileAsDataUrl } from '../utils/image';
-import { FONTS, PARTNER_ICON_OPTIONS, THEMES } from '../utils/presets';
+import {
+  FONTS,
+  PARTNER_ICON_OPTIONS,
+  THEMES,
+  getIconFontSize,
+} from '../utils/presets';
 
 type Props = {
   settings: TalkSettings;
@@ -126,86 +136,6 @@ export const TalkSettingsForm: FC<Props> = ({
                 onChange={(e) => onChange({ partnerName: e.target.value })}
                 maxLength={20}
               />
-            </FormControl>
-
-            <FormControl mb={3}>
-              <FormLabel fontSize="xs" mb={1}>
-                トークアイコン
-              </FormLabel>
-              {settings.partnerIconImage ? (
-                <Flex align="center" gap={2}>
-                  <Image
-                    src={settings.partnerIconImage}
-                    alt="トークアイコン"
-                    w="36px"
-                    h="36px"
-                    borderRadius="full"
-                    objectFit="cover"
-                  />
-                  <Button
-                    size="xs"
-                    variant="ghost"
-                    colorScheme="red"
-                    onClick={() => onChange({ partnerIconImage: undefined })}
-                  >
-                    画像を解除
-                  </Button>
-                </Flex>
-              ) : (
-                <>
-                  <SimpleGrid columns={6} spacing={1} mb={2}>
-                    {PARTNER_ICON_OPTIONS.map((icon) => (
-                      <Flex
-                        key={icon}
-                        as="button"
-                        type="button"
-                        aria-label={`アイコン ${icon}`}
-                        align="center"
-                        justify="center"
-                        h="32px"
-                        fontSize="20px"
-                        borderRadius="md"
-                        border="2px solid"
-                        borderColor={
-                          settings.partnerIcon === icon
-                            ? 'teal.400'
-                            : 'transparent'
-                        }
-                        bg="gray.50"
-                        _hover={{ bg: 'gray.100' }}
-                        onClick={() => onChange({ partnerIcon: icon })}
-                      >
-                        {icon}
-                      </Flex>
-                    ))}
-                  </SimpleGrid>
-                  <Flex gap={2} align="center">
-                    <Input
-                      size="sm"
-                      value={settings.partnerIcon}
-                      onChange={(e) =>
-                        onChange({ partnerIcon: e.target.value })
-                      }
-                      maxLength={2}
-                      w="80px"
-                      textAlign="center"
-                    />
-                    <ImagePickButton
-                      size="sm"
-                      onPick={(src) =>
-                        setCropState({
-                          src,
-                          shape: 'circle',
-                          apply: (cropped) =>
-                            onChange({ partnerIconImage: cropped }),
-                        })
-                      }
-                    >
-                      画像を使う
-                    </ImagePickButton>
-                  </Flex>
-                </>
-              )}
             </FormControl>
 
             <FormControl mb={3}>
@@ -351,29 +281,119 @@ export const TalkSettingsForm: FC<Props> = ({
             <Flex direction="column" gap={2}>
               {settings.members.map((member) => (
                 <Flex key={member.id} align="center" gap={2}>
-                  <Flex
-                    w="30px"
-                    h="30px"
-                    borderRadius="full"
-                    bg="gray.100"
-                    align="center"
-                    justify="center"
-                    fontSize="18px"
-                    flexShrink={0}
-                    overflow="hidden"
-                  >
-                    {member.iconImage ? (
-                      <Image
-                        src={member.iconImage}
-                        alt={member.name}
-                        w="100%"
-                        h="100%"
-                        objectFit="cover"
-                      />
-                    ) : (
-                      member.icon
-                    )}
-                  </Flex>
+                  <Popover placement="bottom-start" isLazy>
+                    <PopoverTrigger>
+                      <Flex
+                        as="button"
+                        type="button"
+                        aria-label={`${member.name} のアイコンを変更`}
+                        w="30px"
+                        h="30px"
+                        borderRadius="full"
+                        bg="gray.100"
+                        align="center"
+                        justify="center"
+                        fontSize={getIconFontSize(member.icon, 18)}
+                        flexShrink={0}
+                        overflow="hidden"
+                        border="2px solid transparent"
+                        _hover={{ borderColor: 'teal.400' }}
+                      >
+                        {member.iconImage ? (
+                          <Image
+                            src={member.iconImage}
+                            alt={member.name}
+                            w="100%"
+                            h="100%"
+                            objectFit="cover"
+                          />
+                        ) : (
+                          member.icon
+                        )}
+                      </Flex>
+                    </PopoverTrigger>
+                    <PopoverContent w="220px">
+                      <PopoverArrow />
+                      <PopoverBody>
+                        <SimpleGrid columns={6} spacing={1} mb={2}>
+                          {PARTNER_ICON_OPTIONS.map((icon) => (
+                            <Flex
+                              key={icon}
+                              as="button"
+                              type="button"
+                              aria-label={`アイコン ${icon}`}
+                              align="center"
+                              justify="center"
+                              h="28px"
+                              fontSize="18px"
+                              borderRadius="md"
+                              border="2px solid"
+                              borderColor={
+                                !member.iconImage && member.icon === icon
+                                  ? 'teal.400'
+                                  : 'transparent'
+                              }
+                              bg="gray.50"
+                              _hover={{ bg: 'gray.100' }}
+                              onClick={() =>
+                                onUpdateMember(member.id, {
+                                  icon,
+                                  iconImage: undefined,
+                                })
+                              }
+                            >
+                              {icon}
+                            </Flex>
+                          ))}
+                        </SimpleGrid>
+                        <Flex gap={2} align="center">
+                          <Input
+                            size="sm"
+                            value={member.icon}
+                            onChange={(e) =>
+                              onUpdateMember(member.id, {
+                                icon: e.target.value,
+                              })
+                            }
+                            maxLength={2}
+                            w="52px"
+                            textAlign="center"
+                            aria-label={`${member.name} の絵文字アイコン`}
+                          />
+                          {member.iconImage ? (
+                            <Button
+                              size="xs"
+                              variant="ghost"
+                              colorScheme="red"
+                              onClick={() =>
+                                onUpdateMember(member.id, {
+                                  iconImage: undefined,
+                                })
+                              }
+                            >
+                              画像解除
+                            </Button>
+                          ) : (
+                            <ImagePickButton
+                              size="xs"
+                              onPick={(src) =>
+                                setCropState({
+                                  src,
+                                  shape: 'circle',
+                                  apply: (cropped) =>
+                                    onUpdateMember(member.id, {
+                                      iconImage: cropped,
+                                    }),
+                                })
+                              }
+                            >
+                              画像を使う
+                            </ImagePickButton>
+                          )}
+                        </Flex>
+                      </PopoverBody>
+                    </PopoverContent>
+                  </Popover>
                   <Input
                     size="sm"
                     value={member.name}
@@ -383,43 +403,6 @@ export const TalkSettingsForm: FC<Props> = ({
                     maxLength={20}
                     flex={1}
                   />
-                  <Input
-                    size="sm"
-                    value={member.icon}
-                    onChange={(e) =>
-                      onUpdateMember(member.id, { icon: e.target.value })
-                    }
-                    maxLength={2}
-                    w="52px"
-                    textAlign="center"
-                    aria-label={`${member.name} の絵文字アイコン`}
-                  />
-                  {member.iconImage ? (
-                    <Button
-                      size="xs"
-                      variant="ghost"
-                      colorScheme="red"
-                      flexShrink={0}
-                      onClick={() =>
-                        onUpdateMember(member.id, { iconImage: undefined })
-                      }
-                    >
-                      画像解除
-                    </Button>
-                  ) : (
-                    <ImagePickButton
-                      onPick={(src) =>
-                        setCropState({
-                          src,
-                          shape: 'circle',
-                          apply: (cropped) =>
-                            onUpdateMember(member.id, { iconImage: cropped }),
-                        })
-                      }
-                    >
-                      画像
-                    </ImagePickButton>
-                  )}
                   <IconButton
                     aria-label={`${member.name} を削除`}
                     icon={<RiDeleteBin6Line />}

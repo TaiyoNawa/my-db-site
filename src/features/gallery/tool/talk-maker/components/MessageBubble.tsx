@@ -33,6 +33,7 @@ import {
 import {
   CALL_STATUS_LABELS,
   DEFAULT_CALL_COMPLETED_TEXT,
+  getIconFontSize,
 } from '../utils/presets';
 import { normalizeTime } from '../utils/time';
 
@@ -40,7 +41,7 @@ type Props = {
   message: TalkMessage;
   theme: BackgroundTheme;
   settings: TalkSettings;
-  /** 送信メンバー（sender==='other' のとき）。未指定時は settings.partnerIcon を使う */
+  /** 送信メンバー（sender==='other' のとき。呼び出し側で必ず解決して渡すこと） */
   member?: TalkMember;
   /** 同一送信者の連投時は false にしてアイコンを省略する */
   showIcon: boolean;
@@ -108,7 +109,7 @@ const MessageBubbleBase: FC<Props> = ({
     </VStack>
   );
 
-  const avatarIcon = member?.icon ?? settings.partnerIcon;
+  const avatarIcon = member?.icon ?? '';
   const avatarImage = member?.iconImage;
 
   const bubbleBody: ReactNode = isImage ? (
@@ -224,7 +225,9 @@ const MessageBubbleBase: FC<Props> = ({
     <Flex
       justify={isMe ? 'flex-end' : 'flex-start'}
       align="flex-end"
-      gap="4px"
+      // 吹き出しの尻尾（下記_beforeで6px突き出す）がアバターの円に重なって
+      // 視覚的に欠けて見えないよう、余白を尻尾の突き出し幅以上に確保する
+      gap="8px"
       px={3}
       data-testid="message-bubble"
     >
@@ -238,7 +241,7 @@ const MessageBubbleBase: FC<Props> = ({
               bg="whiteAlpha.900"
               align="center"
               justify="center"
-              fontSize="20px"
+              fontSize={getIconFontSize(avatarIcon, 20)}
               boxShadow="sm"
               overflow="hidden"
             >
@@ -266,6 +269,11 @@ const MessageBubbleBase: FC<Props> = ({
         direction="column"
         align={isMe ? 'flex-end' : 'flex-start'}
         maxW="70%"
+        // 親(横並びFlex)の flex item として、デフォルトの min-width:auto の
+        // ままだと長い区切りのないテキスト（スペースなしの日本語連文等）で
+        // maxW が無視されて吹き出しが伸び、時刻が右に押し出されて改行される。
+        // minW={0} で明示的に縮小を許可し、wordBreak による折り返しを効かせる。
+        minW={0}
       >
         {showName && !isMe && member && (
           <Text
@@ -273,175 +281,200 @@ const MessageBubbleBase: FC<Props> = ({
             color={theme.metaColor}
             mb="2px"
             lineHeight="1.2"
+            // 列（Flex direction="column"）は align が flex-start/flex-end のため
+            // 子要素は横方向にstretchされず、幅を明示しないと内容に合わせて
+            // 際限なく伸びてしまう。maxW="100%" で列の幅を継承させたうえで
+            // 折り返す（吹き出し本文の maxW="100%" と同じ対応）
+            maxW="100%"
+            whiteSpace="pre-wrap"
+            wordBreak="break-word"
           >
             {member.name}
           </Text>
         )}
-        {selectionMode ? (
-          bubbleBox
-        ) : (
-          <Popover isLazy placement={isMe ? 'left' : 'right'}>
-            <PopoverTrigger>{bubbleBox}</PopoverTrigger>
-            <PopoverContent w="240px">
-              <PopoverArrow />
-              <PopoverBody>
-                <VStack spacing={3} align="stretch">
-                  {!isImage && !isCall && (
-                    <FormControl>
-                      <FormLabel fontSize="xs" mb={1}>
-                        メッセージ
-                      </FormLabel>
-                      <Textarea
-                        size="sm"
-                        rows={2}
-                        value={message.text}
-                        onChange={(e) => onUpdate({ text: e.target.value })}
-                      />
-                    </FormControl>
-                  )}
+        {/*
+          時刻(meta)は列全体ではなく、この行の中で吹き出し自身と並べて配置する。
+          列は名前ラベルの幅にも合わせて伸びるため、列の外に時刻を置くと
+          （名前ラベルが長い時に）吹き出しではなく列の右端に時刻が寄ってしまう。
+          alignSelf="stretch" + minW={0} で列の幅いっぱいまで使えるようにしつつ、
+          中身は吹き出しの実際の幅に合わせて詰める。
+        */}
+        <Flex
+          align="flex-end"
+          gap="4px"
+          alignSelf="stretch"
+          minW={0}
+          justify={isMe ? 'flex-end' : 'flex-start'}
+        >
+          {selectionMode ? (
+            bubbleBox
+          ) : (
+            <Popover isLazy placement={isMe ? 'left' : 'right'}>
+              <PopoverTrigger>{bubbleBox}</PopoverTrigger>
+              <PopoverContent w="240px">
+                <PopoverArrow />
+                <PopoverBody>
+                  <VStack spacing={3} align="stretch">
+                    {!isImage && !isCall && (
+                      <FormControl>
+                        <FormLabel fontSize="xs" mb={1}>
+                          メッセージ
+                        </FormLabel>
+                        <Textarea
+                          size="sm"
+                          rows={2}
+                          value={message.text}
+                          onChange={(e) => onUpdate({ text: e.target.value })}
+                        />
+                      </FormControl>
+                    )}
 
-                  {isCall && callStatus === 'completed' && (
-                    <FormControl>
-                      <FormLabel fontSize="xs" mb={1}>
-                        通話メッセージ
-                      </FormLabel>
-                      <Textarea
-                        size="sm"
-                        rows={2}
-                        value={message.text}
-                        onChange={(e) => onUpdate({ text: e.target.value })}
-                      />
-                    </FormControl>
-                  )}
+                    {isCall && callStatus === 'completed' && (
+                      <FormControl>
+                        <FormLabel fontSize="xs" mb={1}>
+                          通話メッセージ
+                        </FormLabel>
+                        <Textarea
+                          size="sm"
+                          rows={2}
+                          value={message.text}
+                          onChange={(e) => onUpdate({ text: e.target.value })}
+                        />
+                      </FormControl>
+                    )}
 
-                  {isCall && (
+                    {isCall && (
+                      <Flex gap={2}>
+                        <FormControl>
+                          <FormLabel fontSize="xs" mb={1}>
+                            通話の結果
+                          </FormLabel>
+                          <Select
+                            size="sm"
+                            value={callStatus}
+                            onChange={(e) => {
+                              const next = e.target.value as CallStatus;
+                              onUpdate({
+                                callStatus: next,
+                                // completedへ切り替えた際、文言が空だとバブルが寂しいのでデフォルト文を補う
+                                ...(next === 'completed' && !message.text
+                                  ? { text: DEFAULT_CALL_COMPLETED_TEXT }
+                                  : {}),
+                              });
+                            }}
+                          >
+                            <option value="completed">通話時間</option>
+                            <option value="missed">不在着信</option>
+                            <option value="canceled">キャンセル</option>
+                            <option value="noAnswer">応答なし</option>
+                          </Select>
+                        </FormControl>
+                        {callStatus === 'completed' && (
+                          <FormControl>
+                            <FormLabel fontSize="xs" mb={1}>
+                              通話時間
+                            </FormLabel>
+                            <Input
+                              size="sm"
+                              value={message.callDuration ?? ''}
+                              placeholder="0:22"
+                              onChange={(e) =>
+                                onUpdate({ callDuration: e.target.value })
+                              }
+                            />
+                          </FormControl>
+                        )}
+                      </Flex>
+                    )}
+
                     <Flex gap={2}>
                       <FormControl>
                         <FormLabel fontSize="xs" mb={1}>
-                          通話の結果
+                          時刻
                         </FormLabel>
-                        <Select
+                        <Input
                           size="sm"
-                          value={callStatus}
-                          onChange={(e) => {
-                            const next = e.target.value as CallStatus;
-                            onUpdate({
-                              callStatus: next,
-                              // completedへ切り替えた際、文言が空だとバブルが寂しいのでデフォルト文を補う
-                              ...(next === 'completed' && !message.text
-                                ? { text: DEFAULT_CALL_COMPLETED_TEXT }
-                                : {}),
-                            });
-                          }}
-                        >
-                          <option value="completed">通話時間</option>
-                          <option value="missed">不在着信</option>
-                          <option value="canceled">キャンセル</option>
-                          <option value="noAnswer">応答なし</option>
-                        </Select>
+                          value={timeDraft}
+                          onChange={(e) => setTimeDraft(e.target.value)}
+                          onBlur={commitTime}
+                          placeholder="12:34"
+                        />
                       </FormControl>
-                      {callStatus === 'completed' && (
+                      {/* 既読は自分のメッセージにしか表示されないため、トグルも自分のときのみ出す */}
+                      {isMe && (
                         <FormControl>
                           <FormLabel fontSize="xs" mb={1}>
-                            通話時間
+                            既読
                           </FormLabel>
-                          <Input
-                            size="sm"
-                            value={message.callDuration ?? ''}
-                            placeholder="0:22"
+                          <Switch
+                            isChecked={message.read}
                             onChange={(e) =>
-                              onUpdate({ callDuration: e.target.value })
+                              onUpdate({ read: e.target.checked })
                             }
+                            colorScheme="teal"
                           />
                         </FormControl>
                       )}
                     </Flex>
-                  )}
 
-                  <Flex gap={2}>
-                    <FormControl>
-                      <FormLabel fontSize="xs" mb={1}>
-                        時刻
-                      </FormLabel>
-                      <Input
-                        size="sm"
-                        value={timeDraft}
-                        onChange={(e) => setTimeDraft(e.target.value)}
-                        onBlur={commitTime}
-                        placeholder="12:34"
-                      />
-                    </FormControl>
-                    {/* 既読は自分のメッセージにしか表示されないため、トグルも自分のときのみ出す */}
-                    {isMe && (
+                    {/* グループ時は送信メンバーを変更できる */}
+                    {!isMe && settings.members.length >= 2 && (
                       <FormControl>
                         <FormLabel fontSize="xs" mb={1}>
-                          既読
+                          送信メンバー
                         </FormLabel>
-                        <Switch
-                          isChecked={message.read}
-                          onChange={(e) => onUpdate({ read: e.target.checked })}
-                          colorScheme="teal"
-                        />
+                        <Select
+                          size="sm"
+                          value={member?.id ?? settings.members[0].id}
+                          onChange={(e) =>
+                            onUpdate({ memberId: e.target.value })
+                          }
+                        >
+                          {settings.members.map((m) => (
+                            <option key={m.id} value={m.id}>
+                              {m.name}
+                            </option>
+                          ))}
+                        </Select>
                       </FormControl>
                     )}
-                  </Flex>
 
-                  {/* グループ時は送信メンバーを変更できる */}
-                  {!isMe && settings.members.length >= 2 && (
-                    <FormControl>
-                      <FormLabel fontSize="xs" mb={1}>
-                        送信メンバー
-                      </FormLabel>
-                      <Select
-                        size="sm"
-                        value={member?.id ?? settings.members[0].id}
-                        onChange={(e) => onUpdate({ memberId: e.target.value })}
+                    <ButtonGroup size="xs" isAttached w="100%">
+                      <Button
+                        flex={1}
+                        colorScheme="teal"
+                        variant={isMe ? 'outline' : 'solid'}
+                        onClick={() => onUpdate({ sender: 'other' })}
                       >
-                        {settings.members.map((m) => (
-                          <option key={m.id} value={m.id}>
-                            {m.name}
-                          </option>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  )}
+                        相手
+                      </Button>
+                      <Button
+                        flex={1}
+                        colorScheme="teal"
+                        variant={isMe ? 'solid' : 'outline'}
+                        onClick={() => onUpdate({ sender: 'me' })}
+                      >
+                        自分
+                      </Button>
+                    </ButtonGroup>
 
-                  <ButtonGroup size="xs" isAttached w="100%">
                     <Button
-                      flex={1}
-                      colorScheme="teal"
-                      variant={isMe ? 'outline' : 'solid'}
-                      onClick={() => onUpdate({ sender: 'other' })}
+                      size="xs"
+                      colorScheme="red"
+                      variant="ghost"
+                      leftIcon={<RiDeleteBin6Line />}
+                      onClick={onDelete}
                     >
-                      相手
+                      このメッセージを削除
                     </Button>
-                    <Button
-                      flex={1}
-                      colorScheme="teal"
-                      variant={isMe ? 'solid' : 'outline'}
-                      onClick={() => onUpdate({ sender: 'me' })}
-                    >
-                      自分
-                    </Button>
-                  </ButtonGroup>
-
-                  <Button
-                    size="xs"
-                    colorScheme="red"
-                    variant="ghost"
-                    leftIcon={<RiDeleteBin6Line />}
-                    onClick={onDelete}
-                  >
-                    このメッセージを削除
-                  </Button>
-                </VStack>
-              </PopoverBody>
-            </PopoverContent>
-          </Popover>
-        )}
+                  </VStack>
+                </PopoverBody>
+              </PopoverContent>
+            </Popover>
+          )}
+          {!isMe && meta}
+        </Flex>
       </Flex>
-
-      {!isMe && meta}
     </Flex>
   );
 };

@@ -2,7 +2,12 @@
 import { describe, expect, it } from 'vitest';
 
 import { CallStatus } from '../../types';
-import { CALL_STATUS_LABELS, getFont, getTheme } from '../presets';
+import {
+  CALL_STATUS_LABELS,
+  getFont,
+  getIconFontSize,
+  getTheme,
+} from '../presets';
 
 describe('CALL_STATUS_LABELS', () => {
   it('completed 以外の全ステータスにラベルを持つ', () => {
@@ -42,5 +47,19 @@ describe('getFont', () => {
   it('不正なIDは先頭フォントにフォールバックする', () => {
     // @ts-expect-error 不正な値を渡すケースを検証する
     expect(getFont('unknown').id).toBe('gothic');
+  });
+});
+
+describe('getIconFontSize', () => {
+  it('絵文字1個（サロゲートペア含む）は基準サイズのまま', () => {
+    expect(getIconFontSize('🐱', 20)).toBe('20px');
+    expect(getIconFontSize('あ', 20)).toBe('20px');
+    expect(getIconFontSize('', 20)).toBe('20px');
+  });
+
+  it('2文字以上は丸窓に収まるよう縮小する', () => {
+    expect(getIconFontSize('ファ', 20)).toBe('12px');
+    expect(getIconFontSize('ああ', 20)).toBe('12px');
+    expect(getIconFontSize('🐱🐶', 18)).toBe('11px');
   });
 });
