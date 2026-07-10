@@ -24,12 +24,8 @@ import { AiOutlinePlus, AiOutlineUpload } from 'react-icons/ai';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 
 import { FontId, TalkMember, TalkSettings } from '../types';
-import { IconCropModal } from './IconCropModal';
-import {
-  BACKGROUND_MAX_SIZE,
-  downscaleImage,
-  readFileAsDataUrl,
-} from '../utils/image';
+import { CropShape, ImageCropModal } from './ImageCropModal';
+import { readFileAsDataUrl } from '../utils/image';
 import { FONTS, PARTNER_ICON_OPTIONS, THEMES } from '../utils/presets';
 
 type Props = {
@@ -94,26 +90,12 @@ export const TalkSettingsForm: FC<Props> = ({
   onUpdateMember,
   onRemoveMember,
 }) => {
-  // クロップモーダル: 対象画像と適用先をセットで持つ
+  // クロップモーダル: 対象画像・形状・適用先をセットで持つ
   const [cropState, setCropState] = useState<{
     src: string;
+    shape: CropShape;
     apply: (dataUrl: string) => void;
   } | null>(null);
-  const toast = useToast();
-
-  const handleBackgroundPick = async (dataUrl: string) => {
-    try {
-      const resized = await downscaleImage(dataUrl, BACKGROUND_MAX_SIZE);
-      onChange({ backgroundImage: resized });
-    } catch {
-      toast({
-        title: '背景画像の設定に失敗しました',
-        status: 'error',
-        duration: 4000,
-        isClosable: true,
-      });
-    }
-  };
 
   return (
     <Box
@@ -213,6 +195,7 @@ export const TalkSettingsForm: FC<Props> = ({
                       onPick={(src) =>
                         setCropState({
                           src,
+                          shape: 'circle',
                           apply: (cropped) =>
                             onChange({ partnerIconImage: cropped }),
                         })
@@ -340,7 +323,14 @@ export const TalkSettingsForm: FC<Props> = ({
               ) : (
                 <ImagePickButton
                   size="sm"
-                  onPick={(src) => void handleBackgroundPick(src)}
+                  onPick={(src) =>
+                    setCropState({
+                      src,
+                      shape: 'rect',
+                      apply: (cropped) =>
+                        onChange({ backgroundImage: cropped }),
+                    })
+                  }
                 >
                   背景画像をアップロード
                 </ImagePickButton>
@@ -421,6 +411,7 @@ export const TalkSettingsForm: FC<Props> = ({
                       onPick={(src) =>
                         setCropState({
                           src,
+                          shape: 'circle',
                           apply: (cropped) =>
                             onUpdateMember(member.id, { iconImage: cropped }),
                         })
@@ -455,10 +446,11 @@ export const TalkSettingsForm: FC<Props> = ({
         </AccordionItem>
       </Accordion>
 
-      {/* アイコン切り抜きモーダル */}
-      <IconCropModal
+      {/* 画像切り抜きモーダル（アイコン=circle / 背景=rect） */}
+      <ImageCropModal
         isOpen={cropState !== null}
         imageSrc={cropState?.src ?? null}
+        shape={cropState?.shape ?? 'circle'}
         onClose={() => setCropState(null)}
         onCropped={(dataUrl) => cropState?.apply(dataUrl)}
       />

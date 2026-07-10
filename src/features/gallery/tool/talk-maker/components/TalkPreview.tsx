@@ -117,14 +117,19 @@ export const TalkPreview = forwardRef<HTMLDivElement, Props>(
 
         {/* メッセージエリア */}
         <VStack
-          bg={theme.bg}
-          bgImage={
-            settings.backgroundImage
+          // Chakra の bgImage は内部でグラデーション判定処理を通るため、
+          // data URL（"data:image/jpeg;base64,..." のようにカンマを含む値）を渡すと
+          // "url-gradient(...)" という不正なCSSに壊れてしまう。
+          // そのためここは Chakra のスタイルprop経由にせず、ネイティブの style で直接指定する。
+          style={{
+            backgroundColor: theme.bg,
+            backgroundImage: settings.backgroundImage
               ? `url(${settings.backgroundImage})`
-              : undefined
-          }
-          bgSize="cover"
-          bgPosition="center"
+              : undefined,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}
+          data-testid="talk-preview-background"
           minH="360px"
           py={4}
           spacing="6px"

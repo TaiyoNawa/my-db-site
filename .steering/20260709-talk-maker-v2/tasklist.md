@@ -126,3 +126,14 @@
 - 実機（ブラウザ）でのPNG書き出し確認は自動化できないため、/verify 的な手動確認手順を tasklist に含めると良い
 - sessionStorage の5MB制限は画像を多用すると超えうる。将来は IndexedDB への移行を検討
 
+## フェーズ11: 背景画像が表示されないバグの調査・修正（2026-07-10 追記）
+
+- [x] 原因調査: Chakra UIの `bgImage` prop は内部で `t.gradients` transform（`parseGradient`）を通る
+  - `isCSSFunction(value)` が `(` と `)` の両方を含むかどうかで判定するため、`url(data:image/jpeg;base64,XXXX)` もグラデーション関数呼び出しと誤判定される
+  - その後 `values.split(',')` で `data:image/jpeg;base64` とbase64本体を誤って分割し、最終的に `url-gradient(data:image/jpeg;base64, XXXX)` という不正なCSSに壊れる（ブラウザは不正な値を無視するため背景色のみ表示される）
+  - Node上で `parseGradient` のロジックを再現し、実際に壊れることを確認済み
+  - 前回試した `bg`→`bgColor` への変更（shorthand問題の回避）は無関係で、真因はこちらだった
+- [x] 修正: `bgColor`/`bgImage`/`bgSize`/`bgPosition` という Chakra style prop をやめ、ネイティブの `style={{ backgroundColor, backgroundImage, backgroundSize, backgroundPosition }}` に変更（Chakraの変換パイプラインを完全にバイパス）
+- [x] 回帰テスト追加: `TalkPreview.test.tsx`（新規）でカンマを含むdata URLが `background-image` に正しく反映され、"gradient" という文字列に壊れていないことを検証
+- [x] test/lint/build 全パス（57テスト）
+

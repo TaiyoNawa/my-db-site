@@ -1,4 +1,4 @@
-// src/features/gallery/tool/talk-maker/components/IconCropModal.tsx
+// src/features/gallery/tool/talk-maker/components/ImageCropModal.tsx
 import {
   Box,
   Button,
@@ -19,28 +19,64 @@ import { FC, PointerEvent, useEffect, useRef, useState } from 'react';
 
 import { ICON_SIZE, loadImage } from '../utils/image';
 
-/** クロップ枠の表示サイズ（CSS px） */
-const VIEWPORT = 240;
+export type CropShape = 'circle' | 'rect';
+
+/** 切り抜き枠（表示px）と出力サイズを形状ごとに固定する */
+const CROP_CONFIG: Record<
+  CropShape,
+  {
+    viewportW: number;
+    viewportH: number;
+    outputW: number;
+    outputH: number;
+    mimeType: 'image/png' | 'image/jpeg';
+    title: string;
+  }
+> = {
+  circle: {
+    viewportW: 240,
+    viewportH: 240,
+    outputW: ICON_SIZE,
+    outputH: ICON_SIZE,
+    mimeType: 'image/png',
+    title: 'アイコンの切り抜き',
+  },
+  rect: {
+    // 380px幅のトーク画面に近いポートレート比率。bgSize:coverで最終表示されるため厳密な一致は不要
+    viewportW: 220,
+    viewportH: 300,
+    outputW: 640,
+    outputH: 880,
+    mimeType: 'image/jpeg',
+    title: '背景画像の切り抜き',
+  },
+};
 
 type Props = {
   isOpen: boolean;
   /** 切り抜き対象の元画像（dataURL） */
   imageSrc: string | null;
+  shape: CropShape;
   onClose: () => void;
-  /** 切り抜き結果（正方形PNGのdataURL）を返す */
+  /** 切り抜き結果のdataURLを返す */
   onCropped: (dataUrl: string) => void;
 };
 
 /**
- * ドラッグ + ズームでアイコンを正方形に切り抜くモーダル。
+ * ドラッグ + ズームで画像を切り抜くモーダル。
  * 外部ライブラリを使わず、cover基準のスケール計算と canvas で実装する。
+ * アイコン（正円）と背景（縦長矩形）の両方に対応する。
  */
-export const IconCropModal: FC<Props> = ({
+export const ImageCropModal: FC<Props> = ({
   isOpen,
   imageSrc,
+  shape,
   onClose,
   onCropped,
 }) => {
+  const { viewportW, viewportH, outputW, outputH, mimeType, title } =
+    CROP_CONFIG[shape];
+
   const [naturalSize, setNaturalSize] = useState<{
     w: number;
     h: number;
@@ -66,16 +102,16 @@ export const IconCropModal: FC<Props> = ({
 
   if (!imageSrc) return null;
 
-  // cover基準: zoom=1 で短辺がクロップ枠にぴったり合う
+  // cover基準: zoom=1 で画像が枠いっぱいに収まる（短辺基準ではなく縦横それぞれで判定）
   const coverScale = naturalSize
-    ? VIEWPORT / Math.min(naturalSize.w, naturalSize.h)
+    ? Math.max(viewportW / naturalSize.w, viewportH / naturalSize.h)
     : 1;
-  const dispW = naturalSize ? naturalSize.w * coverScale * zoom : VIEWPORT;
-  const dispH = naturalSize ? naturalSize.h * coverScale * zoom : VIEWPORT;
+  const dispW = naturalSize ? naturalSize.w * coverScale * zoom : viewportW;
+  const dispH = naturalSize ? naturalSize.h * coverScale * zoom : viewportH;
 
   const clampOffset = (x: number, y: number) => {
-    const maxX = Math.max(0, (dispW - VIEWPORT) / 2);
-    const maxY = Math.max(0, (dispH - VIEWPORT) / 2);
+    const maxX = Math.max(0, (dispW - viewportW) / 2);
+    const maxY = Math.max(0, (dispH - viewportH) / 2);
     return {
       x: Math.min(maxX, Math.max(-maxX, x)),
       y: Math.min(maxY, Math.max(-maxY, y)),
@@ -97,7 +133,10 @@ export const IconCropModal: FC<Props> = ({
     const dx = e.clientX - dragStart.current.x;
     const dy = e.clientY - dragStart.current.y;
     setOffset(
-      clampOffset(dragStart.current.offsetX + dx, dragStart.current.offsetY + dy)
+      clampOffset(
+        dragStart.current.offsetX + dx,
+        dragStart.current.offsetY + dy
+      )
     );
   };
 
@@ -111,29 +150,30 @@ export const IconCropModal: FC<Props> = ({
 
     // 表示座標 → 元画像座標への変換（クロップ枠の左上を求める）
     const pxPerCss = 1 / (coverScale * zoom);
-    const viewLeft = dispW / 2 - VIEWPORT / 2 - offset.x;
-    const viewTop = dispH / 2 - VIEWPORT / 2 - offset.y;
+    const viewLeft = dispW / 2 - viewportW / 2 - offset.x;
+    const viewTop = dispH / 2 - viewportH / 2 - offset.y;
     const srcX = viewLeft * pxPerCss;
     const srcY = viewTop * pxPerCss;
-    const srcSize = VIEWPORT * pxPerCss;
+    const srcWidth = viewportW * pxPerCss;
+    const srcHeight = viewportH * pxPerCss;
 
     const canvas = document.createElement('canvas');
-    canvas.width = ICON_SIZE;
-    canvas.height = ICON_SIZE;
+    canvas.width = outputW;
+    canvas.height = outputH;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     ctx.drawImage(
       img,
       srcX,
       srcY,
-      srcSize,
-      srcSize,
+      srcWidth,
+      srcHeight,
       0,
       0,
-      ICON_SIZE,
-      ICON_SIZE
+      outputW,
+      outputH
     );
-    onCropped(canvas.toDataURL('image/png'));
+    onCropped(canvas.toDataURL(mimeType, 0.85));
     onClose();
   };
 
@@ -141,14 +181,14 @@ export const IconCropModal: FC<Props> = ({
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
       <ModalOverlay />
       <ModalContent mx={4} maxW="340px">
-        <ModalHeader fontSize="md">アイコンの切り抜き</ModalHeader>
+        <ModalHeader fontSize="md">{title}</ModalHeader>
         <ModalBody>
           <Flex direction="column" align="center" gap={3}>
             <Box
               position="relative"
-              w={`${VIEWPORT}px`}
-              h={`${VIEWPORT}px`}
-              borderRadius="full"
+              w={`${viewportW}px`}
+              h={`${viewportH}px`}
+              borderRadius={shape === 'circle' ? 'full' : 'md'}
               overflow="hidden"
               bg="gray.100"
               cursor="grab"
@@ -168,8 +208,8 @@ export const IconCropModal: FC<Props> = ({
                   width: `${dispW}px`,
                   height: `${dispH}px`,
                   maxWidth: 'none',
-                  left: `${VIEWPORT / 2 - dispW / 2 + offset.x}px`,
-                  top: `${VIEWPORT / 2 - dispH / 2 + offset.y}px`,
+                  left: `${viewportW / 2 - dispW / 2 + offset.x}px`,
+                  top: `${viewportH / 2 - dispH / 2 + offset.y}px`,
                   userSelect: 'none',
                   pointerEvents: 'none',
                 }}

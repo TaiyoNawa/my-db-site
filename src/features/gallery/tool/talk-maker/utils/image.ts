@@ -2,8 +2,6 @@
 
 /** アイコン画像の出力サイズ（px） */
 export const ICON_SIZE = 256;
-/** 背景画像の最大辺（px） */
-export const BACKGROUND_MAX_SIZE = 960;
 /** 送信画像の最大辺（px） */
 export const MESSAGE_IMAGE_MAX_SIZE = 640;
 
